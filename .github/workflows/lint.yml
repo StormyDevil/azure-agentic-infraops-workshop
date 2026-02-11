@@ -13,8 +13,8 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: lint
+  markdown-lint:
+    name: markdown-lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

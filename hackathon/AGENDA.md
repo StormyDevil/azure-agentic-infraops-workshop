@@ -41,7 +41,7 @@
 | 3   | Bicep Implementation & Deploy | 70 min   | 25     | `bicep-plan`, `bicep-code`, `deploy` |
 | 4   | DR Curveball & Deploy         | 40 min   | 10     | `bicep-plan`, `bicep-code`, `deploy` |
 | 5   | Load Testing                  | 20 min   | 5      | (k6 scripts)                         |
-| 6   | Documentation                 | 20 min   | 5      | `docs`                               |
+| 6   | Documentation                 | 20 min   | 5      | `design`                             |
 | 7   | Diagnostics                   | 5 min    | 5      | `diagnose`                           |
 | 8   | Partner Showcase 🎤           | 30 min   | 10     | (presentation)                       |
 
@@ -115,7 +115,7 @@
 | 14:30 | **Challenge 5: Load Testing**              |
 | 14:40 | Run k6 load tests                          |
 | 14:50 | **Challenge 6: Documentation**             |
-| 15:00 | Generate workload docs with **docs** agent |
+| 15:00 | Generate workload docs with **design** agent |
 | 15:10 | **Challenge 7: Diagnostics**               |
 | 15:15 | Prep begins                                |
 

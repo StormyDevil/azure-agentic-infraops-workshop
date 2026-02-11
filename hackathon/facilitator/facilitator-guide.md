@@ -200,23 +200,23 @@ Stand up, get everyone's attention:
 
 **Duration**: 45 minutes (3 challenges: 20 min + 20 min + 5 min)
 
-#### Challenge 5: Load Testing (13:10 - 13:25)
+#### Challenge 5: Load Testing (14:30 - 14:50)
 
 **Coaching Tips:**
 
 - Ask: "What metrics validate your SLA?"
 - Prompt: "How would you simulate 500 concurrent users?"
-- Encourage docs agent for structured report generation
+- Encourage design agent for structured report generation
 
-#### Challenge 6: Documentation (13:25 - 13:40)
+#### Challenge 6: Documentation (14:50 - 15:10)
 
 **Coaching Tips:**
 
 - Ask: "What would a new team member need to know?"
-- Prompt: "How does docs agent ensure completeness?"
+- Prompt: "How does design agent ensure completeness?"
 - Encourage runbook creation for operational procedures
 
-#### Challenge 7: Diagnostics (13:40 - 14:00)
+#### Challenge 7: Diagnostics (15:10 - 15:15)
 
 **Coaching Tips:**
 
@@ -228,23 +228,23 @@ Stand up, get everyone's attention:
 
 | Issue                  | Solution                         |
 | ---------------------- | -------------------------------- |
-| Docs agent too verbose | Prompt: "Create concise runbook" |
+| Design agent too verbose | Prompt: "Create concise runbook" |
 | Missing monitoring     | Use Application Insights logs    |
 
 ---
 
-### 🎯 Presentation Prep (14:00 - 14:15)
+### 🎯 Presentation Prep (15:15 - 15:25)
 
 **Facilitator Actions:**
 
 - Remind teams of the 4-min pitch + 2-min Q&A format
-- Share the [Presentation Template](../challenges/challenge-6-partner-showcase.md#what-to-present)
+- Share the [Presentation Template](../challenges/challenge-8-partner-showcase.md#what-to-present)
 - Assign team pairings (see below)
 - Set up presentation area (projector, timer)
 
-### Block 7: Challenge 8 - Partner Showcase 🎤 (14:15 - 14:55)
+### Block 7: Challenge 8 - Partner Showcase 🎤 (15:25 - 15:55)
 
-**Duration**: 40 minutes (6 teams × 6 min + transitions)
+**Duration**: 30 minutes (up to 6 teams × 4 min + transitions)
 
 #### Presentation Setup
 
@@ -259,7 +259,7 @@ Pair teams for the role-play:
 | Team 5               | Team 6                 |
 | Team 6               | Team 1                 |
 
-#### 📢 Announcement Script (14:15)
+#### 📢 Announcement Script (15:25)
 
 > _"Time for Challenge 8 — the Partner Showcase! 🎤_
 >
@@ -379,7 +379,7 @@ Legend: ⬜ Not started | 🔄 In progress | ✅ Complete
 ### Copilot Down
 
 1. Announce to all teams
-2. Use template files in `.github/templates/`
+2. Use template files in `.github/skills/azure-artifacts/templates/`
 3. Extend time if needed
 
 ### Azure Issues

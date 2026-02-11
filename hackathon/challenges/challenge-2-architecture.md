@@ -188,7 +188,7 @@ After completing this challenge:
 Before proceeding to Challenge 3, generate an architecture diagram:
 
 ```
-Use the `diagram` agent to create an architecture diagram for FreshConnect based on
+Use the `design` agent (with the `azure-diagrams` skill) to create an architecture diagram for FreshConnect based on
 agent-output/freshconnect/02-architecture-assessment.md
 ```
 

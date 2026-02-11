@@ -21,10 +21,12 @@ const TITLE_DRIFT = "Cost Estimate Drift";
 const TITLE_MISSING_AB = "Missing As-Built Examples";
 
 const AGENT_DES = ".github/agents/architect.agent.md";
-const AGENT_AB = ".github/agents/docs.agent.md";
+const AGENT_AB = ".github/agents/design.agent.md";
 
-const TEMPLATE_DES = ".github/templates/03-des-cost-estimate.template.md";
-const TEMPLATE_AB = ".github/templates/07-ab-cost-estimate.template.md";
+const TEMPLATE_DES =
+  ".github/skills/azure-artifacts/templates/03-des-cost-estimate.template.md";
+const TEMPLATE_AB =
+  ".github/skills/azure-artifacts/templates/07-ab-cost-estimate.template.md";
 
 const STANDARD_DOC = ".github/instructions/cost-estimate.instructions.md";
 
@@ -119,7 +121,7 @@ function validateTemplate(relPath) {
   if (coreFound.length !== CORE_HEADINGS.length) {
     error(
       `Template ${relPath} is missing one or more required core H2 headings.`,
-      { filePath: relPath, line: 1 }
+      { filePath: relPath, line: 1 },
     );
   } else {
     for (let i = 0; i < CORE_HEADINGS.length; i += 1) {
@@ -128,7 +130,7 @@ function validateTemplate(relPath) {
           `Template ${relPath} core headings are out of order. Expected '${
             CORE_HEADINGS[i]
           }' at position ${i + 1}.`,
-          { filePath: relPath, line: 1 }
+          { filePath: relPath, line: 1 },
         );
         break;
       }
@@ -139,23 +141,23 @@ function validateTemplate(relPath) {
   if (extraH2.length > 0) {
     warn(
       `Template ${relPath} contains extra H2 headings beyond the core contract: ${extraH2.join(
-        " | "
+        " | ",
       )}`,
-      { filePath: relPath, line: 1 }
+      { filePath: relPath, line: 1 },
     );
   }
 
   if (!text.includes(REQUIRED_MERMAID_INIT)) {
     error(
       `Template ${relPath} is missing the required colored Mermaid pie init line.`,
-      { filePath: relPath, line: 1 }
+      { filePath: relPath, line: 1 },
     );
   }
 
   if (!text.includes("pie showData")) {
     error(
       `Template ${relPath} is missing 'pie showData' in the Mermaid pie section.`,
-      { filePath: relPath, line: 1 }
+      { filePath: relPath, line: 1 },
     );
   }
 }
@@ -173,21 +175,23 @@ function validateAgentLinks() {
 
   if (
     exists(AGENT_DES) &&
-    !desText.includes("../templates/03-des-cost-estimate.template.md")
+    !desText.includes("03-des-cost-estimate") &&
+    !desText.includes("azure-artifacts")
   ) {
     error(
-      `Agent ${AGENT_DES} must link to ../templates/03-des-cost-estimate.template.md`,
-      { filePath: AGENT_DES, line: 1 }
+      `Agent ${AGENT_DES} must reference 03-des-cost-estimate template or azure-artifacts skill`,
+      { filePath: AGENT_DES, line: 1 },
     );
   }
 
   if (
     exists(AGENT_AB) &&
-    !abText.includes("../templates/07-ab-cost-estimate.template.md")
+    !abText.includes("07-ab-cost-estimate") &&
+    !abText.includes("azure-artifacts")
   ) {
     error(
-      `Agent ${AGENT_AB} must link to ../templates/07-ab-cost-estimate.template.md`,
-      { filePath: AGENT_AB, line: 1 }
+      `Agent ${AGENT_AB} must reference 07-ab-cost-estimate template or azure-artifacts skill`,
+      { filePath: AGENT_AB, line: 1 },
     );
   }
 }
@@ -203,7 +207,7 @@ function validateNoEmbeddedSkeletons(relPath) {
       {
         filePath: relPath,
         line: 1,
-      }
+      },
     );
   }
 
@@ -219,7 +223,7 @@ function validateNoEmbeddedSkeletons(relPath) {
     if (hit) {
       error(
         `Agent ${relPath} appears to embed a cost-estimate skeleton inside a fenced block (found '${hit}').`,
-        { filePath: relPath, line: 1 }
+        { filePath: relPath, line: 1 },
       );
       return;
     }
@@ -287,7 +291,7 @@ function main() {
   if (abExamples.length === 0) {
     warn(
       "No agent-output/**/07-ab-cost-estimate.md examples found yet (warning-only).",
-      { title: TITLE_MISSING_AB }
+      { title: TITLE_MISSING_AB },
     );
   }
 

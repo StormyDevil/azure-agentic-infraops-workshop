@@ -105,7 +105,6 @@ These agents were removed and converted to skills. Never reference them:
 
 Also avoid references to removed paths:
 
-- `docs/guides/` — removed
 - `docs/reference/` — removed
 - `docs/getting-started.md` — superseded by `docs/quickstart.md`
 
@@ -117,7 +116,7 @@ Also avoid references to removed paths:
 | **Current state** | No historical context in main docs |
 | **Action-oriented** | Every section answers "how do I...?" |
 | **Minimal** | If it doesn't help users today, remove it |
-| **Scenarios for depth** | Point to `scenarios/` for hands-on |
+| **Hackathon for depth** | Point to `hackathon/` for hands-on learning |
 
 ## Validation Commands
 
@@ -129,10 +128,10 @@ npm run lint:md
 npm run lint:links
 
 # Artifact H2 structure check
-npm run validate
+npm run lint:artifact-templates
 
 # Skill format validation
-npm run skill:validate
+npm run lint:skills-format
 
 # Auto-fix artifact H2 headings
 npm run fix:artifact-h2 <path> [--apply]
@@ -144,7 +143,6 @@ When `VERSION.md` is updated, check these files for version references:
 
 - `docs/*.md` — header lines with `> Version X.Y.Z`
 - `docs.instructions.md` — header template example
-- `scenarios/README.md` — may reference version
 - `CHANGELOG.md` — new version entry needed
 
 ## Emoji Conventions in Agent/Skill Tables

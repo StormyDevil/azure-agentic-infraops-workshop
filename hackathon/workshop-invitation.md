@@ -41,7 +41,7 @@ farm-to-table delivery company that needs a modern platform before peak season.
 Requirements → Architecture → Bicep Code → ⚡DR Curveball⚡ → Load Test → Partner Showcase
 ```
 
-Work in teams of 3-4 to complete six challenges. A surprise "curveball" midway tests your
+Work in teams of 3-6 to complete eight challenges. A surprise "curveball" midway tests your
 ability to adapt to changing requirements — just like real projects!
 
 ---
@@ -72,8 +72,8 @@ ability to adapt to changing requirements — just like real projects!
 
 |                  |                                                           |
 | ---------------- | --------------------------------------------------------- |
-| **Duration**     | 5 hours (including breaks)                                |
-| **Format**       | Team-based hackathon (3-4 per team)                       |
+| **Duration**     | 6 hours (including breaks)                                |
+| **Format**       | Team-based hackathon (3-6 per team)                       |
 | **Skill Level**  | Beginner to Intermediate                                  |
 | **Deliverables** | Working Azure infrastructure + architecture documentation |
 

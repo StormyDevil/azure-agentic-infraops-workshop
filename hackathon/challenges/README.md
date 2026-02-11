@@ -22,6 +22,7 @@ This folder contains the eight hackathon challenges.
 ## Challenge Flow
 
 ```mermaid
+%%{init: {'theme':'neutral'}}%%
 graph LR
     C1[C1: Requirements] --> C2[C2: Architecture]
     C2 --> C3[C3: Bicep]

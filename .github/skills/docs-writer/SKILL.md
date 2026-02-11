@@ -48,10 +48,10 @@ None — all tools and references are workspace-local.
 All markdown documentation **except** `agent-output/**/*.md`:
 
 - `docs/` — user-facing docs (quickstart, workflow, troubleshooting, etc.)
+- `hackathon/` — hackathon materials (challenges, participant guides, facilitator docs)
 - `README.md` — repo root README
 - `CONTRIBUTING.md` — contribution guidelines
 - `CHANGELOG.md` — release history
-- `scenarios/README.md` — scenario index
 - `.github/instructions/docs.instructions.md` — architecture tables
 
 ### Out of Scope (Has Own Validators)

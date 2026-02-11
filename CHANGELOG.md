@@ -3,8 +3,38 @@
 All notable changes to **Agentic InfraOps Hackathon** will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-01-22
+## [1.0.0] - 2026-02-11
+
+### Added
+
+- **Documentation overhaul** — created missing docs (quickstart, troubleshooting, copilot-tips,
+  dev-containers, glossary, docs README), freshness checker script, VERSION.md
+- **Automated versioning system** — GitHub Actions workflow for version management
+  - Auto-detects version bump type from conventional commits
+  - Updates VERSION.md and CHANGELOG.md automatically
+  - Creates Git tags and GitHub releases
+  - See [docs/guides/automated-versioning.md](docs/guides/automated-versioning.md) for usage guide
+- **Commitlint integration** — Enforces conventional commit format
+  - Configured via commitlint.config.js
+  - Runs automatically on commit via lefthook
+  - Supports feat:, fix:, docs:, chore:, and breaking changes
+
+### Changed
+
+- **package.json** — Updated repository metadata and reset version to 1.0.0
+- **README.md** — Fixed stale skill/agent counts and removed references to deleted skills
+- **CONTRIBUTING.md** — Fixed broken links to development workflow guide
+- **docs-writer references** — Updated repo-architecture, doc-standards, and freshness-checklist
+  to match the actual workshop repo structure
+
+---
+
+> **Pre-reset history** — entries below are from the upstream fork before the
+> workshop baseline was established at 1.0.0.
+
+## [0.1.1] - 2026-01-22 (pre-reset)
 
 ### Added
 
@@ -33,31 +63,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - correct repo root path calculation in hackathon scripts
 - resolve MD013 line length violations
 
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-### Added
-
-- **Automated versioning system** - GitHub Actions workflow for version management
-  - Auto-detects version bump type from conventional commits
-  - Updates VERSION.md and CHANGELOG.md automatically
-  - Creates Git tags and GitHub releases
-  - See [docs/guides/automated-versioning.md](docs/guides/automated-versioning.md) for usage guide
-- **Commitlint integration** - Enforces conventional commit format
-  - Configured via commitlint.config.js
-  - Runs automatically on commit via lefthook
-  - Supports feat:, fix:, docs:, chore:, and breaking changes
-
-### Changed
-
-- **package.json** - Updated repository metadata
-  - Changed name to `azure-agentic-infraops-workshop`
-  - Updated version to 1.0.1
-  - Fixed repository URL to hackathon repository
-  - Added hackathon-specific keywords (hackathon, workshop, training)
-
-## [1.0.1] - 2026-01-22
+## [0.1.0] - 2026-01-22 (pre-reset)
 
 ### Fixed
 
@@ -75,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated hints-and-tips.md section headers to use backtick formatting
   - Added bold formatting to **plan** agent reference in AGENDA.md
 
-## [1.0.0] - 2026-01-22
+## [0.0.1] - 2026-01-22 (pre-reset)
 
 ### Added
 

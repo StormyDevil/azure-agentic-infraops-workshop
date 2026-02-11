@@ -23,7 +23,7 @@
 ☐ ⭐⭐ Below Average  
 ☐ ⭐ Poor
 
-### 2. Was the 5-hour duration appropriate?
+### 2. Was the 6-hour duration appropriate?
 
 ☐ Too short — needed more time  
 ☐ Just right  
@@ -49,6 +49,9 @@
 | 3: Implementation (bicep) | ☐1 ☐2 ☐3 ☐4 ☐5 | |
 | 4: DR Curveball | ☐1 ☐2 ☐3 ☐4 ☐5 | |
 | 5: Load Testing | ☐1 ☐2 ☐3 ☐4 ☐5 | |
+| 6: Documentation | ☐1 ☐2 ☐3 ☐4 ☐5 | |
+| 7: Diagnostics | ☐1 ☐2 ☐3 ☐4 ☐5 | |
+| 8: Partner Showcase | ☐1 ☐2 ☐3 ☐4 ☐5 | |
 
 ### 5. What did you learn? (Select all that apply)
 

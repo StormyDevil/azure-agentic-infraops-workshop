@@ -11,10 +11,10 @@
 ### Templatized Agent Outputs
 
 The agents in this hackathon use **templates** to generate consistent, structured documentation.
-These templates are located in `.github/templates/` and include:
+These templates are located in `.github/skills/azure-artifacts/templates/` and include:
 
 ```
-.github/templates/
+.github/skills/azure-artifacts/templates/
 ├── 01-requirements.template.md
 ├── 02-architecture-assessment.template.md
 ├── 03-des-cost-estimate.template.md
@@ -43,7 +43,7 @@ These templates are located in `.github/templates/` and include:
 
 ### Exploring Templates
 
-Take a moment to browse `.github/templates/` to understand:
+Take a moment to browse `.github/skills/azure-artifacts/templates/` to understand:
 
 - What sections each template includes
 - What information the agent needs from you to fill them in
@@ -448,7 +448,7 @@ Include:
 - Escalation criteria"
 ```
 
-💡 **Coaching tip**: The `docs` agent can generate multiple document types.
+💡 **Coaching tip**: The `design` agent can generate multiple document types.
 Which documents provide the most value for FreshConnect's specific needs?
 
 **Document Types to Consider:**
@@ -608,7 +608,7 @@ k6 run load-test.js
 
 💡 Iterate incrementally — don't generate everything at once.
 
-### `docs` Agent (Challenges 6-7)
+### `design` Agent (Challenges 5-7)
 
 **Instead of "document everything"**, ask:
 

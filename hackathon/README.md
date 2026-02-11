@@ -90,7 +90,7 @@ See [Scenario Brief](participant/scenario-brief.md) for the full business challe
 
 **TL;DR**: A Stockholm-based farm-to-table delivery company needs cloud infrastructure:
 
-1. Capture requirements using the **plan** agent
+1. Capture requirements using the **requirements** agent
 2. Design a WAF-aligned architecture
 3. Generate Bicep templates
 4. Deploy to Azure

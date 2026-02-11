@@ -1,6 +1,6 @@
 # Challenge 5: Load Testing & Performance Validation
 
-> **Duration**: 20 minutes | **Agent**: `docs` | **Output**: `05-load-test-results.md`
+> **Duration**: 20 minutes | **Agent**: `design` | **Output**: `05-load-test-results.md`
 
 ## The Business Context
 
@@ -84,11 +84,11 @@ Then upload your test script through the Azure Portal.
 
 ## Generating Your Load Test Report
 
-After running your tests, use the **`docs` agent** to create a professional test results document.
+After running your tests, use the **`design` agent** to create a professional test results document.
 
-### Prompt Template for the `docs` Agent
+### Prompt Template for the `design` Agent
 
-**Why use the `docs` agent?**
+**Why use the `design` agent?**
 
 - It structures raw data into professional documentation
 - It extracts key insights from test output
@@ -156,7 +156,7 @@ Context:
 | Criterion                                  | Points |
 | ------------------------------------------ | ------ |
 | Load test executed with realistic scenario | 2      |
-| Results documented (using `docs` agent)    | 2      |
+| Results documented (using `design` agent)    | 2      |
 | Performance interpreted correctly          | 1      |
 | **Total**                                  | **5**  |
 
@@ -181,7 +181,7 @@ Context:
 
 💡 **5 minutes**: Design and run your load test
 💡 **5 minutes**: Analyze results and identify patterns
-💡 **10 minutes**: Use `docs` agent to generate professional documentation
+💡 **10 minutes**: Use `design` agent to generate professional documentation
 
 ## Next Steps
 

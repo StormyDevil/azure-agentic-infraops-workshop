@@ -176,7 +176,7 @@ The Agentic InfraOps system consists of specialized agents organized into three 
 |------|-------|---------|------|-------|
 | 1 | `requirements` | 📜 Scribe | Captures infrastructure requirements | Claude Opus 4.6 |
 | 2 | `architect` | 🏛️ Oracle | WAF assessment and design decisions | Claude Opus 4.6 |
-| 3 | `design` | 🎨 Artisan | Diagrams and Architecture Decision Records | Claude Haiku 4.5 |
+| 3 | `design` | 🎨 Artisan | Diagrams and Architecture Decision Records | Claude Sonnet 4.5 |
 | 4 | `bicep-plan` | 📐 Strategist | Implementation planning with governance | Claude Opus 4.6 |
 | 5 | `bicep-code` | ⚒️ Forge | Generates AVM-first Bicep templates | Claude Sonnet 4.5 |
 | 6 | `deploy` | 🚀 Envoy | Azure resource provisioning | Claude Sonnet 4.5 |
@@ -250,7 +250,7 @@ The Conductor agent follows a strict 7-step cycle for every infrastructure proje
 
 ### Step 7: Documentation
 
-- **As-Built Suite** — `azure-workload-docs` skill generates comprehensive documentation
+- **As-Built Suite** — `docs-writer` and `azure-artifacts` skills generate comprehensive documentation
 - **Output** — `agent-output/{project}/07-*.md` (design doc, runbook, DR plan, inventory)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -346,7 +346,7 @@ Conductor:
   │
   │   [GATE 3: User verifies deployment]
   │
-  └─ azure-workload-docs skill → 07-*.md (design doc, runbook, DR plan)
+  └─ azure-artifacts skill → 07-*.md (design doc, runbook, DR plan)
 ```
 
 ### Direct Agent Invocation
@@ -375,20 +375,18 @@ Ctrl+Shift+A → diagnose → "Check health of my App Service apps"
 
 ## Skills (Reusable Capabilities)
 
-10 skills provide reusable capabilities across agents:
+8 skills provide reusable capabilities across agents:
 
 | Skill | Purpose | Output |
 |-------|---------|--------|
-| `azure-diagrams` | Architecture diagrams (700+ Azure icons) | `.py` + `.png` |
 | `azure-adr` | Architecture Decision Records | `03-des-adr-*.md` |
-| `azure-workload-docs` | As-built documentation suite | `07-*.md` |
-| `azure-deployment-preflight` | Pre-deployment validation | Validation report |
-| `gh-cli` | GitHub CLI operations | — |
+| `azure-artifacts` | Artifact generation and template compliance | `01-07-*.md` |
+| `azure-defaults` | Azure conventions, naming, security, governance | — |
+| `azure-diagrams` | Architecture diagrams (700+ Azure icons) | `.py` + `.png` |
+| `docs-writer` | Documentation maintenance and freshness | — |
 | `git-commit` | Conventional commit messages | — |
-| `github-issues` | Issue management | — |
-| `github-pull-requests` | PR creation and management | — |
-| `orchestration-helper` | Workflow orchestration utilities | — |
-| `make-skill-template` | Create new skills | — |
+| `github-operations` | GitHub CLI, issues, PRs, Actions, releases | — |
+| `make-skill-template` | Create new skills from template | — |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -467,7 +465,7 @@ Real-time Azure retail pricing for cost-aware SKU decisions. Pre-configured in t
 
 ```text
 ├── 📁 .github/
-│   ├── 📁 agents/             # 7 main agents + 3 validation subagents
+│   ├── 📁 agents/             # 8 main agents + 3 validation subagents
 │   │   ├── infraops-conductor.agent.md  # 🎼 Maestro - Master orchestrator
 │   │   ├── requirements.agent.md        # 📜 Scribe - Requirements capture
 │   │   ├── architect.agent.md           # 🏛️ Oracle - WAF assessment
@@ -478,8 +476,7 @@ Real-time Azure retail pricing for cost-aware SKU decisions. Pre-configured in t
 │   │   ├── diagnose.agent.md            # 🔍 Sentinel - Diagnostics
 │   │   └── 📁 _subagents/               # Validation subagents
 │   ├── 📁 instructions/       # Guardrails and coding standards
-│   ├── 📁 skills/              # 10 reusable skills
-│   └── 📁 templates/          # Artifact output templates
+│   ├── 📁 skills/              # 8 reusable skills
 ├── 📁 agent-output/           # Generated artifacts per project
 ├── 📁 docs/                   # Documentation and guides
 ├── 📁 hackathon/              # 🎓 6-hour hands-on hackathon

@@ -5,7 +5,7 @@
 | File                                           | Purpose                                              |
 | ---------------------------------------------- | ---------------------------------------------------- |
 | [facilitator-guide.md](facilitator-guide.md)   | Detailed schedule, curveball script, troubleshooting |
-| [scoring-rubric.md](scoring-rubric.md)         | WAF-aligned scoring criteria (100+25 pts)            |
+| [scoring-rubric.md](scoring-rubric.md)         | WAF-aligned scoring criteria (105+25 pts)            |
 | [solution-reference.md](solution-reference.md) | Expected outputs, Bicep patterns, commands           |
 
 ## Quick Reference

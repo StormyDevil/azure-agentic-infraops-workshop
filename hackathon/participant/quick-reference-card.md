@@ -49,7 +49,8 @@ Select from the **agent dropdown** in Chat view:
 | **architect**    | Design architecture (WAF)  | 2          |
 | **bicep-plan**   | Create implementation plan | 3, 4       |
 | **bicep-code**   | Generate Bicep templates   | 3, 4       |
-| **docs**         | Generate documentation     | 6, 7       |
+| **deploy**       | Deploy to Azure            | 3, 4       |
+| **design**       | Generate documentation & diagrams | 5, 6 |
 | **diagnose**     | Troubleshooting runbooks   | 7          |
 
 **How to use**: `Ctrl+Alt+I` → Click agent dropdown → Select agent → Type prompt

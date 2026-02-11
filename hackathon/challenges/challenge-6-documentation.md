@@ -1,6 +1,6 @@
 # Challenge 6: Workload Documentation
 
-> **Duration**: 20 minutes | **Agent**: `docs` | **Output**: At least 2 documentation artifacts
+> **Duration**: 20 minutes | **Agent**: `design` | **Output**: At least 2 documentation artifacts
 
 ## The Business Context
 
@@ -16,7 +16,7 @@ understand it tomorrow?
 
 ## Your Challenge
 
-Use the `docs` agent to generate operational documentation that answers real business questions.
+Use the `design` agent to generate operational documentation that answers real business questions.
 
 ### Consider These Scenarios
 
@@ -38,7 +38,7 @@ operations"?
 
 ### Guiding Questions
 
-Before you prompt the `docs` agent, ask yourself:
+Before you prompt the `design` agent, ask yourself:
 
 1. **Audience**: Who will read this documentation?
    - Operations team (troubleshooting focus)?
@@ -58,7 +58,7 @@ Before you prompt the `docs` agent, ask yourself:
    - "What does it cost?" (Financial)
    - "Is it compliant?" (Regulatory)
 
-4. **Context**: What information does the `docs` agent need?
+4. **Context**: What information does the `design` agent need?
    - Project name and purpose?
    - Target audience and their expertise level?
    - Specific focus area (operations, cost, DR, architecture)?
@@ -146,7 +146,7 @@ After generating documentation:
 ## Time Management Tips
 
 - **0-5 min**: Decide what documentation provides most business value for FreshConnect
-- **5-10 min**: Craft a detailed prompt for the `docs` agent with necessary context
+- **5-10 min**: Craft a detailed prompt for the `design` agent with necessary context
 - **10-18 min**: Review generated documentation, request refinements or additional sections
 - **18-20 min**: Save artifacts and identify gaps for future documentation
 

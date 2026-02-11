@@ -64,41 +64,34 @@ no longer exist.
 **Auto-fix**: Update count in heading. Add missing skills to the
 appropriate category table. Remove entries for deleted skills.
 
-### 4. Scenario Index
-
-**Source of truth**: List `scenarios/S*/` directories.
-
-**Expected count** (as of 2026-02-09): **9 scenarios** (S01–S09)
-
-**Files to check**:
-
-| File | What to verify |
-| --- | --- |
-| `scenarios/README.md` | Table lists all S* folders |
-| `docs/README.md` | Scenario table lists all S* folders |
-
-**Auto-fix**: Add missing scenarios to tables. Flag scenarios in
-tables that no longer have folders.
-
-### 5. Prohibited References
+### 4. Prohibited References
 
 **Rule**: Removed agents must not be referenced in live docs.
 
 **Banned patterns**:
 
-- `diagram.agent.md`
-- `adr.agent.md`
-- `docs.agent.md`
-- `docs/guides/`
 - `docs/reference/`
 - `docs/getting-started.md`
+- `azure-workload-docs`
+- `azure-deployment-preflight`
+- `gh-cli` (skill)
+- `github-issues` (skill)
+- `github-pull-requests` (skill)
+- `orchestration-helper`
+- `.github/templates/` (old path; now `.github/skills/azure-artifacts/templates/`)
 
-**Files to check**: All `docs/**/*.md`, `README.md`, `CONTRIBUTING.md`.
+**Banned agent names in hackathon docs** (`hackathon/**/*.md`):
+
+- `docs` agent (renamed to `design`)
+- `diagram` agent (replaced by `design` agent + `azure-diagrams` skill)
+- `plan` agent (renamed to `requirements`)
+
+**Files to check**: All `docs/**/*.md`, `hackathon/**/*.md`, `README.md`, `CONTRIBUTING.md`.
 
 **Auto-fix**: Replace with the correct skill reference
 (see `references/doc-standards.md` → Prohibited References table).
 
-### 6. Deprecated Path Links
+### 5. Deprecated Path Links
 
 **Rule**: No live doc should link to removed directories.
 
@@ -106,7 +99,7 @@ tables that no longer have folders.
 
 **Auto-fix**: Remove the link or replace with the current equivalent.
 
-### 7. Instruction File Table Sync
+### 6. Instruction File Table Sync
 
 **Source of truth**: List `.github/instructions/*.instructions.md` files.
 
@@ -117,7 +110,7 @@ tables that no longer have folders.
 
 **Auto-fix**: Update count and table entries.
 
-### 8. Template Inventory Sync
+### 7. Template Inventory Sync
 
 **Source of truth**: List `.github/skills/azure-artifacts/templates/*.template.md` files.
 
@@ -127,6 +120,40 @@ tables that no longer have folders.
 template counts.
 
 **Auto-fix**: Update count reference.
+
+### 8. Hackathon Agent References
+
+**Rule**: All hackathon files must reference only current agent names.
+
+**Files to check**: All `hackathon/**/*.md`.
+
+**Verify**:
+
+| Pattern | Should be |
+| --- | --- |
+| `\`docs\`` agent | `\`design\`` agent |
+| `\`diagram\`` agent | `\`design\`` agent (with `azure-diagrams` skill) |
+| `\`plan\`` agent (not `bicep-plan`) | `\`requirements\`` agent |
+| `.github/templates/` | `.github/skills/azure-artifacts/templates/` |
+
+**Auto-fix**: Replace old agent names with current names.
+Add brief context about the agent's role where helpful.
+
+### 9. Hackathon Duration and Team Count
+
+**Source of truth**: `hackathon/AGENDA.md` schedule (10:00-16:00 = 6 hours).
+
+**Files to check**:
+
+| File | What to verify |
+| --- | --- |
+| `hackathon/workshop-invitation.md` | Duration says "6 hours" |
+| `hackathon/feedback-form.md` | Duration says "6-hour" |
+| `hackathon/facilitator/facilitator-guide.md` | Block timing matches AGENDA.md |
+
+**Team count**: Up to 6 teams (verify facilitator guide team tables).
+
+**Auto-fix**: Replace incorrect duration/team counts.
 
 ## Summary Table Template
 
@@ -149,5 +176,5 @@ resolved (Tasks A–D). Fixes included:
 - Version headers migrated to `[Current Version](../VERSION.md)` links
 - Agent counts corrected to 8, skill counts to 11, scenario counts to 9
 - Conductor model corrected to Claude Opus 4.6, approval gates to 5
-- MCP path fixed, broken link removed, S09 added to scenario table
+- Broken links fixed, stale scenario references removed
 - Glossary cross-references fixed, keyboard shortcut corrected, new terms added

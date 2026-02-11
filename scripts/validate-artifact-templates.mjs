@@ -165,49 +165,45 @@ const GLOBAL_STRICTNESS = process.env.STRICTNESS;
 
 // Core artifacts validated by agents
 const AGENTS = {
-  "01-requirements.md": ".github/agents/plan.agent.md",
-  "02-architecture-assessment.md":
-    ".github/agents/architect.agent.md",
+  "01-requirements.md": ".github/agents/requirements.agent.md",
+  "02-architecture-assessment.md": ".github/agents/architect.agent.md",
   "04-implementation-plan.md": ".github/agents/bicep-plan.agent.md",
   "04-governance-constraints.md": ".github/agents/bicep-plan.agent.md",
   "06-deployment-summary.md": ".github/agents/deploy.agent.md",
   "05-implementation-reference.md": ".github/agents/bicep-code.agent.md",
-  "07-design-document.md":
-    ".github/agents/docs.agent.md",
-  "07-operations-runbook.md":
-    ".github/agents/docs.agent.md",
-  "07-resource-inventory.md":
-    ".github/agents/docs.agent.md",
-  "07-backup-dr-plan.md":
-    ".github/agents/docs.agent.md",
-  "07-compliance-matrix.md":
-    ".github/agents/docs.agent.md",
-  "07-documentation-index.md":
-    ".github/agents/docs.agent.md",
+  "07-design-document.md": ".github/agents/design.agent.md",
+  "07-operations-runbook.md": ".github/agents/design.agent.md",
+  "07-resource-inventory.md": ".github/agents/design.agent.md",
+  "07-backup-dr-plan.md": ".github/agents/design.agent.md",
+  "07-compliance-matrix.md": ".github/agents/design.agent.md",
+  "07-documentation-index.md": ".github/agents/design.agent.md",
 };
 
 const TEMPLATES = {
-  "01-requirements.md": ".github/templates/01-requirements.template.md",
+  "01-requirements.md":
+    ".github/skills/azure-artifacts/templates/01-requirements.template.md",
   "02-architecture-assessment.md":
-    ".github/templates/02-architecture-assessment.template.md",
+    ".github/skills/azure-artifacts/templates/02-architecture-assessment.template.md",
   "04-implementation-plan.md":
-    ".github/templates/04-implementation-plan.template.md",
+    ".github/skills/azure-artifacts/templates/04-implementation-plan.template.md",
   "04-governance-constraints.md":
-    ".github/templates/04-governance-constraints.template.md",
+    ".github/skills/azure-artifacts/templates/04-governance-constraints.template.md",
   "06-deployment-summary.md":
-    ".github/templates/06-deployment-summary.template.md",
+    ".github/skills/azure-artifacts/templates/06-deployment-summary.template.md",
   "05-implementation-reference.md":
-    ".github/templates/05-implementation-reference.template.md",
-  "07-design-document.md": ".github/templates/07-design-document.template.md",
+    ".github/skills/azure-artifacts/templates/05-implementation-reference.template.md",
+  "07-design-document.md":
+    ".github/skills/azure-artifacts/templates/07-design-document.template.md",
   "07-operations-runbook.md":
-    ".github/templates/07-operations-runbook.template.md",
+    ".github/skills/azure-artifacts/templates/07-operations-runbook.template.md",
   "07-resource-inventory.md":
-    ".github/templates/07-resource-inventory.template.md",
-  "07-backup-dr-plan.md": ".github/templates/07-backup-dr-plan.template.md",
+    ".github/skills/azure-artifacts/templates/07-resource-inventory.template.md",
+  "07-backup-dr-plan.md":
+    ".github/skills/azure-artifacts/templates/07-backup-dr-plan.template.md",
   "07-compliance-matrix.md":
-    ".github/templates/07-compliance-matrix.template.md",
+    ".github/skills/azure-artifacts/templates/07-compliance-matrix.template.md",
   "07-documentation-index.md":
-    ".github/templates/07-documentation-index.template.md",
+    ".github/skills/azure-artifacts/templates/07-documentation-index.template.md",
 };
 
 const STANDARD_DOC = ".github/instructions/markdown.instructions.md";
@@ -313,9 +309,9 @@ function validateTemplate(artifactName) {
     const missing = required.filter((r) => !coreFound.includes(r));
     error(
       `Template ${templatePath} is missing required H2 headings: ${missing.join(
-        ", "
+        ", ",
       )}`,
-      { filePath: templatePath, line: 1 }
+      { filePath: templatePath, line: 1 },
     );
     return;
   }
@@ -327,7 +323,7 @@ function validateTemplate(artifactName) {
         `Template ${templatePath} has headings out of order. Expected '${
           required[i]
         }' at position ${i + 1}, found '${coreFound[i]}'.`,
-        { filePath: templatePath, line: 1 }
+        { filePath: templatePath, line: 1 },
       );
       break;
     }
@@ -339,9 +335,9 @@ function validateTemplate(artifactName) {
   if (extraH2.length > 0) {
     warn(
       `Template ${templatePath} contains extra H2 headings: ${extraH2.join(
-        ", "
+        ", ",
       )}`,
-      { filePath: templatePath, line: 1 }
+      { filePath: templatePath, line: 1 },
     );
   }
 }
@@ -362,16 +358,19 @@ function validateAgentLinks() {
     const agentText = readText(agentPath);
     const templatePath = TEMPLATES[artifactName];
 
-    // Check that agent links to template
+    // Check that agent links to template directly OR via azure-artifacts skill
     const relativeTemplatePath = path.relative(
       path.dirname(agentPath),
-      templatePath
+      templatePath,
     );
 
-    if (!agentText.includes(relativeTemplatePath)) {
+    const hasDirectRef = agentText.includes(relativeTemplatePath);
+    const hasSkillRef = agentText.includes("azure-artifacts");
+
+    if (!hasDirectRef && !hasSkillRef) {
       error(
-        `Agent ${agentPath} must reference template ${relativeTemplatePath}`,
-        { filePath: agentPath, line: 1 }
+        `Agent ${agentPath} must reference template ${relativeTemplatePath} or azure-artifacts skill`,
+        { filePath: agentPath, line: 1 },
       );
     }
   }
@@ -393,7 +392,7 @@ function validateNoEmbeddedSkeletons() {
       if (foundInBlock.length >= 3) {
         error(
           `Agent ${agentPath} appears to embed a ${artifactName} skeleton (found ${foundInBlock.length} headings in a fenced block).`,
-          { filePath: agentPath, line: 1 }
+          { filePath: agentPath, line: 1 },
         );
         break;
       }
@@ -417,7 +416,7 @@ function validateStandardsReference() {
   if (!text.includes("template") && !text.includes(".template.md")) {
     warn(
       `Standards file ${STANDARD_DOC} should reference template-first approach`,
-      { filePath: STANDARD_DOC, line: 1 }
+      { filePath: STANDARD_DOC, line: 1 },
     );
   }
 }
@@ -427,7 +426,7 @@ function validateArtifactCompliance(relPath) {
 
   // Check if this is a recognized artifact type
   const artifactType = Object.keys(ARTIFACT_HEADINGS).find((key) =>
-    basename.endsWith(key)
+    basename.endsWith(key),
   );
 
   if (!artifactType) {
@@ -458,9 +457,9 @@ function validateArtifactCompliance(relPath) {
     const reportFn = strictness === "standard" ? error : warn;
     reportFn(
       `Artifact ${relPath} is missing required H2 headings: ${missing.join(
-        ", "
+        ", ",
       )}`,
-      { filePath: relPath, line: 1 }
+      { filePath: relPath, line: 1 },
     );
   }
 
@@ -474,7 +473,7 @@ function validateArtifactCompliance(relPath) {
         `Artifact ${relPath} has required headings out of order: '${
           presentRequired[i]
         }' should come before '${presentRequired[i + 1]}'.`,
-        { filePath: relPath, line: 1 }
+        { filePath: relPath, line: 1 },
       );
       break;
     }
@@ -487,7 +486,7 @@ function validateArtifactCompliance(relPath) {
       if (optPos !== -1 && optPos < anchorPos) {
         warn(
           `Artifact ${relPath} has optional heading '${optional}' before anchor '${anchor}' (consider moving it).`,
-          { filePath: relPath, line: 1 }
+          { filePath: relPath, line: 1 },
         );
       }
     }
@@ -499,7 +498,7 @@ function validateArtifactCompliance(relPath) {
   if (extras.length > 0 && strictness === "standard") {
     warn(
       `Artifact ${relPath} contains extra H2 headings: ${extras.join(", ")}`,
-      { filePath: relPath, line: 1 }
+      { filePath: relPath, line: 1 },
     );
   }
 }

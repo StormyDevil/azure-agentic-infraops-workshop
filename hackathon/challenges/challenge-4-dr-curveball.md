@@ -131,7 +131,7 @@ az deployment group create \
 
 ### 4. Updated Architecture Diagram ⭐ MANDATORY
 
-Use the `diagram` agent to update your architecture diagram showing:
+Use the `design` agent (with the `azure-diagrams` skill) to update your architecture diagram showing:
 
 - Primary and secondary region resources
 - Geo-replication connections
@@ -139,7 +139,7 @@ Use the `diagram` agent to update your architecture diagram showing:
 - Data synchronization flows
 
 ```
-Use the `diagram` agent to update the FreshConnect architecture diagram
+Use the `design` agent to update the FreshConnect architecture diagram
 to show HA/DR configuration based on agent-output/freshconnect/04-adr-ha-dr-strategy.md
 ```
 

@@ -6,7 +6,11 @@ Resources for hackathon participants:
 |------|---------|
 | [scenario-brief.md](scenario-brief.md) | The Nordic Fresh Foods business challenge |
 | [pre-work-checklist.md](pre-work-checklist.md) | Setup requirements before the event |
+| [copilot-guide.md](copilot-guide.md) | VS Code, GitHub Copilot, agents, skills, and instructions |
 | [hints-and-tips.md](hints-and-tips.md) | Collapsible hints for each challenge |
+| [quick-reference-card.md](quick-reference-card.md) | Printable one-page reference card |
+| [team-role-cards.md](team-role-cards.md) | Driver, Navigator, Architect, Documenter role cards |
+| [quota-requirements.md](quota-requirements.md) | Azure quota requirements per team |
 
 ## Before the Event
 

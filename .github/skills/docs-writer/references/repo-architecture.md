@@ -5,7 +5,7 @@
 ## Workspace Root Structure
 
 ```text
-azure-agentic-infraops/
+azure-agentic-infraops-workshop/
 ├── .github/
 │   ├── agents/              # 8 agent definitions + 3 subagents
 │   │   └── _subagents/      # Validation subagents (lint, what-if, review)
@@ -14,13 +14,11 @@ azure-agentic-infraops/
 │   ├── instructions/        # 15 file-type instruction files
 ├── agent-output/{project}/  # Agent-generated artifacts (01-07)
 ├── docs/                    # User-facing documentation
-│   ├── presenter/           # Presentation materials
-│   └── testing/             # Test checklists
+│   └── guides/              # Workflow and versioning guides
+├── hackathon/               # 6-hour hands-on hackathon materials
 ├── infra/bicep/             # Bicep module library
 ├── mcp/azure-pricing-mcp/   # Azure Pricing MCP server
-├── scenarios/               # 9 demo scenarios (S01-S09)
-├── scripts/                 # Validation and automation scripts
-└── temp/                    # Scratch space (gitignored for outputs)
+└── scripts/                 # Validation and automation scripts
 ```
 
 ## Agent Inventory (8 Primary + 3 Subagents)
@@ -67,20 +65,6 @@ All shared context previously in `_shared/` is now consolidated into skills:
 | `git-commit` | `git-commit/` | Tool Integration | "commit" |
 | `github-operations` | `github-operations/` | Workflow | "create issue", "create PR", "gh command" |
 | `make-skill-template` | `make-skill-template/` | Meta | "create skill" |
-
-## Scenario Index (9 Scenarios)
-
-| ID | Folder | Focus | Difficulty |
-| --- | --- | --- | --- |
-| S01 | `S01-bicep-baseline/` | Hub-spoke network (Bicep) | 🟢 Beginner |
-| S02 | `S02-agentic-workflow/` | Full 7-step agentic flow | 🟡 Intermediate |
-| S03 | `S03-documentation-generation/` | Workload documentation | 🟢 Beginner |
-| S04 | `S04-service-validation/` | Deployment preflight | 🟢 Beginner |
-| S05 | `S05-troubleshooting/` | Diagnose agent | 🟢 Beginner |
-| S06 | `S06-sbom-generator/` | SBOM generation | 🟡 Intermediate |
-| S07 | `S07-diagrams-as-code/` | Architecture diagrams | 🟡 Intermediate |
-| S08 | `S08-coding-agent/` | GitHub Copilot coding agent | 🔴 Advanced |
-| S09 | `S09-orchestration-test/` | Conductor orchestration | 🟡 Intermediate |
 
 ## Template Inventory (16 Templates)
 
@@ -145,13 +129,12 @@ Implementation → Deploy       → Documentation
 ## Key Files for Documentation Maintenance
 
 These files contain counts, tables, or version references that need
-updating when agents, skills, or scenarios change:
+updating when agents or skills change:
 
 | File | Contains |
 | --- | --- |
-| `docs/README.md` | Agent tables, skill tables, scenario table, structure tree |
+| `docs/README.md` | Agent tables, skill tables, structure tree |
 | `docs.instructions.md` | Agent count/table, skill count/table |
-| `scenarios/README.md` | Scenario index table |
 | `VERSION.md` | Canonical version number |
 | `CHANGELOG.md` | Release history |
 | `README.md` (root) | Overview, project structure, tech stack |
@@ -162,14 +145,42 @@ updating when agents, skills, or scenarios change:
 | --- | --- |
 | `README.md` | Documentation hub with quick links |
 | `quickstart.md` | 10-minute getting started guide |
-| `workflow.md` | Detailed 7-step workflow reference |
 | `copilot-tips.md` | Prompting best practices |
 | `troubleshooting.md` | Common issues and fixes |
 | `dev-containers.md` | Dev container setup |
-| `terraform-roadmap.md` | Future Terraform support plans |
 | `GLOSSARY.md` | Terms and definitions |
-| `presenter/` | Presentation materials (pptx, ROI, infographics) |
-| `testing/` | Test checklists |
+| `guides/development-workflow.md` | Branch, commit, and PR conventions |
+| `guides/automated-versioning.md` | Automated version bump guide |
+
+## hackathon/ Folder Contents
+
+| Path | Purpose |
+| --- | --- |
+| `hackathon/README.md` | Hackathon hub — overview, schedule, scoring |
+| `hackathon/AGENDA.md` | Detailed 6-hour schedule with block timing |
+| `hackathon/feedback-form.md` | Post-event participant feedback survey |
+| `hackathon/workshop-invitation.md` | Event invitation / marketing document |
+| `hackathon/challenges/README.md` | Challenge index with flow diagram |
+| `hackathon/challenges/challenge-1-requirements.md` | Requirements capture (requirements agent) |
+| `hackathon/challenges/challenge-2-architecture.md` | Architecture design (architect agent) |
+| `hackathon/challenges/challenge-3-implementation.md` | Bicep implementation (bicep-plan, bicep-code, deploy) |
+| `hackathon/challenges/challenge-4-dr-curveball.md` | DR curveball (mid-event surprise) |
+| `hackathon/challenges/challenge-5-load-testing.md` | Load testing with k6 |
+| `hackathon/challenges/challenge-6-documentation.md` | Workload documentation (design agent) |
+| `hackathon/challenges/challenge-7-diagnostics.md` | Troubleshooting card (diagnose agent) |
+| `hackathon/challenges/challenge-8-partner-showcase.md` | Partner presentation role-play |
+| `hackathon/participant/README.md` | Participant materials index |
+| `hackathon/participant/copilot-guide.md` | VS Code, Copilot, agents, skills guide |
+| `hackathon/participant/scenario-brief.md` | Nordic Fresh Foods business scenario |
+| `hackathon/participant/pre-work-checklist.md` | Pre-event setup requirements |
+| `hackathon/participant/hints-and-tips.md` | Collapsible hints per challenge |
+| `hackathon/participant/quick-reference-card.md` | Printable one-page reference |
+| `hackathon/participant/team-role-cards.md` | Driver, Navigator, Architect, Documenter |
+| `hackathon/participant/quota-requirements.md` | Azure quota per team |
+| `hackathon/facilitator/README.md` | Facilitator materials index |
+| `hackathon/facilitator/facilitator-guide.md` | Schedule, curveball script, coaching tips |
+| `hackathon/facilitator/scoring-rubric.md` | WAF-aligned scoring (105+25 pts) |
+| `hackathon/facilitator/solution-reference.md` | Expected outputs, patterns, commands |
 
 ## Skill Discovery & Auto-Invocation
 

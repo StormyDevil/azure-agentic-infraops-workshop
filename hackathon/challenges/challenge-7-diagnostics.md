@@ -1,6 +1,6 @@
 # Challenge 7: Troubleshooting & Diagnostics
 
-> **Duration**: 5 minutes | **Agent**: `docs` or Azure tooling | **Output**: Quick-reference troubleshooting card
+> **Duration**: 5 minutes | **Agent**: `diagnose` or Azure tooling | **Output**: Quick-reference troubleshooting card
 
 ## The 2 AM Scenario
 
