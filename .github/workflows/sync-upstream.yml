@@ -15,18 +15,18 @@ on:
   workflow_dispatch:
     inputs:
       source_ref:
-        description: 'Source ref to sync from (tag, branch, or SHA). Defaults to main.'
+        description: "Source ref to sync from (tag, branch, or SHA). Defaults to main."
         required: false
-        default: 'main'
+        default: "main"
         type: string
       dry_run:
-        description: 'Preview changes without committing (true/false)'
+        description: "Preview changes without committing (true/false)"
         required: false
-        default: 'false'
+        default: "false"
         type: choice
         options:
-          - 'false'
-          - 'true'
+          - "false"
+          - "true"
 
 permissions:
   contents: write
@@ -187,16 +187,24 @@ jobs:
           echo "📋 Issue created: $ISSUE_URL"
 
           # Assign to Copilot coding agent with sync-reviewer custom agent
+          # NOTE: Must use --input with JSON body for nested objects.
+          # gh api -f flags do NOT properly construct nested JSON.
           gh api \
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/${{ github.repository }}/issues/${ISSUE_NUMBER}/assignees \
-            -f "assignees[]=copilot-swe-agent[bot]" \
-            -f "agent_assignment[target_repo]=${{ github.repository }}" \
-            -f "agent_assignment[base_branch]=$SYNC_BRANCH" \
-            -f "agent_assignment[custom_instructions]=Read the issue body for full context. Use the sync-reviewer agent rules in .github/agents/sync-reviewer.agent.md. The SYNC-MANIFEST.md on the staging branch lists all changed files." \
-            -f "agent_assignment[custom_agent]=sync-reviewer" || {
+            --input - <<EOF || {
+          {
+            "assignees": ["copilot-swe-agent[bot]"],
+            "agent_assignment": {
+              "target_repo": "${{ github.repository }}",
+              "base_branch": "$SYNC_BRANCH",
+              "custom_instructions": "Read the issue body for full context. Use the sync-reviewer agent rules in .github/agents/sync-reviewer.agent.md. The SYNC-MANIFEST.md on the staging branch lists all changed files.",
+              "custom_agent": "sync-reviewer"
+            }
+          }
+          EOF
               echo "⚠️ Could not assign to Copilot coding agent."
               echo "The issue was created at $ISSUE_URL."
               echo "You can manually assign Copilot from the issue page."
