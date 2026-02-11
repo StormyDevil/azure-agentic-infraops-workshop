@@ -1,14 +1,10 @@
-# VS Code & GitHub Copilot Guide
+# Copilot Guide
 
-> **Read time**: ~10 minutes | **When**: During the intro block (10:00-10:30)
->
-> This guide explains the tools you'll use throughout the hackathon — VS Code, GitHub Copilot,
-> custom agents, skills, instructions, and how they all connect.
+> [Current Version](../VERSION.md) | VS Code, GitHub Copilot, agents, skills, and prompting best practices
 
 ## VS Code Essentials
 
-Visual Studio Code is your development environment for the entire hackathon. Here are the key
-features you'll use:
+Visual Studio Code is your development environment. Here are the key features:
 
 | Feature | Shortcut | What It Does |
 |---------|----------|--------------|
@@ -26,15 +22,15 @@ pre-installed (Azure CLI, Bicep, k6, Node.js, Python). You don't need to install
 on your local machine beyond Docker and VS Code.
 
 When you open the repository, VS Code prompts you to "Reopen in Container." Accept this to
-get the fully configured environment.
+get the fully configured environment. See [Dev Containers](dev-containers.md) for details.
 
 ---
 
 ## GitHub Copilot Overview
 
-GitHub Copilot is an AI coding assistant built into VS Code. For this hackathon, you need a
+GitHub Copilot is an AI coding assistant built into VS Code. This project requires a
 **Copilot Pro+** or **Copilot Enterprise** license (verified during
-[pre-work setup](pre-work-checklist.md)).
+[pre-event setup](know-before-you-go.md#required-accounts)).
 
 Copilot works in three main modes, each suited to different tasks:
 
@@ -64,11 +60,11 @@ proposes edits you can accept or reject.
 
 ### Agent Mode
 
-**What it does**: Autonomous multi-step work. The agent can read files, run terminal commands,
-create files, search the codebase, and iterate until the task is complete.
+**What it does**: Autonomous multi-step work. The agent can read files, run terminal
+commands, create files, search the codebase, and iterate until the task is complete.
 
-**When to use**: Complex tasks that span multiple files and require tool use. **This is the
-primary mode for this hackathon.**
+**When to use**: Complex tasks that span multiple files and require tool use. **This is
+the primary mode for this hackathon.**
 
 **Example prompts**:
 
@@ -76,16 +72,16 @@ primary mode for this hackathon.**
 - "Generate Bicep templates for the FreshConnect architecture"
 - "Deploy the infrastructure to Azure and summarize the results"
 
-> **Hackathon tip**: Use **Agent mode** for most challenges. It can invoke custom agents,
-> read templates, run Azure CLI commands, and generate documentation — all in a single
-> conversation.
+> [!TIP]
+> Use **Agent mode** for most challenges. It can invoke custom agents, read templates,
+> run Azure CLI commands, and generate documentation — all in a single conversation.
 
 ---
 
 ## Custom Agents
 
 This workshop includes **8 specialized agents** that understand Azure infrastructure
-patterns, best practices, and the hackathon workflow. Each agent has a focused role.
+patterns, best practices, and the 7-step workflow. Each agent has a focused role.
 
 ### How Agents Work
 
@@ -102,16 +98,16 @@ what output format to use, and what quality checks to perform.
 
 ### Available Agents
 
-| Agent | Purpose | Challenges |
-|-------|---------|------------|
-| **requirements** | Capture functional and non-functional requirements | 1 |
-| **architect** | Design WAF-aligned architecture with cost estimates | 2 |
-| **design** | Generate architecture diagrams and documentation | 2, 5, 6 |
-| **bicep-plan** | Create implementation plans | 3, 4 |
-| **bicep-code** | Generate Bicep templates | 3, 4 |
-| **deploy** | Deploy infrastructure to Azure | 3, 4 |
-| **diagnose** | Troubleshooting and diagnostic runbooks | 7 |
-| **infraops-conductor** | Master orchestrator for the full 7-step workflow | Any |
+| Agent | Persona | Step | Purpose |
+|-------|---------|------|---------|
+| **InfraOps Conductor** | 🎼 Maestro | All | Master orchestrator for the full 7-step workflow |
+| **requirements** | 📜 Scribe | 1 | Capture functional and non-functional requirements |
+| **architect** | 🏛️ Oracle | 2 | Design WAF-aligned architecture with cost estimates |
+| **design** | 🎨 Artisan | 3 | Generate architecture diagrams and documentation |
+| **bicep-plan** | 📐 Strategist | 4 | Create implementation plans |
+| **bicep-code** | ⚒️ Forge | 5 | Generate Bicep templates |
+| **deploy** | 🚀 Envoy | 6 | Deploy infrastructure to Azure |
+| **diagnose** | 🔍 Sentinel | — | Troubleshooting and diagnostic runbooks |
 
 ### Subagents
 
@@ -125,6 +121,51 @@ inside the parent agent's workflow:
 | **bicep-whatif-subagent** | deploy | Runs `az deployment group what-if` analysis |
 
 You don't select subagents directly — they're invoked automatically by their parent agent.
+
+---
+
+## Prompting Best Practices
+
+### Be Specific
+
+Bad: "Create some infrastructure"
+
+Good: "Create a hub-spoke network in swedencentral with Application Gateway,
+two spoke VNets, and a shared Key Vault. Budget: €300/month."
+
+### Reference Artifacts
+
+Agents work best when pointed at existing context:
+
+```text
+Read 01-requirements.md and create a WAF architecture assessment
+```
+
+### One Step at a Time
+
+Use the **InfraOps Conductor** for multi-step workflows.
+For targeted work, invoke agents directly:
+
+```text
+@requirements — Capture requirements for a static web app
+@architect — Assess the requirements in 01-requirements.md
+@bicep-plan — Create an implementation plan from 02-architecture-assessment.md
+```
+
+### Agent-Specific Tips
+
+| Agent | Best Approach |
+|-------|---------------|
+| **Requirements** (📜 Scribe) | Describe the **business problem** not the technical solution. Mention compliance needs and budget constraints early. |
+| **Architect** (🏛️ Oracle) | Always let it read `01-requirements.md` first. Ask for specific WAF pillar focus if needed. Request cost estimates explicitly. |
+| **Design** (🎨 Artisan) | Request diagrams after architecture assessment exists. For ADRs, describe the decision context clearly. |
+| **Bicep Code** (⚒️ Forge) | It prefers Azure Verified Modules (AVM). Let it read `04-implementation-plan.md` first. Ask it to validate with `bicep build` and `bicep lint`. |
+| **Deploy** (🚀 Envoy) | Ensure `az login` is active. It runs `what-if` before deployment — review the preview. |
+
+### Use `#file` References
+
+Drag files into the chat panel or use `#file:path` to give agents explicit context.
+This is especially useful when referencing artifacts from previous steps.
 
 ---
 
@@ -157,11 +198,20 @@ When an agent starts working, it reads specific skill files to understand:
 
 ### Skill Triggers
 
-Agents read skills based on keyword matching. When you mention concepts like
-"architecture diagram," "cost estimate," or "operations runbook," the relevant skill
-is automatically loaded. You can also explicitly ask an agent to read a skill:
+Skills auto-load based on keyword matching in your prompt:
 
-```
+| Keyword | Skill Triggered |
+|---------|-----------------|
+| "create diagram" | `azure-diagrams` |
+| "create ADR", "document decision" | `azure-adr` |
+| "commit", "git commit" | `git-commit` |
+| "create issue", "create PR" | `github-operations` |
+| "update docs", "check freshness" | `docs-writer` |
+| "azure defaults", "naming convention" | `azure-defaults` |
+
+You can also explicitly invoke a skill:
+
+```text
 Read .github/skills/azure-diagrams/SKILL.md and generate an architecture diagram
 for FreshConnect.
 ```
@@ -175,8 +225,8 @@ without you having to remember every convention.
 
 ### How Instructions Work
 
-Each instruction file has an `applyTo` pattern in its frontmatter. When you work with files
-matching that pattern, the instruction loads automatically:
+Each instruction file has an `applyTo` pattern in its frontmatter. When you work with
+files matching that pattern, the instruction loads automatically:
 
 ```yaml
 ---
@@ -184,8 +234,6 @@ applyTo: "**/*.bicep"
 description: "Infrastructure as Code best practices for Azure Bicep templates"
 ---
 ```
-
-This means any time Copilot generates or edits a `.bicep` file, those rules apply.
 
 ### Key Instructions in This Workshop
 
@@ -215,9 +263,9 @@ MCP servers extend Copilot's capabilities with external data sources and APIs.
 
 ### Azure Pricing MCP
 
-This workshop includes an **Azure Pricing MCP server** that gives agents access to real-time
-Azure pricing data. When the `architect` agent generates a cost estimate, it queries this
-server for accurate per-service pricing.
+This workshop includes an **Azure Pricing MCP server** that gives agents access to
+real-time Azure pricing data. When the **architect** agent generates a cost estimate,
+it queries this server for accurate per-service pricing.
 
 **What it enables**:
 
@@ -235,7 +283,7 @@ when generating cost estimates.
 
 Here's how all the pieces connect:
 
-```
+```text
 You (prompt)
   └─→ Agent (e.g., architect)
         ├─→ Reads Skills (azure-defaults, azure-artifacts)
@@ -248,7 +296,7 @@ You (prompt)
 
 ### Workflow Through the Hackathon
 
-```
+```text
 Challenge 1 → requirements agent → 01-requirements.md
 Challenge 2 → architect agent    → 02-architecture-assessment.md + cost estimate
               design agent       → architecture diagram (Python)
@@ -264,19 +312,30 @@ Challenge 8 → (team presentation — no agent needed)
 
 ---
 
-## Tips for Working with Agents
+## Common Patterns
 
-1. **Be specific about context** — Tell the agent what project, what audience, what
-   constraints apply
-2. **Reference previous outputs** — Say "based on agent-output/freshconnect/02-architecture-assessment.md"
-3. **Iterate, don't restart** — If output isn't right, refine your prompt in the same
-   conversation
-4. **Check agent output files** — Agents save to `agent-output/{project}/` — review what
-   was generated
-5. **Use `#file` references** — Drag files into chat or use `#file:path` to give the agent
-   explicit context
+### Full Workflow
 
-For more prompting techniques, see [Copilot Tips](../../docs/copilot-tips.md).
+```text
+@InfraOps Conductor
+Build an e-commerce platform on Azure with App Service, Azure SQL,
+Redis Cache, and Application Gateway. Budget: €500/month. Region: swedencentral.
+```
+
+### Diagnose an Existing Resource
+
+```text
+@diagnose
+Check the health of my App Service named "myapp-prod" in resource group "rg-prod"
+```
+
+### Generate Documentation Only
+
+```text
+@design
+Generate an architecture diagram for the infrastructure defined in
+02-architecture-assessment.md
+```
 
 ---
 
@@ -296,7 +355,7 @@ For more prompting techniques, see [Copilot Tips](../../docs/copilot-tips.md).
 
 ## See Also
 
-- [Pre-Work Checklist](pre-work-checklist.md) — Ensure your environment is ready
+- [Know Before You Go](know-before-you-go.md) — Pre-event setup and what to expect
 - [Quick Reference Card](quick-reference-card.md) — Printable one-page reference
 - [Hints & Tips](hints-and-tips.md) — Challenge-specific guidance
-- [Copilot Tips](../../docs/copilot-tips.md) — Advanced prompting techniques
+- [Troubleshooting](troubleshooting.md) — Common issues and agent fixes

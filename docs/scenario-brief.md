@@ -126,5 +126,5 @@ Not all teams will complete all challenges — the goal is learning the agentic 
 
 ## Getting Started
 
-Begin with [Challenge 1: Requirements](../challenges/challenge-1-requirements.md) to capture these
+Begin with [Challenge 1: Requirements](../hackathon/challenges/challenge-1-requirements.md) to capture these
 requirements using the **requirements** agent.

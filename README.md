@@ -134,7 +134,7 @@ Transform business requirements into deployed Azure infrastructure using AI agen
 ```text
 hackathon/
 ├── challenges/        # 8 challenge files
-├── participant/       # Scenario, hints, cards
+├── participant/       # Redirects to docs/
 ├── facilitator/       # Guide, scoring, solutions
 └── feedback-form.md   # Post-event survey
 

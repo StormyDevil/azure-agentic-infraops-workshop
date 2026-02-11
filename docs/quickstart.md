@@ -5,7 +5,7 @@
 ## Prerequisites
 
 - [Visual Studio Code](https://code.visualstudio.com/) 1.100+
-- [GitHub Copilot](https://github.com/features/copilot) subscription (Business or Enterprise)
+- [GitHub Copilot](https://github.com/features/copilot) subscription (Pro+ or Enterprise)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for Dev Containers)
 - An Azure subscription with Contributor access
 
@@ -74,6 +74,7 @@ to understand what each step produces.
 
 ## Next Steps
 
-- Read the [Copilot Tips](copilot-tips.md) for prompting best practices
+- Read the [Copilot Guide](copilot-guide.md) for prompting best practices
+- See the [Know Before You Go](know-before-you-go.md) for hackathon prep
 - See the [Development Workflow](guides/development-workflow.md) for contributing
 - Check [Troubleshooting](troubleshooting.md) if you hit issues

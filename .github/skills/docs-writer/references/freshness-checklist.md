@@ -23,7 +23,6 @@
 | --- | --- |
 | `docs/*.md` | `> Version X.Y.Z` in header line |
 | `.github/instructions/docs.instructions.md` | Version in header template example |
-| `scenarios/README.md` | Any version reference |
 
 **Auto-fix**: Replace old version string with current from `VERSION.md`.
 
@@ -79,6 +78,14 @@ appropriate category table. Remove entries for deleted skills.
 - `github-pull-requests` (skill)
 - `orchestration-helper`
 - `.github/templates/` (old path; now `.github/skills/azure-artifacts/templates/`)
+- `docs/copilot-tips.md` (replaced by `docs/copilot-guide.md`)
+- `hackathon/participant/copilot-guide.md` (moved to `docs/copilot-guide.md`)
+- `hackathon/participant/pre-work-checklist.md` (absorbed into `docs/know-before-you-go.md`)
+- `hackathon/participant/scenario-brief.md` (moved to `docs/scenario-brief.md`)
+- `hackathon/participant/hints-and-tips.md` (moved to `docs/hints-and-tips.md`)
+- `hackathon/participant/quick-reference-card.md` (moved to `docs/quick-reference-card.md`)
+- `hackathon/participant/team-role-cards.md` (moved to `docs/team-role-cards.md`)
+- `hackathon/participant/quota-requirements.md` (moved to `docs/quota-requirements.md`)
 
 **Banned agent names in hackathon docs** (`hackathon/**/*.md`):
 

@@ -64,7 +64,7 @@ ability to adapt to changing requirements — just like real projects!
 - Azure subscription with Owner access (required for Azure Policy)
 - Curiosity and a willingness to experiment! 🚀
 
-📋 **Full setup checklist**: [Pre-Work Requirements](https://github.com/jonathan-vella/azure-agentic-infraops-workshop/blob/main/hackathon/participant/pre-work-checklist.md)
+📋 **Full setup checklist**: [Know Before You Go](https://github.com/jonathan-vella/azure-agentic-infraops-workshop/blob/main/docs/know-before-you-go.md)
 
 ---
 

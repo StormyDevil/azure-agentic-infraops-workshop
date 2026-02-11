@@ -13,7 +13,7 @@ azure-agentic-infraops-workshop/
 │   │   └── azure-artifacts/templates/ # 16 artifact templates
 │   ├── instructions/        # 15 file-type instruction files
 ├── agent-output/{project}/  # Agent-generated artifacts (01-07)
-├── docs/                    # User-facing documentation
+├── docs/                    # User-facing documentation (14 files)
 │   └── guides/              # Workflow and versioning guides
 ├── hackathon/               # 6-hour hands-on hackathon materials
 ├── infra/bicep/             # Bicep module library
@@ -145,7 +145,13 @@ updating when agents or skills change:
 | --- | --- |
 | `README.md` | Documentation hub with quick links |
 | `quickstart.md` | 10-minute getting started guide |
-| `copilot-tips.md` | Prompting best practices |
+| `know-before-you-go.md` | Pre-event setup and day-of orientation |
+| `copilot-guide.md` | Copilot modes, agents, skills, and prompting |
+| `scenario-brief.md` | Nordic Fresh Foods business scenario |
+| `hints-and-tips.md` | Collapsible hints per challenge |
+| `quick-reference-card.md` | Printable one-page reference |
+| `team-role-cards.md` | Driver, Navigator, Architect, Documenter |
+| `quota-requirements.md` | Azure quota per team |
 | `troubleshooting.md` | Common issues and fixes |
 | `dev-containers.md` | Dev container setup |
 | `GLOSSARY.md` | Terms and definitions |
@@ -169,14 +175,7 @@ updating when agents or skills change:
 | `hackathon/challenges/challenge-6-documentation.md` | Workload documentation (design agent) |
 | `hackathon/challenges/challenge-7-diagnostics.md` | Troubleshooting card (diagnose agent) |
 | `hackathon/challenges/challenge-8-partner-showcase.md` | Partner presentation role-play |
-| `hackathon/participant/README.md` | Participant materials index |
-| `hackathon/participant/copilot-guide.md` | VS Code, Copilot, agents, skills guide |
-| `hackathon/participant/scenario-brief.md` | Nordic Fresh Foods business scenario |
-| `hackathon/participant/pre-work-checklist.md` | Pre-event setup requirements |
-| `hackathon/participant/hints-and-tips.md` | Collapsible hints per challenge |
-| `hackathon/participant/quick-reference-card.md` | Printable one-page reference |
-| `hackathon/participant/team-role-cards.md` | Driver, Navigator, Architect, Documenter |
-| `hackathon/participant/quota-requirements.md` | Azure quota per team |
+| `hackathon/participant/README.md` | Redirect — points all participant docs to `docs/` |
 | `hackathon/facilitator/README.md` | Facilitator materials index |
 | `hackathon/facilitator/facilitator-guide.md` | Schedule, curveball script, coaching tips |
 | `hackathon/facilitator/scoring-rubric.md` | WAF-aligned scoring (105+25 pts) |

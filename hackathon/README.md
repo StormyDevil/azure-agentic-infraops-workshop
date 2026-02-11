@@ -39,9 +39,13 @@ By the end of this hackathon, you will:
 | [Challenge 7: Diagnostics](challenges/challenge-7-diagnostics.md)           | Run diagnostic analysis                         |
 | [Challenge 8: Partner Showcase](challenges/challenge-8-partner-showcase.md) | Team presentations                              |
 | **Participant Materials**                                                   |                                                 |
-| [Scenario Brief](participant/scenario-brief.md)                             | Nordic Fresh Foods business challenge           |
-| [Pre-Work Checklist](participant/pre-work-checklist.md)                     | Setup before the event                          |
-| [Hints & Tips](participant/hints-and-tips.md)                               | Architecture and cost hints                     |
+| [Know Before You Go](../docs/know-before-you-go.md)                        | Setup + what to expect                          |
+| [Scenario Brief](../docs/scenario-brief.md)                                | Nordic Fresh Foods business challenge           |
+| [Copilot Guide](../docs/copilot-guide.md)                                  | VS Code, agents, skills, prompting tips         |
+| [Hints & Tips](../docs/hints-and-tips.md)                                  | Architecture and cost hints                     |
+| [Quick Reference Card](../docs/quick-reference-card.md)                    | Printable one-page cheat sheet                  |
+| [Team Role Cards](../docs/team-role-cards.md)                              | Driver, Navigator, Architect, Documenter        |
+| [Quota Requirements](../docs/quota-requirements.md)                        | Azure resource quota per team                   |
 | **Facilitator Materials**                                                   |                                                 |
 | [Facilitator Guide](facilitator/facilitator-guide.md)                       | Detailed schedule and coaching tips             |
 | [Scoring Rubric](facilitator/scoring-rubric.md)                             | WAF-aligned evaluation criteria                 |
@@ -86,7 +90,7 @@ By the end of this hackathon, you will:
 
 ## The Challenge: Nordic Fresh Foods
 
-See [Scenario Brief](participant/scenario-brief.md) for the full business challenge.
+See [Scenario Brief](../docs/scenario-brief.md) for the full business challenge.
 
 **TL;DR**: A Stockholm-based farm-to-table delivery company needs cloud infrastructure:
 
@@ -131,7 +135,7 @@ See [Scoring Rubric](facilitator/scoring-rubric.md) for full criteria.
 
 ## Prerequisites
 
-Complete the [Pre-Work Checklist](participant/pre-work-checklist.md) **before** the event.
+Complete the [Know Before You Go](../docs/know-before-you-go.md) checklist **before** the event.
 
 ## Quick Start (Day of Event)
 

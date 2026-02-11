@@ -1,5 +1,7 @@
 # Automated Versioning Guide
 
+> [Current Version](../../VERSION.md) | How version bumps are managed automatically
+
 This repository uses automated versioning based on [Conventional Commits](https://www.conventionalcommits.org/).
 
 ## How It Works

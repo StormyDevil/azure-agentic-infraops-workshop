@@ -9,7 +9,13 @@
 | [Quickstart](quickstart.md) | Get up and running in 10 minutes |
 | [Development Workflow](guides/development-workflow.md) | Branch, commit, and PR conventions |
 | [Automated Versioning](guides/automated-versioning.md) | How version bumps are managed |
-| [Copilot Tips](copilot-tips.md) | Prompting best practices for agents |
+| [Know Before You Go](know-before-you-go.md) | Pre-event setup and what to expect |
+| [Copilot Guide](copilot-guide.md) | VS Code, agents, skills, and prompting tips |
+| [Scenario Brief](scenario-brief.md) | Nordic Fresh Foods business challenge |
+| [Hints & Tips](hints-and-tips.md) | Challenge-specific guidance |
+| [Quick Reference Card](quick-reference-card.md) | Printable one-page cheat sheet |
+| [Team Role Cards](team-role-cards.md) | Driver, Navigator, Architect, Documenter |
+| [Quota Requirements](quota-requirements.md) | Azure resource quota per team |
 | [Troubleshooting](troubleshooting.md) | Common issues and fixes |
 | [Dev Containers](dev-containers.md) | Dev container setup and customization |
 | [Glossary](GLOSSARY.md) | Key terms and definitions |
@@ -52,7 +58,7 @@ Validation subagents: `bicep-lint-subagent`, `bicep-whatif-subagent`, `bicep-rev
 │   └── instructions/       # 15 file-type instruction files
 ├── agent-output/{project}/ # Agent-generated artifacts (01-07)
 ├── docs/                   # User-facing documentation (this folder)
-├── hackathon/              # 5-hour hands-on hackathon materials
+├── hackathon/              # 6-hour hands-on hackathon materials
 ├── infra/bicep/            # Generated Bicep templates
 ├── mcp/azure-pricing-mcp/  # Azure Pricing MCP server
 └── scripts/                # Validation and automation scripts

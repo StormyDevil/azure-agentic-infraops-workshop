@@ -1,5 +1,7 @@
 # Development Workflow Guide
 
+> [Current Version](../../VERSION.md) | Branch, commit, and PR conventions for contributing
+
 Complete guide to contributing to this repository, including repository rulesets, PR workflow,
 automated checks, and version management.
 

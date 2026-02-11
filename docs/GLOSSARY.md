@@ -23,11 +23,19 @@ declaratively. Files use the `.bicep` extension.
 
 ## C
 
+**Challenge** — A time-boxed task in the hackathon aligned to one or more
+workflow steps. There are 8 challenges progressing from requirements through
+deployment, documentation, diagnostics, and a final showcase.
+
 **Conductor** — The InfraOps Conductor agent (🎼 Maestro). Master orchestrator
 that coordinates all other agents through the 7-step workflow.
 
 **Conventional Commits** — A commit message format (`type: description`) used
 for automated versioning. Enforced by commitlint and lefthook.
+
+**Curveball** — A surprise requirement change announced mid-hackathon
+(Challenge 4). Simulates real-world scope changes by introducing multi-region
+disaster recovery requirements.
 
 ## D
 
@@ -39,6 +47,15 @@ for automated versioning. Enforced by commitlint and lefthook.
 **Governance Constraints** — Azure Policy assignments that restrict resource
 configurations. Discovered during Step 4 (Planning) and saved to
 `04-governance-constraints.md`.
+
+## F
+
+**Facilitator** — The event organiser who runs the hackathon: manages the schedule,
+announces the curveball, coaches teams, and runs the scoring scripts.
+
+**FreshConnect** — The project codename for the Nordic Fresh Foods delivery
+platform used as the hackathon scenario. All agent output goes to
+`agent-output/freshconnect/`.
 
 ## H
 
@@ -55,7 +72,17 @@ provides file-type-specific coding standards to Copilot.
 **MCP** — Model Context Protocol. A standard for connecting AI models to external
 tools and data sources. This repo uses Azure MCP and a custom Pricing MCP server.
 
+## P
+
+**Persona** — A named character assigned to each agent for easy recognition.
+For example, the Requirements agent is 📜 Scribe and the Architect agent is
+🏛️ Oracle. See the agent table in [docs/README.md](README.md).
+
 ## S
+
+**Scoring** — WAF-aligned evaluation of hackathon submissions. Base score is
+105 points across five pillars plus up to 25 bonus points for advanced features
+like zone redundancy and private endpoints.
 
 **Skill** — A reusable knowledge module defined in `.github/skills/*/SKILL.md`.
 Skills provide domain-specific instructions that agents invoke based on
