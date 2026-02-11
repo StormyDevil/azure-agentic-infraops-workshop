@@ -540,7 +540,7 @@ Why check database DTU before App Service CPU? What's the reasoning?
 </details>
 
 export default function () {
-const res = http.get("https://YOUR-APP.azurewebsites.net/");
+const res = http.get("https://example.com/"); // replace with your app URL
 check(res, { "status is 200": (r) => r.status === 200 });
 sleep(1);
 }
