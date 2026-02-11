@@ -200,6 +200,14 @@ jobs:
           - Default region: `swedencentral` (except Static Web Apps → `westeurope`)
           - Required tags: `Environment`, `ManagedBy`, `Project`, `Owner`
           - AVM-first for Bicep; TLS 1.2, HTTPS-only, managed identity
+
+          ## Important Constraints
+
+          - **Do NOT create helper files** like `PR-READY.md`, `create-pr.sh`,
+            planning docs, or any temporary scripts. Commit only the actual fixes.
+          - **Do NOT modify `.gitignore`** — workshop-specific entries must be preserved.
+          - **Do NOT remove `SYNC-MANIFEST.md` from `.gitignore`** — it is excluded intentionally.
+          - **Create the PR directly** using `gh pr create` — do not create intermediate files.
           ISSUE_EOF
           )
 

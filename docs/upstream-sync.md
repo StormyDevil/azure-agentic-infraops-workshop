@@ -52,9 +52,9 @@ defined in [.sync-config.json](../.sync-config.json) at the workspace root.
 
 ```mermaid
 %%{init: {'theme':'neutral'}}%%
-pie title File Classification (~65 patterns)
-    "autoSync (copy blindly)" : 42
-    "reviewSync (copy + flag)" : 3
+pie title File Classification (~59 patterns)
+    "autoSync (copy blindly)" : 35
+    "reviewSync (copy + flag)" : 4
     "neverSync (skip entirely)" : 20
 ```
 
@@ -66,10 +66,10 @@ These files serve the same purpose in both repos and should always track upstrea
 | --- | --- |
 | Agents | `.github/agents/**` (11 files) |
 | Instructions | `.github/instructions/**` (15 files) |
-| Skills | All except `docs-writer` (7 skill dirs) |
+| Skills | `.github/skills/**` (all except `docs-writer` via neverSync) |
 | DevContainer | `devcontainer.json`, `post-create.sh`, `update-tools.sh` |
 | VS Code | `.vscode/**` |
-| Config | `lefthook.yml`, `commitlint.config.js`, `.gitignore`, `.gitattributes` |
+| Config | `lefthook.yml`, `commitlint.config.js`, `.gitattributes` |
 | Scripts | `scripts/*.mjs`, `scripts/*.ps1`, `scripts/workflow-generator/*.mjs` etc. |
 | MCP | `mcp/azure-pricing-mcp/src/**`, `tests/**`, `docs/**`, `scripts/**`, config files |
 | Samples | `agent-output/_sample/**` |
@@ -83,6 +83,7 @@ These files get copied but the sync-reviewer agent pays extra attention:
 | --- | --- |
 | `.github/copilot-instructions.md` | Source references `scenarios/` which doesn't exist in workshop |
 | `.devcontainer/README.md` | Source references `scenarios/` |
+| `.gitignore` | Workshop has extra entries (`SYNC-MANIFEST.md`, agent artifacts) |
 | `pyproject.toml` | Version number differs; dependencies may be useful |
 
 ### neverSync — Workshop-Only, Never Overwrite

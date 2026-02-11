@@ -14,13 +14,7 @@
   "autoSync": [
     ".github/agents/**",
     ".github/instructions/**",
-    ".github/skills/azure-adr/**",
-    ".github/skills/azure-artifacts/**",
-    ".github/skills/azure-defaults/**",
-    ".github/skills/azure-diagrams/**",
-    ".github/skills/git-commit/**",
-    ".github/skills/github-operations/**",
-    ".github/skills/make-skill-template/**",
+    ".github/skills/**",
     ".github/ISSUE_TEMPLATE/**",
     ".github/PULL_REQUEST_TEMPLATE.md",
     ".github/data/**",
@@ -31,7 +25,6 @@
     "lefthook.yml",
     "commitlint.config.js",
     "requirements.txt",
-    ".gitignore",
     ".gitattributes",
     "CONTRIBUTING.md",
     "LICENSE",
@@ -58,6 +51,7 @@
   "reviewSync": [
     ".github/copilot-instructions.md",
     ".devcontainer/README.md",
+    ".gitignore",
     "pyproject.toml"
   ],
   "neverSync": [
