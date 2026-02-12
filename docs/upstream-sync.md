@@ -81,8 +81,8 @@ These files get copied but the sync-reviewer agent pays extra attention:
 
 | File | Why It Needs Review |
 | --- | --- |
-| `.github/copilot-instructions.md` | Source references `scenarios/` which doesn't exist in workshop |
-| `.devcontainer/README.md` | Source references `scenarios/` |
+| `.github/copilot-instructions.md` | May contain source-specific content needing workshop adaptation |
+| `.devcontainer/README.md` | May contain source-specific content needing workshop adaptation |
 | `.gitignore` | Workshop has extra entries (`SYNC-MANIFEST.md`, agent artifacts) |
 | `pyproject.toml` | Version number differs; dependencies may be useful |
 
@@ -96,7 +96,7 @@ These files get copied but the sync-reviewer agent pays extra attention:
 | Workshop Docs | `docs/**` (Know Before You Go, Copilot Guide, etc.) |
 | Workshop Scripts | `scripts/hackathon/**` |
 | Infrastructure | `infra/**` |
-| Source-Only | `scenarios/**` (doesn't exist in workshop) |
+
 | Workflows | `.github/workflows/**` (workshop manages its own) |
 | MCP Archive | `mcp/azure-pricing-mcp/.archive/**`, `.github/**`, `.pre-commit-config.yaml` |
 | Binaries | `scripts/workflow-generator/output/**` (generated assets) |
@@ -129,7 +129,6 @@ sequenceDiagram
         Note over Agent: custom_agent: sync-reviewer
         Agent->>Agent: Read issue body + agent rules
         Agent->>Agent: npm run lint:md
-        Agent->>Agent: grep for stale scenarios/ refs
         Agent->>Agent: Adapt reviewSync files
         Agent->>PR: Open draft PR → main
         PR-->>User: 📬 Review and merge
@@ -268,7 +267,6 @@ Its rules ensure it:
 
 - Never modifies workshop-specific files
 - Runs the full validation suite (`lint:md`, `lint:agent-frontmatter`, `lint:skills-format`)
-- Checks for stale `scenarios/` references in synced files
 - Adapts `reviewSync` files for workshop context
 - Opens a clean draft PR with a per-file change table
 
@@ -323,7 +321,6 @@ Create an `upstream-sync` label in the repository for issue tracking:
 | "Could not assign to Copilot coding agent" | PAT lacks permissions or coding agent is disabled | Check `SYNC_PAT` permissions and enable coding agent in Settings |
 | Agent fails or creates empty PR | Issue body was truncated or agent hit rate limit | Re-run the workflow; if persistent, manually assign the issue |
 | Lint errors in synced files | Upstream introduced formatting issues | Agent should auto-fix; if not, fix manually on the PR branch |
-| `scenarios/` references in synced files | Upstream content references folders that don't exist in workshop | Agent should remove these; add the pattern to neverSync if recurring |
 | PAT expired | Fine-grained PATs have configurable expiry | Regenerate and update the `SYNC_PAT` secret |
 
 [source-repo]: https://github.com/jonathan-vella/azure-agentic-infraops

@@ -1,20 +1,39 @@
 # Step 6: Deployment Summary - {project-name}
 
-> Generated: {date}  
+![Step](https://img.shields.io/badge/Step-6-blue)
+![Status](https://img.shields.io/badge/Status-Draft-orange)
+![Agent](https://img.shields.io/badge/Agent-Deploy-purple)
+
+<details>
+<summary><strong>📑 Table of Contents</strong></summary>
+
+- [Preflight Validation](#preflight-validation)
+- [Deployment Details](#deployment-details)
+- [Deployed Resources](#deployed-resources)
+- [Outputs (Expected)](#outputs-expected)
+- [To Actually Deploy](#to-actually-deploy)
+- [Post-Deployment Tasks](#post-deployment-tasks)
+- [References](#references)
+
+</details>
+
+> Generated: {date}
 > Status: **{STATUS}** (Succeeded/Failed/Simulated)
 
-> [!NOTE]
-> 📚 See [SKILL.md](../skills/azure-artifacts/SKILL.md) for visual standards.
+| ⬅️ Previous | 📑 Index | Next ➡️ |
+| --- | --- | --- |
+| [05-implementation-reference.md](05-implementation-reference.md) | [README](README.md) | [07-documentation-index.md](07-documentation-index.md) |
 
 ## Preflight Validation
 
-| Property             | Value                                           |
-| -------------------- | ----------------------------------------------- |
-| **Project Type**     | {azd-project \| standalone-bicep}               |
-| **Deployment Scope** | {resourceGroup \| subscription \| mg \| tenant} |
-| **Validation Level** | {Provider \| ProviderNoRbac}                    |
-| **Bicep Build**      | {✅ Pass \| ❌ Fail}                            |
-| **What-If Status**   | {✅ Pass \| ❌ Fail \| ⏭️ Skipped}              |
+| Property             | Value                                           | Status |
+| -------------------- | ----------------------------------------------- | ------ |
+| **Project Type**     | {azd-project \| standalone-bicep}               | ℹ️ |
+| **Deployment Scope** | {resourceGroup \| subscription \| mg \| tenant} | ℹ️ |
+| **Validation Level** | {Provider \| ProviderNoRbac}                    | ℹ️ |
+| **Bicep Build**      | {result}                                        | ✅ / ❌ |
+| **Bicep Lint**       | {result}                                        | ✅ / ⚠️ / ❌ |
+| **What-If Status**   | {result}                                        | ✅ / ❌ / ⏭️ |
 
 ### Change Summary
 
@@ -41,12 +60,15 @@
 
 ## Deployed Resources
 
-| Resource   | Name | Type | Status   |
-| ---------- | ---- | ---- | -------- |
-| Resource 1 |      |      | ✅/❌/⏸️ |
-| Resource 2 |      |      | ✅/❌/⏸️ |
+| Resource   | Name | Type | Status   | Portal |
+| ---------- | ---- | ---- | -------- | ------ |
+| 💻 Resource 1 |      |      | ✅/❌/⏸️ | [View](https://portal.azure.com/#@/resource/{resource-id}) |
+| 💾 Resource 2 |      |      | ✅/❌/⏸️ | [View](https://portal.azure.com/#@/resource/{resource-id}) |
 
 ## Outputs (Expected)
+
+<details>
+<summary><strong>Deployment Outputs JSON</strong></summary>
 
 ```json
 {
@@ -55,7 +77,12 @@
 }
 ```
 
+</details>
+
 ## To Actually Deploy
+
+<details>
+<summary><strong>🟢 PowerShell (deploy.ps1)</strong></summary>
 
 ```powershell
 # Navigate to Bicep directory
@@ -68,11 +95,27 @@ cd infra/bicep/{project-name}
 ./deploy.ps1
 ```
 
+</details>
+
+<details>
+<summary><strong>🚀 Azure CLI</strong></summary>
+
+```bash
+az deployment group create \
+  --resource-group "rg-{project}-{env}" \
+  --template-file main.bicep \
+  --parameters main.bicepparam
+```
+
+</details>
+
 ## Post-Deployment Tasks
 
-- [ ] Task 1
-- [ ] Task 2
-- [ ] Task 3
+| Task | Owner | Status |
+| ---- | ----- | ------ |
+| Task 1 | {responsible party} | ⬜ |
+| Task 2 | {responsible party} | ⬜ |
+| Task 3 | {responsible party} | ⬜ |
 
 ---
 
@@ -87,3 +130,8 @@ cd infra/bicep/{project-name}
 ---
 
 _Deployment summary for {project-name}._
+
+---
+
+| ⬅️ [05-implementation-reference.md](05-implementation-reference.md) | 🏠 [Project Index](README.md) | ➡️ [07-documentation-index.md](07-documentation-index.md) |
+| --- | --- | --- |

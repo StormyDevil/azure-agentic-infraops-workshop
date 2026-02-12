@@ -1,6 +1,6 @@
 # Development Container for Agentic InfraOps
 
-> **Version 7.5.0**
+> **[Version](../VERSION.md)**
 
 This devcontainer provides a **complete, pre-configured development environment** for Agentic InfraOps.
 It includes all required tools, extensions, and configurations to build Azure infrastructure with AI agents.
@@ -83,9 +83,9 @@ az account set --subscription "<your-subscription-id>"
 # 3. Verify tools are installed (auto-displayed after setup)
 az bicep version && pwsh --version
 
-# 4. Explore hackathon challenges and infrastructure
-cd hackathon/ && ls -la
-cd ../infra/bicep/ && tree -L 2
+# 4. Explore docs and infrastructure
+cd docs/prompt-guide/ && ls -la
+cd ../../infra/bicep/ && tree -L 2
 ```
 
 ## 📁 Environment Configuration
@@ -170,7 +170,7 @@ sudo npm update -g markdownlint-cli           # markdownlint
 ## 📚 Related Documentation
 
 - [Workflow Guide](../docs/workflow.md)
-- [Hackathon Challenges](../hackathon/challenges/)
+- [Prompt Guide](../docs/prompt-guide/)
 - [Copilot Instructions](../.github/copilot-instructions.md)
 - [Repository README](../README.md)
 

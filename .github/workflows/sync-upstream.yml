@@ -158,14 +158,13 @@ jobs:
              - `npm run lint:md`
              - `npm run lint:agent-frontmatter`
              - `npm run lint:skills-format`
-          3. **Check for stale references**: `grep -rn "scenarios/" .github/ .devcontainer/ --exclude-dir=.github/skills/docs-writer` — remove any hits in synced files only (workshop has no `scenarios/` folder). **Do NOT modify files listed in the "Never Modify" section below, even if they contain `scenarios/` references.**
-          4. **reviewSync files** — these were copied but need workshop adaptation:
+          3. **reviewSync files** — these were copied but need workshop adaptation:
              | File | What to Check |
              | --- | --- |
-             | `.github/copilot-instructions.md` | Remove `scenarios/` references; keep workshop entries |
-             | `.devcontainer/README.md` | Remove `scenarios/` references; keep workshop notes |
+             | `.github/copilot-instructions.md` | Keep workshop-specific entries |
+             | `.devcontainer/README.md` | Keep workshop-specific notes |
              | `pyproject.toml` | Keep workshop `version` and `name`; accept dependency updates |
-          5. **Open a draft PR** targeting `main` from `BRANCH_PLACEHOLDER`
+          4. **Open a draft PR** targeting `main` from `BRANCH_PLACEHOLDER`
 
           ## Never Modify These Files
 
@@ -189,7 +188,6 @@ jobs:
           - [ ] `npm run lint:md` passes
           - [ ] `npm run lint:agent-frontmatter` passes
           - [ ] `npm run lint:skills-format` passes
-          - [ ] No `scenarios/` references remain in synced files
           - [ ] reviewSync files adapted for workshop context
           - [ ] PR description lists all changes with rationale
           - [ ] No workshop-specific content is overwritten

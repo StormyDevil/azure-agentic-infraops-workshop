@@ -67,18 +67,15 @@ Run these checks in order. Fix any failures in the synced files only:
 2. **Link check**: `npm run lint:links:docs` — fix broken links
 3. **Agent validation**: `npm run lint:agent-frontmatter` — verify agent YAML
 4. **Skills validation**: `npm run lint:skills-format` — verify skill format
-5. **Stale references**: `grep -rn "scenarios/" .github/ .devcontainer/`
-   — the workshop has no `scenarios/` folder; remove or adapt references
-
 ### reviewSync Files (Extra Attention)
 
 These files are flagged as `reviewSync` in `.sync-config.json`. They were
-copied from upstream but may contain source-specific content:
+copied from upstream but may need workshop adaptation:
 
 | File | What to Check |
 | --- | --- |
-| `.github/copilot-instructions.md` | Remove `scenarios/` references; keep workshop-specific entries |
-| `.devcontainer/README.md` | Remove `scenarios/` references; keep workshop-specific notes |
+| `.github/copilot-instructions.md` | Keep workshop-specific entries |
+| `.devcontainer/README.md` | Keep workshop-specific notes |
 | `pyproject.toml` | Keep workshop `version` and `name`; accept dependency updates |
 
 For each reviewSync file:

@@ -1,5 +1,5 @@
 [project]
-name = "azure-agentic-infraops"
+name = "azure-agentic-infraops-workshop"
 version = "8.0.0"
 description = "Agentic InfraOps - Azure infrastructure engineered by agents"
 requires-python = ">=3.10"

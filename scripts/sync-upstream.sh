@@ -245,8 +245,7 @@ fi
     echo "## ⚠️ Files Needing Workshop Review"
     echo ""
     echo "These files are in the \`reviewSync\` tier. They were copied from"
-    echo "upstream but may contain source-specific content (e.g. \`scenarios/\`"
-    echo "references) that doesn't apply to the workshop."
+    echo "upstream but may need workshop-specific adaptation."
     echo ""
     for f in "${REVIEW_FLAGS[@]}"; do
       echo "- \`$f\`"
