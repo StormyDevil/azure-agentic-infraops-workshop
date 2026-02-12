@@ -67,6 +67,7 @@ These skills are your single source of truth. Do NOT use hardcoded values.
 - ✅ Define tasks as YAML-structured specs (resource, module, dependencies, config)
 - ✅ Generate both `04-implementation-plan.md` and `04-governance-constraints.md`
 - ✅ Match H2 headings from azure-artifacts skill exactly
+- ✅ Update `agent-output/{project}/README.md` — mark Step 4 complete, add your artifacts (see azure-artifacts skill)
 - ✅ Ask user for deployment strategy (phased vs single) — MANDATORY GATE
 - ✅ Default recommendation: phased deployment (especially for >5 resources)
 - ✅ Wait for user approval before handoff to bicep-code
@@ -236,10 +237,11 @@ Reply "approve" to proceed to bicep-code, or provide feedback.
 
 ## Output Files
 
-| File                   | Location                                              | Template                   |
-| ---------------------- | ----------------------------------------------------- | -------------------------- |
-| Implementation Plan    | `agent-output/{project}/04-implementation-plan.md`    | From azure-artifacts skill |
-| Governance Constraints | `agent-output/{project}/04-governance-constraints.md` | From azure-artifacts skill |
+| File                        | Location                                               | Template                   |
+| --------------------------- | ------------------------------------------------------ | -------------------------- |
+| Implementation Plan         | `agent-output/{project}/04-implementation-plan.md`     | From azure-artifacts skill |
+| Governance Constraints      | `agent-output/{project}/04-governance-constraints.md`  | From azure-artifacts skill |
+| Governance Constraints JSON | `agent-output/{project}/04-governance-constraints.json` | Machine-readable policy data |
 
 Include attribution header from the template file (do not hardcode).
 
