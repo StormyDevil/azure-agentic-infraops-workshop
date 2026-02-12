@@ -1,13 +1,11 @@
 # Upstream Sync Workflow
 #
 # Detects changes in the source repo (azure-agentic-infraops), copies
-# sync-safe files to a staging branch, creates a GitHub issue with
-# inline agent instructions and a diff manifest, and assigns it to the
-# Copilot coding agent for autonomous validation and PR creation.
+# sync-safe files to a staging branch, creates or reuses a draft PR,
+# and asks Copilot to iterate on that same PR.
 #
 # All agent context (never-modify list, validation steps, reviewSync
-# rules, PR requirements) is embedded directly in the issue body so
-# no custom_agent API field is required.
+# rules, PR requirements) is embedded directly in a PR comment.
 #
 # Trigger: manual only (workflow_dispatch)
 # Auth:    requires SYNC_PAT secret (fine-grained PAT with issues:write,
@@ -125,18 +123,63 @@ jobs:
           git push origin "$SYNC_BRANCH"
 
       # -----------------------------------------------------------------
-      # 6. Create issue and assign to Copilot coding agent
+      # 6. Create or reuse PR, then ask Copilot to update it
       # -----------------------------------------------------------------
-      - name: Create issue and assign to Copilot
+      - name: Create or reuse PR and request Copilot updates
         if: steps.sync.outputs.changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.SYNC_PAT }}
         run: |
-          MANIFEST=$(cat SYNC-MANIFEST.md)
           DATE=$(date -u +%Y-%m-%d)
+          PR_TITLE="chore(sync): upstream sync $DATE"
 
-          ISSUE_BODY=$(cat <<'ISSUE_EOF'
-          ## Upstream Sync: DATE_PLACEHOLDER
+          PR_BODY=$(cat <<PR_BODY_EOF
+          ## Upstream Sync: $DATE
+
+          Synced from \'jonathan-vella/azure-agentic-infraops\' @ \'${{ inputs.source_ref }}\'.
+
+          - Branch: \`$SYNC_BRANCH\`
+          - Files changed: ${{ steps.sync.outputs.change_count }}
+          - Manifest: \`SYNC-MANIFEST.md\`
+
+          This PR is intentionally opened as draft for human review.
+          PR_BODY_EOF
+          )
+
+          EXISTING_PR_NUMBER=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --state open \
+            --base main \
+            --head "$SYNC_BRANCH" \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [[ -n "$EXISTING_PR_NUMBER" ]]; then
+            PR_NUMBER="$EXISTING_PR_NUMBER"
+            gh pr edit "$PR_NUMBER" \
+              --repo "${{ github.repository }}" \
+              --title "$PR_TITLE" \
+              --body "$PR_BODY" \
+              --add-label upstream-sync
+            PR_URL=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json url --jq '.url')
+            PR_ACTION="reused"
+          else
+            PR_URL=$(gh pr create \
+              --repo "${{ github.repository }}" \
+              --draft \
+              --base main \
+              --head "$SYNC_BRANCH" \
+              --title "$PR_TITLE" \
+              --label upstream-sync \
+              --body "$PR_BODY")
+            PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+            PR_ACTION="created"
+          fi
+
+          MANIFEST=$(cat SYNC-MANIFEST.md)
+
+          COPILOT_COMMENT=$(cat <<'COMMENT_EOF'
+          @copilot Please update this existing PR. Do not create a new PR.
 
           MANIFEST_PLACEHOLDER
 
@@ -152,7 +195,7 @@ jobs:
 
           ## Task
 
-          1. **Checkout** the staging branch `BRANCH_PLACEHOLDER` which already contains the synced files
+          1. **Use this PR** for all updates. Do not open another PR.
           2. **Run validation** — fix any failures in synced files only:
              - `npm install`
              - `npm run lint:md`
@@ -164,7 +207,6 @@ jobs:
              | `.github/copilot-instructions.md` | Keep workshop-specific entries |
              | `.devcontainer/README.md` | Keep workshop-specific notes |
              | `pyproject.toml` | Keep workshop `version` and `name`; accept dependency updates |
-          4. **Open a draft PR** targeting `main` from `BRANCH_PLACEHOLDER`
 
           ## Never Modify These Files
 
@@ -178,10 +220,9 @@ jobs:
 
           ## PR Requirements
 
-          - **Title**: `chore(sync): upstream sync DATE_PLACEHOLDER`
-          - **Body**: Table listing every changed file with one-line rationale
-          - **Labels**: `upstream-sync`
-          - **Draft**: Always open as draft for human review
+          - Keep this PR as **Draft**
+          - Ensure label `upstream-sync` is present
+          - Update PR body with a table listing every changed file and one-line rationale
 
           ## Acceptance Criteria
 
@@ -205,57 +246,23 @@ jobs:
             planning docs, or any temporary scripts. Commit only the actual fixes.
           - **Do NOT modify `.gitignore`** — workshop-specific entries must be preserved.
           - **Do NOT remove `SYNC-MANIFEST.md` from `.gitignore`** — it is excluded intentionally.
-          - **Create the PR directly** using this exact command pattern (do not create intermediate files):
-            ```
-            gh pr create --draft --base main --title "chore(sync): upstream sync DATE_PLACEHOLDER" --label upstream-sync --body "<your PR body>"
-            ```
-          - The `--label upstream-sync` flag is **mandatory** — do not omit it.
-          ISSUE_EOF
+          COMMENT_EOF
           )
 
-          # Replace placeholders
-          ISSUE_BODY="${ISSUE_BODY//DATE_PLACEHOLDER/$DATE}"
-          ISSUE_BODY="${ISSUE_BODY//BRANCH_PLACEHOLDER/$SYNC_BRANCH}"
-          ISSUE_BODY="${ISSUE_BODY//MANIFEST_PLACEHOLDER/$MANIFEST}"
+          COPILOT_COMMENT="${COPILOT_COMMENT//MANIFEST_PLACEHOLDER/$MANIFEST}"
 
-          # Create issue
-          ISSUE_URL=$(gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/issues \
-            -f "title=chore(sync): upstream sync $DATE" \
-            -f "body=$ISSUE_BODY" \
-            -f "labels[]=upstream-sync" \
-            --jq '.html_url')
+          gh pr comment "$PR_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --body "$COPILOT_COMMENT"
 
-          ISSUE_NUMBER=$(echo "$ISSUE_URL" | grep -oE '[0-9]+$')
-          echo "📋 Issue created: $ISSUE_URL"
-
-          # Assign Copilot coding agent via the standard assignees endpoint.
-          # All instructions live in the issue body — no custom_agent needed.
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "/repos/${{ github.repository }}/issues/${ISSUE_NUMBER}/assignees" \
-            -f "assignees[]=copilot-swe-agent[bot]" || {
-              echo "⚠️ Could not assign Copilot via assignees endpoint."
-              echo "Attempting fallback via gh issue edit..."
-              gh issue edit "$ISSUE_NUMBER" \
-                --repo "${{ github.repository }}" \
-                --add-assignee "copilot-swe-agent[bot]" || {
-                echo "⚠️ Fallback also failed. Assign Copilot manually."
-                echo "Issue: $ISSUE_URL"
-              }
-            }
+          echo "✅ PR $PR_ACTION: $PR_URL"
 
           echo "## ✅ Upstream Sync Complete" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Staging branch**: \`$SYNC_BRANCH\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Issue**: $ISSUE_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **PR**: $PR_URL" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Files changed**: ${{ steps.sync.outputs.change_count }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Copilot agent**: assigned" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Copilot**: requested on existing PR" >> "$GITHUB_STEP_SUMMARY"
 
       # -----------------------------------------------------------------
       # 7. No changes summary
