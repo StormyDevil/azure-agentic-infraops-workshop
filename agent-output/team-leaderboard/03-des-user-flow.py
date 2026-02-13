@@ -48,7 +48,7 @@ DISPLAY = {"shape": "box", "style": "filled,rounded", "fillcolor": "#E0F7FA", "c
 # ============================================================
 with dot.subgraph(name="cluster_facilitator") as fac:
     fac.attr(
-        label="👤 Facilitator (Authenticated via GitHub)",
+        label="👤 Writer (Authenticated via GitHub)",
         style="filled",
         fillcolor="#F3E5F5",
         color="#9C27B0",
@@ -104,7 +104,7 @@ with dot.subgraph(name="cluster_system") as sys:
 # ============================================================
 with dot.subgraph(name="cluster_data") as data:
     data.attr(
-        label="💾 Azure Table Storage (swedencentral)",
+        label="💾 Azure Table Storage (westeurope)",
         style="filled",
         fillcolor="#FBE9E7",
         color="#FF5722",
@@ -114,6 +114,7 @@ with dot.subgraph(name="cluster_data") as data:
     )
 
     data.node("store_teams", "Teams Table", **DATA)
+    data.node("store_attendees", "Attendees Table", **DATA)
     data.node("store_scores", "Scores Table", **DATA)
     data.node("store_awards", "Awards Table", **DATA)
 
@@ -122,7 +123,7 @@ with dot.subgraph(name="cluster_data") as data:
 # ============================================================
 with dot.subgraph(name="cluster_participant") as part:
     part.attr(
-        label="👥 Participants (Authenticated, Read-Only)",
+        label="👥 Readers (Authenticated, Read-Only)",
         style="filled",
         fillcolor="#E0F7FA",
         color="#00BCD4",
@@ -144,7 +145,7 @@ with dot.subgraph(name="cluster_participant") as part:
 # Facilitator login flow
 dot.edge("start", "login", label="1. Begin")
 dot.edge("login", "auth_check", label="GitHub OAuth")
-dot.edge("auth_check", "create_teams", label="Role: facilitator")
+dot.edge("auth_check", "create_teams", label="Role: writer")
 dot.edge("create_teams", "store_teams", label="POST /api/teams", style="dashed", color="#FF5722")
 dot.edge("create_teams", "choose_method", label="2. Start scoring")
 

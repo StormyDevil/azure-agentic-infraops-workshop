@@ -67,13 +67,13 @@ with Diagram(
 ):
 
     # External actors
-    facilitators = Users("Facilitators\n(GitHub Auth)")
-    participants = Users("Participants\n(Read-Only)")
+    facilitators = Users("Writers\n(GitHub Auth)")
+    participants = Users("Readers\n(GitHub Auth)")
     github = Repos("GitHub Repo\n(CI/CD Source)")
 
     with Cluster("Azure Subscription", graph_attr=cluster_style):
 
-        with Cluster("rg-team-leaderboard-prod\n(swedencentral)", graph_attr=rg_style):
+        with Cluster("rg-team-leaderboard-prod\n(westeurope)", graph_attr=rg_style):
 
             with Cluster("Azure Static Web Apps\nstapp-team-leaderboard-prod\n(Standard, westeurope)", graph_attr={
                 **cluster_style,
@@ -81,16 +81,17 @@ with Diagram(
                 "style": "rounded",
             }):
                 swa_frontend = AppServices("SPA Frontend\n(React/Vue)")
-                swa_auth = ActiveDirectory("GitHub OAuth\n(Built-in Auth)")
-                swa_api = FunctionApps("Managed Functions\n/api/teams\n/api/scores\n/api/awards")
+                swa_auth = ActiveDirectory("GitHub OAuth\n(Mandatory Auth)")
+                swa_api = FunctionApps("Managed Functions\n/api/teams\n/api/attendees\n/api/scores\n/api/awards")
 
-            with Cluster("Data Tier\nswedencentral", graph_attr={
+            with Cluster("Data Tier\nwesteurope", graph_attr={
                 **cluster_style,
                 "bgcolor": "#E8F5E9",
                 "style": "rounded",
             }):
                 storage = StorageAccounts("stteamlbrdprod{suffix}\nStandard LRS")
                 table_teams = TableStorage("Teams Table")
+                table_attendees = TableStorage("Attendees Table")
                 table_scores = TableStorage("Scores Table")
                 table_awards = TableStorage("Awards Table")
 
@@ -99,7 +100,7 @@ with Diagram(
     participants >> Edge(label="HTTPS\n(leaderboard)", color="#107C10", style="dashed") >> swa_frontend
 
     # Auth flow
-    swa_frontend >> Edge(label="Auth check", style="dashed", color="#5C2D91") >> swa_auth
+    swa_frontend >> Edge(label="Auth check\n(mandatory)", style="dashed", color="#5C2D91") >> swa_auth
 
     # Frontend → API
     swa_frontend >> Edge(label="REST API\ncalls", color="#0078D4") >> swa_api
@@ -107,6 +108,7 @@ with Diagram(
     # API → Storage
     swa_api >> Edge(label="Read/Write", color="#D83B01") >> storage
     storage >> table_teams
+    storage >> table_attendees
     storage >> table_scores
     storage >> table_awards
 

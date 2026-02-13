@@ -1,0 +1,368 @@
+{
+  "$schema": "governance-constraints/v1",
+  "metadata": {
+    "project": "team-leaderboard",
+    "generatedBy": "bicep-plan agent",
+    "generatedAt": "2026-02-12T00:00:00Z",
+    "discoveryMethod": "Azure REST API (/providers/Microsoft.Authorization/policyAssignments?api-version=2022-06-01)",
+    "subscription": {
+      "name": "noalz",
+      "id": "00858ffc-dded-4f0f-8bbf-e17fff0d47d9"
+    },
+    "managementGroup": {
+      "id": "2d04cb4c-999b-4e60-a3a7-e8993edc768b"
+    }
+  },
+  "summary": {
+    "totalAssignments": 20,
+    "subscriptionScoped": 12,
+    "managementGroupInherited": 8,
+    "denyEffectPolicies": 11,
+    "deployIfNotExistsPolicies": 1,
+    "modifyPolicies": 3,
+    "auditPolicies": 5,
+    "blockers": 0,
+    "warnings": 2
+  },
+  "requiredTags": {
+    "policyName": "JV-Enforce Resource Group Tags v3",
+    "policyId": "27833bcf-5909-4a37-891c-16a3cb06856d",
+    "effect": "Deny",
+    "scope": "Management Group (inherited)",
+    "enforcementMode": "Default",
+    "appliesTo": "Microsoft.Resources/subscriptions/resourceGroups",
+    "excludedResourceGroups": [
+      "AzureBackupRG*",
+      "ResourceMover*",
+      "databricks-rg*",
+      "NetworkWatcherRG",
+      "microsoft-network",
+      "LogAnalyticsDefaultResources",
+      "rg-amba-*",
+      "DynamicsDeployments*",
+      "MC_myResourceGroup*"
+    ],
+    "tags": [
+      {
+        "key": "environment",
+        "required": true,
+        "defaultValue": "prod",
+        "parameterSource": "environment"
+      },
+      {
+        "key": "owner",
+        "required": true,
+        "defaultValue": "agentic-infraops",
+        "parameterSource": "owner"
+      },
+      {
+        "key": "costcenter",
+        "required": true,
+        "defaultValue": null,
+        "parameterSource": "costCenter"
+      },
+      {
+        "key": "application",
+        "required": true,
+        "defaultValue": "team-leaderboard",
+        "parameterSource": "hardcoded"
+      },
+      {
+        "key": "workload",
+        "required": true,
+        "defaultValue": "team-leaderboard",
+        "parameterSource": "hardcoded"
+      },
+      {
+        "key": "sla",
+        "required": true,
+        "defaultValue": "99.9%",
+        "parameterSource": "hardcoded"
+      },
+      {
+        "key": "backup-policy",
+        "required": true,
+        "defaultValue": "none",
+        "parameterSource": "hardcoded"
+      },
+      {
+        "key": "maint-window",
+        "required": true,
+        "defaultValue": "sat-02-06-utc",
+        "parameterSource": "hardcoded"
+      },
+      {
+        "key": "technical-contact",
+        "required": true,
+        "defaultValue": null,
+        "parameterSource": "technicalContact"
+      }
+    ],
+    "tagInheritancePolicy": {
+      "policyName": "JV - Inherit Multiple Tags from RG",
+      "effect": "Modify",
+      "description": "Automatically inherits all 9 tags from resource group to child resources"
+    }
+  },
+  "denyPolicies": [
+    {
+      "displayName": "Block Azure RM Resource Creation",
+      "scope": "Management Group",
+      "effect": "Deny",
+      "enforcementMode": "Default",
+      "actuallyBlocks": "Classic resources only",
+      "resourceTypesAffected": [
+        "Microsoft.ClassicCompute/*",
+        "Microsoft.ClassicStorage/*",
+        "Microsoft.ClassicNetwork/*",
+        "Microsoft.MarketplaceApps/classicDevServices"
+      ],
+      "conditionLogic": "anyOf with 7 conditions plus ringValue tag requirement on RG",
+      "impactOnProject": "none",
+      "status": "not-applicable"
+    },
+    {
+      "displayName": "MCAPSGov Deny Policies (initiative)",
+      "scope": "Management Group",
+      "effect": "Deny",
+      "enforcementMode": "Default",
+      "individualPolicies": [
+        {
+          "name": "VM SKU restrictions",
+          "blocks": "H/M/N series VMs",
+          "impactOnProject": "none"
+        },
+        {
+          "name": "AKS node count restriction",
+          "blocks": "Excessive AKS node counts",
+          "impactOnProject": "none"
+        },
+        {
+          "name": "VMSS node count restriction",
+          "blocks": "Excessive VMSS node counts",
+          "impactOnProject": "none"
+        },
+        {
+          "name": "OpenAI provisioned capacity",
+          "blocks": "Provisioned capacity deployment",
+          "impactOnProject": "none"
+        },
+        {
+          "name": "Sentinel commitment tier",
+          "blocks": "Sentinel commitment tiers",
+          "impactOnProject": "none"
+        },
+        {
+          "name": "SQL without AAD-only auth",
+          "blocks": "SQL Server without Azure AD-only auth",
+          "impactOnProject": "none"
+        },
+        {
+          "name": "SQL MI without AAD-only auth",
+          "blocks": "SQL Managed Instance without Azure AD-only auth",
+          "impactOnProject": "none"
+        },
+        {
+          "name": "Not Allowed Resource Types",
+          "blocks": "Uses default empty list - no types blocked",
+          "impactOnProject": "none"
+        },
+        {
+          "name": "Key Vault HSM purge protection",
+          "blocks": "Key Vault HSM without purge protection",
+          "impactOnProject": "none"
+        }
+      ],
+      "status": "not-applicable"
+    },
+    {
+      "displayName": "JV-Enforce Resource Group Tags v3",
+      "policyId": "27833bcf-5909-4a37-891c-16a3cb06856d",
+      "scope": "Management Group",
+      "effect": "Deny",
+      "enforcementMode": "Default",
+      "actuallyBlocks": "RG creation without all 9 required tags",
+      "impactOnProject": "blocker-resolved",
+      "resolution": "All 9 tags included as Bicep parameters",
+      "status": "compliant"
+    },
+    {
+      "displayName": "MFA for Resource Write Actions",
+      "scope": "Management Group",
+      "effect": "Deny",
+      "enforcementMode": "Default",
+      "actuallyBlocks": "Write operations without MFA",
+      "impactOnProject": "transparent",
+      "resolution": "Handled at authentication time, not at Bicep deployment level",
+      "status": "compliant"
+    },
+    {
+      "displayName": "MFA for Resource Delete Actions",
+      "scope": "Management Group",
+      "effect": "Deny",
+      "enforcementMode": "Default",
+      "actuallyBlocks": "Delete operations without MFA",
+      "impactOnProject": "transparent",
+      "resolution": "Handled at authentication time, not at Bicep deployment level",
+      "status": "compliant"
+    }
+  ],
+  "modifyPolicies": [
+    {
+      "displayName": "MCAPSGov Deploy Policies — ModifyAllowBlobAnonymousAccess",
+      "effect": "Modify",
+      "description": "Sets allowBlobPublicAccess: false on storage accounts",
+      "impactOnProject": "aligned",
+      "bicepAlignment": "allowBlobPublicAccess: false already set in templates"
+    },
+    {
+      "displayName": "MCAPSGov Deploy Policies — StorageAccountDisableLocalAuth",
+      "effect": "Modify",
+      "description": "Disables shared key access on storage accounts",
+      "impactOnProject": "requires-adaptation",
+      "bicepAlignment": "allowSharedKeyAccess: false set in templates; SWA uses managed identity or SAS"
+    },
+    {
+      "displayName": "JV - Inherit Multiple Tags from RG",
+      "effect": "Modify",
+      "description": "Auto-inherits 9 tags from resource group to child resources",
+      "impactOnProject": "aligned",
+      "bicepAlignment": "Tags applied at RG level; inheritance automatic"
+    }
+  ],
+  "deployIfNotExistsPolicies": [
+    {
+      "displayName": "MCAPSGov Deploy Policies — NewStorageAccountDeploy",
+      "effect": "DeployIfNotExists",
+      "description": "May auto-configure storage compliance settings",
+      "impactOnProject": "awareness",
+      "bicepAlignment": "Monitor for auto-deployed resources post-deployment"
+    }
+  ],
+  "auditPolicies": [
+    {
+      "displayName": "GDPR 2016/679 compliance initiative",
+      "effect": "Audit",
+      "description": "EU data residency compliance",
+      "impactOnProject": "compliant",
+      "note": "EU region (westeurope) used for all resources"
+    },
+    {
+      "displayName": "PCI DSS v4 initiative",
+      "effect": "Audit",
+      "description": "Payment card industry compliance",
+      "impactOnProject": "audit-only",
+      "note": "Non-blocking, logged for awareness"
+    },
+    {
+      "displayName": "Azure Security Baseline initiative",
+      "effect": "Audit",
+      "description": "Storage HTTPS and security checks",
+      "impactOnProject": "audit-only",
+      "note": "Non-blocking, HTTPS-only and TLS 1.2 already configured"
+    }
+  ],
+  "securityBaseline": {
+    "httpsOnly": {
+      "required": true,
+      "status": "compliant",
+      "implementation": "SWA enforces HTTPS by default; Storage supportsHttpsTrafficOnly: true"
+    },
+    "tlsVersion": {
+      "minimum": "TLS1_2",
+      "status": "compliant",
+      "implementation": "minimumTlsVersion: TLS1_2 on Storage Account"
+    },
+    "publicAccess": {
+      "blobPublicAccess": false,
+      "status": "compliant",
+      "implementation": "allowBlobPublicAccess: false (also auto-enforced by MCAPSGov Modify)"
+    },
+    "sharedKeyAccess": {
+      "allowed": false,
+      "status": "compliant",
+      "implementation": "allowSharedKeyAccess: false (auto-enforced by MCAPSGov Modify)"
+    },
+    "managedIdentity": {
+      "required": true,
+      "status": "recommended",
+      "implementation": "SWA managed Functions — managed identity for Storage access"
+    },
+    "mfaEnforcement": {
+      "writeActions": true,
+      "deleteActions": true,
+      "status": "compliant",
+      "implementation": "Enforced at tenant level, transparent to Bicep deployment"
+    }
+  },
+  "costPolicies": {
+    "budgetPolicy": null,
+    "skuRestrictions": "VM H/M/N series blocked (not applicable — no VMs)",
+    "reservedCapacity": "No reserved capacity policies"
+  },
+  "networkPolicies": {
+    "privateEndpoints": "No requirement detected",
+    "vnetIntegration": "No requirement detected",
+    "publicEndpoints": "No restrictions for SWA or Storage (audit-only via Security Baseline)"
+  },
+  "complianceMatrix": [
+    {
+      "category": "Tagging",
+      "constraint": "9 required tags on resource groups",
+      "implementation": "Include all 9 tags in RG deployment",
+      "status": "compliant"
+    },
+    {
+      "category": "Tagging",
+      "constraint": "Tag inheritance from RG to resources",
+      "implementation": "Automatic via JV - Inherit Multiple Tags from RG (Modify effect)",
+      "status": "auto-applied"
+    },
+    {
+      "category": "Security",
+      "constraint": "Classic resource types blocked",
+      "implementation": "Not using any Classic types",
+      "status": "not-applicable"
+    },
+    {
+      "category": "Security",
+      "constraint": "SQL AAD-only authentication",
+      "implementation": "Not using Azure SQL",
+      "status": "not-applicable"
+    },
+    {
+      "category": "Security",
+      "constraint": "VM SKU restrictions (H/M/N series)",
+      "implementation": "Not using VMs",
+      "status": "not-applicable"
+    },
+    {
+      "category": "Data Residency",
+      "constraint": "GDPR 2016/679 compliance initiative",
+      "implementation": "EU region (westeurope) for all resources",
+      "status": "compliant"
+    },
+    {
+      "category": "Compliance",
+      "constraint": "PCI DSS v4 initiative",
+      "implementation": "Audit-only (no deny effect)",
+      "status": "audit"
+    },
+    {
+      "category": "Security",
+      "constraint": "Azure Security Baseline initiative",
+      "implementation": "Audit-only — storage/HTTPS checks",
+      "status": "audit"
+    }
+  ],
+  "deploymentBlockers": {
+    "resolved": [
+      {
+        "policy": "JV-Enforce Resource Group Tags v3",
+        "policyId": "27833bcf-5909-4a37-891c-16a3cb06856d",
+        "resolution": "All 9 required tags included as Bicep parameters"
+      }
+    ],
+    "unresolved": []
+  }
+}
