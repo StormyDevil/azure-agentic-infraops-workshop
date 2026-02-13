@@ -1,0 +1,11 @@
+using 'main.bicep'
+
+param projectName = 'team-leaderboard'
+param environment = 'prod'
+param location = 'westeurope'
+param owner = 'agentic-infraops'
+param costCenter = 'hackathon'
+param technicalContact = 'infraops-team@contoso.com'
+param repositoryUrl = ''
+param repositoryBranch = 'main'
+param phase = 'all'
