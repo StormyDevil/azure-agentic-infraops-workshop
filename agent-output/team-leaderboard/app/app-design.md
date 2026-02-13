@@ -49,11 +49,16 @@
 - Submission review queue with approve/reject actions.
 - Manual score override panel.
 - Awards panel for assigning category awards.
+- Attendee bulk entry form (F9): multi-line or CSV paste for name import.
+- Random team assignment panel (F10): team count input, shuffle preview,
+  confirm/re-shuffle controls.
 
 ### Shared Workflows
 
 - Team score detail expansion in leaderboard.
 - Attendee profile registration and update for authenticated users.
+- Team Roster page (F10): card/table grid of all teams with assigned
+  members; admin edit controls, member read-only with own-team highlight.
 
 ## Component Model
 
@@ -68,6 +73,9 @@
 - `AwardsPanel`: admin-only award assignment controls.
 - `JsonUploadPanel`: member-only structured upload with pre-submit validation.
 - `AttendeeProfileForm`: self-service attendee registration/editing.
+- `AttendeeBulkEntry`: admin-only multi-line/CSV attendee import (F9).
+- `TeamAssignmentPanel`: admin-only random assignment with preview (F10).
+- `TeamRoster`: team ↔ attendee display grid for all authenticated users.
 
 ## Responsive Strategy
 

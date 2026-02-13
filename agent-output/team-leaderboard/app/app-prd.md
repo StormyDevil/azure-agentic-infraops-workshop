@@ -29,7 +29,7 @@ scoring with a browser-based submission and review workflow.
 
 | Criteria                       | Target                               |
 | ------------------------------ | ------------------------------------ |
-| All 8 features functional      | F1–F8 as listed below                |
+| All 10 features functional     | F1–F10 as listed below               |
 | GitHub authentication enforced | No anonymous access                  |
 | Response time                  | < 2 seconds for any page load        |
 | Concurrent users               | Up to 50                             |
@@ -262,6 +262,52 @@ User → SWA → /.auth/login/github → GitHub OAuth → callback → /.auth/me
 5. Reviewer identity and timestamps are stored for auditability
 6. Leaderboard only reflects approved or manually overridden scores
 
+### F9 — Attendee Bulk Entry (Admin)
+
+| Attribute       | Detail                                                                |
+| --------------- | --------------------------------------------------------------------- |
+| **Priority**    | Must-Have                                                             |
+| **Role**        | Admin / Facilitator only                                              |
+| **Description** | Admin enters attendee names into the app before the event begins      |
+
+**Acceptance Criteria:**
+
+1. Admin-only page with a multi-line input (one attendee per line: first name, surname)
+2. Supports CSV paste for bulk import
+3. On submit, creates/upserts records in the Attendees table
+4. GitHub username field is initially blank — resolved via self-service
+   claim during attendee login (see F7)
+5. Admin can edit or remove attendee entries before team assignment
+6. Duplicate detection by name with merge prompt
+
+### F10 — Random Team Assignment
+
+| Attribute       | Detail                                                                |
+| --------------- | --------------------------------------------------------------------- |
+| **Priority**    | Must-Have                                                             |
+| **Role**        | Admin / Facilitator only                                              |
+| **Description** | App randomly distributes registered attendees across N teams          |
+
+**Acceptance Criteria:**
+
+1. Admin specifies the desired number of teams (positive integer)
+2. App uses a Fisher-Yates shuffle to randomly assign attendees
+3. Preview dialog shows proposed team rosters before persisting
+4. "Confirm" writes team assignments to the Teams and Attendees tables
+5. "Re-shuffle" clears and re-randomizes (with confirmation warning)
+6. A **Team Roster** page (visible to all authenticated users) displays
+   the final team ↔ attendee mapping in a card/table grid
+7. Admins can manually move attendees between teams after initial
+   assignment via drag-and-drop or edit controls
+
+**GitHub Username ↔ Attendee Mapping:**
+
+> The admin seeds attendee names (F9) before participants arrive.
+> When attendees log in with GitHub (F5), the registration flow (F7)
+> prompts them to "claim" their name from a dropdown of unclaimed
+> entries. The app links `/.auth/me` → `gitHubUsername` to the
+> selected Attendee record. Admins can review and override claims.
+
 ---
 
 ## User Roles & Permissions Matrix
@@ -278,6 +324,9 @@ User → SWA → /.auth/login/github → GitHub OAuth → callback → /.auth/me
 | Manage teams                | ✅    | ❌                 | ❌         |
 | Register profile            | ✅    | ✅ (own only)      | ❌         |
 | View all attendees          | ✅    | ❌                 | ❌         |
+| Enter attendees (bulk)      | ✅    | ❌                 | ❌         |
+| Random team assignment      | ✅    | ❌                 | ❌         |
+| View team roster            | ✅    | ✅                 | ❌         |
 
 ---
 
@@ -362,6 +411,8 @@ All endpoints are under `/api/` and require authentication. See [api-spec.md](./
 | `/api/upload`               | POST                   | member                                              | Own-team JSON submission             |
 | `/api/submissions`          | GET                    | admin                                               | Pending submission queue             |
 | `/api/submissions/validate` | POST                   | admin                                               | Approve/reject submission            |
+| `/api/teams/assign`         | POST                   | admin                                                | Random team assignment (F10)         |
+| `/api/attendees/bulk`       | POST                   | admin                                                | Bulk attendee import (F9)            |
 
 ---
 
@@ -470,6 +521,8 @@ Then add the required workflow surfaces from PRD features:
 - F6 JSON score upload with own-team enforcement and preview
 - F7 Attendee registration/profile view
 - F8 Admin validation queue and manual score override
+- F9 Attendee bulk entry (admin)
+- F10 Random team assignment + Team Roster page (admin assign, all view)
 
 ### Data and Behavior Requirements
 
@@ -540,7 +593,7 @@ Then add the required workflow surfaces from PRD features:
 
 1. Responsive leaderboard page matching reference visual hierarchy
 2. Theme system (light/dark) with persisted preference
-3. Feature-complete UI for F1, F2, F3, F4, F6, F7, F8
+3. Feature-complete UI for F1, F2, F3, F4, F6, F7, F8, F9, F10
 4. API integration scaffolding aligned to `api-spec.md`
 5. Local mock data mode for offline UI development
 6. Run instructions for local development and test verification

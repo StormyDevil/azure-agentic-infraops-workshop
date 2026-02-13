@@ -468,6 +468,95 @@ Register or update the current user's profile.
 
 ---
 
+### `POST /api/attendees/bulk`
+
+Bulk-import attendee names. Creates Attendee records with blank
+`gitHubUsername` (to be claimed via self-service login).
+
+| Property   | Value         |
+| ---------- | ------------- |
+| **Auth**   | `admin` only  |
+| **Method** | POST          |
+
+**Request Body:**
+
+```json
+{
+  "attendees": [
+    { "firstName": "Jane", "surname": "Doe" },
+    { "firstName": "John", "surname": "Smith" }
+  ]
+}
+```
+
+**Response `201 Created`:**
+
+```json
+{
+  "created": 2,
+  "duplicates": 0,
+  "attendees": [
+    { "firstName": "Jane", "surname": "Doe", "id": "doe-jane" },
+    { "firstName": "John", "surname": "Smith", "id": "smith-john" }
+  ]
+}
+```
+
+**Errors:**
+
+| Status | Condition                               |
+| ------ | --------------------------------------- |
+| `400`  | Empty attendees array                   |
+| `400`  | Missing firstName or surname in any row |
+
+---
+
+### `POST /api/teams/assign`
+
+Randomly assign all unassigned attendees to N teams using a
+Fisher-Yates shuffle.
+
+| Property   | Value         |
+| ---------- | ------------- |
+| **Auth**   | `admin` only  |
+| **Method** | POST          |
+
+**Request Body:**
+
+```json
+{
+  "teamCount": 5
+}
+```
+
+**Response `200 OK`:**
+
+```json
+{
+  "teams": [
+    {
+      "teamName": "Team 1",
+      "members": [
+        { "firstName": "Jane", "surname": "Doe", "gitHubUsername": null },
+        { "firstName": "John", "surname": "Smith", "gitHubUsername": "jsmith" }
+      ]
+    }
+  ],
+  "totalAttendees": 10,
+  "teamCount": 5
+}
+```
+
+**Errors:**
+
+| Status | Condition                                |
+| ------ | ---------------------------------------- |
+| `400`  | `teamCount` not a positive integer       |
+| `400`  | No attendees registered to assign        |
+| `400`  | `teamCount` exceeds number of attendees  |
+
+---
+
 ### `POST /api/upload`
 
 Submit a `score-results.json` payload for admin validation.
@@ -562,6 +651,7 @@ Submit a `score-results.json` payload for admin validation.
 | ----------- | --------------- | -------------------------- | ---------------------------------------- |
 | Teams       | `"team"`        | Team name                  | All teams in one partition for fast list |
 | Attendees   | GitHub username | `"profile"`                | Direct lookup by username                |
+| Attendees   | `"unclaimed"`  | `"{surname}-{firstName}"` | Unclaimed attendees from bulk import     |
 | Scores      | Team name       | `"{Category}_{Criterion}"` | All scores for a team in one partition   |
 | Submissions | Team name       | Submission GUID            | Queue and audit trail by team            |
 | Awards      | `"award"`       | Award category             | All awards in one partition              |
@@ -569,7 +659,9 @@ Submit a `score-results.json` payload for admin validation.
 ### Why This Design
 
 - **Teams**: Fixed PK allows efficient `PartitionKey eq 'team'` query for leaderboard
-- **Attendees**: Username as PK enables O(1) lookup for `/.auth/me` → profile resolution
+- **Attendees**: Username as PK enables O(1) lookup for `/.auth/me` → profile resolution.
+  Bulk-imported (unclaimed) attendees use PK `"unclaimed"` until a
+  GitHub user claims them during login.
 - **Scores**: Team as PK groups all scores together; RK pattern enables category filtering
 - **Submissions**: Keeps pending and reviewed payloads with reviewer audit metadata
 - **Awards**: Fixed PK with 5 known RKs — always a point query

@@ -49,6 +49,16 @@
       "allowedRoles": ["admin"]
     },
     {
+      "route": "/api/attendees/bulk",
+      "methods": ["POST"],
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/api/teams/assign",
+      "methods": ["POST"],
+      "allowedRoles": ["admin"]
+    },
+    {
       "route": "/api/attendees/me",
       "methods": ["GET", "POST", "PUT"],
       "allowedRoles": ["authenticated"]

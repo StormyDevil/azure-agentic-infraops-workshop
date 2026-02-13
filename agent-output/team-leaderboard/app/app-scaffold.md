@@ -37,6 +37,12 @@ team-leaderboard-app/
 │   ├── attendees/
 │   │   ├── function.json
 │   │   └── index.js                 # GET /api/attendees (admin), GET/POST /api/attendees/me
+│   ├── attendees-bulk/
+│   │   ├── function.json
+│   │   └── index.js                 # POST /api/attendees/bulk (admin bulk import, F9)
+│   ├── teams-assign/
+│   │   ├── function.json
+│   │   └── index.js                 # POST /api/teams/assign (random assignment, F10)
 │   ├── upload/
 │   │   ├── function.json
 │   │   └── index.js                 # POST /api/upload (JSON score import)
@@ -57,6 +63,9 @@ team-leaderboard-app/
 │   │   ├── ManualOverride.js        # F8: Admin manual score correction
 │   │   ├── Awards.js                # F4: Award display + assignment (admin write)
 │   │   ├── Registration.js          # F7: Attendee profile form
+│   │   ├── AttendeeBulkEntry.js     # F9: Admin bulk attendee import
+│   │   ├── TeamAssignment.js        # F10: Admin random team assignment
+│   │   ├── TeamRoster.js            # F10: Team ↔ attendee display grid
 │   │   ├── UploadScores.js          # F6: Own-team JSON upload
 │   │   └── Navigation.js            # Nav bar with role-aware links
 │   ├── services/
