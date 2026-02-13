@@ -59,6 +59,11 @@
       "allowedRoles": ["admin"]
     },
     {
+      "route": "/api/rubrics",
+      "methods": ["POST"],
+      "allowedRoles": ["admin"]
+    },
+    {
       "route": "/api/attendees/me",
       "methods": ["GET", "POST", "PUT"],
       "allowedRoles": ["authenticated"]

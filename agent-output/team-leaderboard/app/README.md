@@ -25,7 +25,8 @@ Azure Static Web Apps (Standard)
 ├── Managed Azure Functions (/api/*)
 │   └── Node.js 20 LTS
 ├── GitHub OAuth (built-in SWA auth)
-└── Azure Table Storage (5 tables)
+└── Azure Table Storage (6 tables)
+    ├── Rubrics
     ├── Teams
     ├── Attendees
     ├── Scores
@@ -37,7 +38,7 @@ Infrastructure is **already deployed**. This folder contains the design
 documents and specifications — the app team builds the SPA and API
 functions against these specs.
 
-## Features (F1–F10)
+## Features (F1–F11)
 
 | #    | Feature                          | Role            |
 | ---- | -------------------------------- | --------------- |
@@ -51,6 +52,7 @@ functions against these specs.
 | F8   | Admin Validation & Override      | Admin           |
 | F9   | Attendee Bulk Entry              | Admin           |
 | F10  | Random Team Assignment           | Admin           |
+| F11  | Configurable Rubric Templates    | Admin           |
 
 ## User Roles
 
@@ -64,13 +66,13 @@ functions against these specs.
 
 | File                                                   | Purpose                              |
 | ------------------------------------------------------ | ------------------------------------ |
-| [app-prd.md](./app-prd.md)                             | Product requirements (F1–F10)        |
-| [api-spec.md](./api-spec.md)                           | Full API specification (12 endpoints)|
+| [app-prd.md](./app-prd.md)                             | Product requirements (F1–11)        |
+| [api-spec.md](./api-spec.md)                           | Full API specification (14 endpoints)|
 | [app-design.md](./app-design.md)                       | UI/UX design and component model     |
 | [app-scaffold.md](./app-scaffold.md)                   | Recommended folder structure         |
 | [app-handoff-checklist.md](./app-handoff-checklist.md) | Infrastructure wiring steps          |
 | [staticwebapp.config.json](./staticwebapp.config.json) | Auth, routes, and security headers   |
-| [backlog.md](./backlog.md)                           | Living backlog and roadmap           |
+| [backlog.md](./backlog.md)                           | Project plan and task tracker         |
 
 ## Quick Start (Local Development)
 
@@ -113,10 +115,17 @@ in your environment before starting.
 | `/api/upload`               | POST                 | member        |
 | `/api/submissions`          | GET                  | admin         |
 | `/api/submissions/validate` | POST                 | admin         |
+| `/api/rubrics`              | GET, POST            | admin (write) |
+| `/api/rubrics/active`       | GET                  | authenticated |
 
 Full request/response schemas in [api-spec.md](./api-spec.md).
 
 ## Scoring Model
+
+> The scoring model is configurable via rubric templates (F11). The values
+> below are the **default rubric** that ships with the app. Admins can upload
+> a custom `rubric.md` to define different categories, criteria, and grading
+> scales for each hackathon event.
 
 | Category                | Points | Grade Scale (of 105 base) |
 | ----------------------- | ------ | ------------------------- |

@@ -645,6 +645,154 @@ Submit a `score-results.json` payload for admin validation.
 
 ---
 
+### `GET /api/rubrics`
+
+List all rubric configurations (most recent first).
+
+| Property   | Value                             |
+| ---------- | --------------------------------- |
+| **Auth**   | `authenticated` (`admin` + `member`) |
+| **Method** | GET                               |
+
+**Response `200 OK`:**
+
+```json
+[
+  {
+    "rubricId": "a1b2c3d4-...",
+    "name": "Azure InfraOps Hackathon 2026",
+    "eventName": "Partner Summit Q1",
+    "version": 1,
+    "baseTotal": 105,
+    "bonusTotal": 25,
+    "isActive": true,
+    "createdBy": "admin-user",
+    "createdAt": "2026-01-15T10:00:00Z"
+  }
+]
+```
+
+---
+
+### `POST /api/rubrics`
+
+Upload and parse a new rubric from Markdown content.
+
+| Property         | Value                 |
+| ---------------- | --------------------- |
+| **Auth**         | `admin` only          |
+| **Method**       | POST                  |
+| **Content-Type** | `text/markdown` or `application/json` |
+
+**Request Body (Markdown upload):**
+
+Raw Markdown content of the rubric file with `Content-Type: text/markdown`.
+
+**Request Body (JSON — pre-parsed):**
+
+```json
+{
+  "name": "Azure InfraOps Hackathon 2026",
+  "eventName": "Partner Summit Q1",
+  "sourceMarkdown": "# My Rubric\n\n## Categories\n...",
+  "activate": true
+}
+```
+
+When `activate` is `true`, the new rubric becomes the active rubric and any
+previously active rubric is deactivated.
+
+**Response `201 Created`:**
+
+```json
+{
+  "rubricId": "a1b2c3d4-...",
+  "name": "Azure InfraOps Hackathon 2026",
+  "baseTotal": 105,
+  "bonusTotal": 25,
+  "isActive": true,
+  "categoriesCount": 8,
+  "bonusCount": 4,
+  "message": "Rubric created and activated"
+}
+```
+
+**Errors:**
+
+| Status | Condition                                    |
+| ------ | -------------------------------------------- |
+| `400`  | Markdown could not be parsed into valid rubric |
+| `400`  | Missing rubric name                          |
+| `400`  | No categories found in parsed rubric         |
+| `400`  | Category max points do not sum correctly     |
+
+---
+
+### `GET /api/rubrics/active`
+
+Retrieve the currently active rubric configuration (full JSON).
+
+| Property   | Value                             |
+| ---------- | --------------------------------- |
+| **Auth**   | `authenticated` (`admin` + `member`) |
+| **Method** | GET                               |
+
+**Response `200 OK`:**
+
+```json
+{
+  "rubricId": "a1b2c3d4-...",
+  "name": "Azure InfraOps Hackathon 2026",
+  "version": 1,
+  "categories": [
+    {
+      "name": "Requirements & Planning",
+      "maxPoints": 20,
+      "criteria": [
+        { "name": "Project context complete", "maxPoints": 4 },
+        { "name": "Functional requirements", "maxPoints": 4 },
+        { "name": "NFRs (SLA, RTO, RPO)", "maxPoints": 4 },
+        { "name": "Compliance identified", "maxPoints": 4 },
+        { "name": "Budget stated", "maxPoints": 4 }
+      ]
+    }
+  ],
+  "bonus": [
+    { "name": "Zone Redundancy", "points": 5, "inputType": "checkbox" },
+    { "name": "Private Endpoints", "points": 5, "inputType": "checkbox" },
+    { "name": "Multi-Region DR", "points": 10, "inputType": "checkbox" },
+    { "name": "Managed Identities", "points": 5, "inputType": "checkbox" }
+  ],
+  "gradingScale": [
+    { "minPercentage": 90, "grade": "OUTSTANDING", "emoji": "🏆" },
+    { "minPercentage": 80, "grade": "EXCELLENT", "emoji": "🥇" },
+    { "minPercentage": 70, "grade": "GOOD", "emoji": "🥈" },
+    { "minPercentage": 60, "grade": "SATISFACTORY", "emoji": "🥉" },
+    { "minPercentage": 0, "grade": "NEEDS IMPROVEMENT", "emoji": "📚" }
+  ],
+  "awards": [
+    { "key": "BestOverall", "label": "Best Overall", "emoji": "🏆" },
+    { "key": "SecurityChampion", "label": "Security Champion", "emoji": "🛡️" },
+    { "key": "CostOptimizer", "label": "Cost Optimizer", "emoji": "💰" },
+    { "key": "BestArchitecture", "label": "Best Architecture", "emoji": "📐" },
+    { "key": "SpeedDemon", "label": "Speed Demon", "emoji": "🚀" }
+  ],
+  "baseTotal": 105,
+  "bonusTotal": 25,
+  "isActive": true,
+  "createdBy": "admin-user",
+  "createdAt": "2026-01-15T10:00:00Z"
+}
+```
+
+**Errors:**
+
+| Status | Condition                    |
+| ------ | ---------------------------- |
+| `404`  | No active rubric configured  |
+
+---
+
 ## Table Storage Key Design
 
 | Table       | PartitionKey    | RowKey                     | Access Pattern                           |
@@ -655,6 +803,7 @@ Submit a `score-results.json` payload for admin validation.
 | Scores      | Team name       | `"{Category}_{Criterion}"` | All scores for a team in one partition   |
 | Submissions | Team name       | Submission GUID            | Queue and audit trail by team            |
 | Awards      | `"award"`       | Award category             | All awards in one partition              |
+| Rubrics     | `"rubric"`      | Rubric GUID                | All rubrics in one partition             |
 
 ### Why This Design
 
@@ -665,6 +814,7 @@ Submit a `score-results.json` payload for admin validation.
 - **Scores**: Team as PK groups all scores together; RK pattern enables category filtering
 - **Submissions**: Keeps pending and reviewed payloads with reviewer audit metadata
 - **Awards**: Fixed PK with 5 known RKs — always a point query
+- **Rubrics**: Fixed PK with GUID RKs; query `isActive eq true` to find current rubric
 
 ---
 
@@ -693,6 +843,8 @@ All error responses follow a consistent JSON structure:
 | `SCORE_EXCEEDS_MAX` | 400         | Points exceed maximum for criterion |
 | `TEAM_SCOPE_VIOLATION` | 403      | Member attempted cross-team submit  |
 | `SUBMISSION_NOT_FOUND` | 404      | Submission ID does not exist        |
+| `RUBRIC_PARSE_ERROR`   | 400      | Markdown could not be parsed into valid rubric |
+| `RUBRIC_NOT_FOUND`     | 404      | No active rubric configured         |
 | `UNAUTHORIZED`      | 401         | Missing or invalid auth context     |
 | `FORBIDDEN`         | 403         | Insufficient role for operation     |
 

@@ -29,7 +29,7 @@ scoring with a browser-based submission and review workflow.
 
 | Criteria                       | Target                               |
 | ------------------------------ | ------------------------------------ |
-| All 10 features functional     | F1–F10 as listed below               |
+| All 11 features functional    | F1–F11 as listed below              |
 | GitHub authentication enforced | No anonymous access                  |
 | Response time                  | < 2 seconds for any page load        |
 | Concurrent users               | Up to 50                             |
@@ -54,7 +54,7 @@ The app runs on **Azure Static Web Apps (Standard)** with **managed Azure Functi
                          ┌─────────▼──────────┐
                          │  Azure Table        │
                          │  Storage             │
-                         │  5 tables            │
+                         │  6 tables            │
                          └────────────────────┘
 ```
 
@@ -308,6 +308,97 @@ User → SWA → /.auth/login/github → GitHub OAuth → callback → /.auth/me
 > entries. The app links `/.auth/me` → `gitHubUsername` to the
 > selected Attendee record. Admins can review and override claims.
 
+### F11 — Configurable Rubric Templates
+
+| Attribute       | Detail                                                                          |
+| --------------- | ------------------------------------------------------------------------------- |
+| **Priority**    | Must-Have                                                                       |
+| **Role**        | Admin / Facilitator only (upload); All authenticated (view active rubric)       |
+| **Description** | Admin uploads a Markdown rubric file to configure scoring for each hackathon    |
+
+> **Why**: The default scoring model (105 base + 25 bonus) is specific to one
+> hackathon format. Rubric templates make the app reusable across events with
+> different categories, criteria, point scales, bonus items, and grading tiers.
+
+**Acceptance Criteria:**
+
+1. Admin-only **Rubric Management** page accessible from the admin nav
+2. Drag-and-drop or file browse to upload a `rubric.md` file
+3. App parses the Markdown into a structured rubric configuration:
+   - Scoring categories with name, max points, and individual criteria
+   - Bonus items with name, points, and verification type
+   - Grading scale with percentage thresholds and tier labels
+   - Award categories (optional)
+4. Preview panel shows the parsed rubric before activation
+5. Admin can **activate** a rubric, making it the current scoring model
+6. Only one rubric is active at a time; previous rubrics are archived
+7. Score submission form (F1) dynamically renders based on the active rubric
+8. Leaderboard (F2) and grading (F3) use the active rubric's base total and grade scale
+9. JSON upload (F6) validates payloads against the active rubric schema
+10. A **default rubric** matching the current 105+25 model is pre-loaded on first use
+11. Rubric metadata (name, event name, date, author) is stored for audit
+
+**Rubric Markdown Format:**
+
+The uploaded `rubric.md` must follow a parseable structure. Example:
+
+```markdown
+# My Hackathon Rubric
+
+## Categories
+
+### Category Name (max pts)
+
+| Criterion | Points |
+| --------- | ------ |
+| ...       | N      |
+
+## Bonus
+
+| Enhancement | Points |
+| ----------- | ------ |
+| ...         | +N     |
+
+## Grading Scale
+
+| Percentage | Grade |
+| ---------- | ----- |
+| ≥ 90%      | ...   |
+```
+
+**Rubric JSON Schema (parsed from Markdown):**
+
+```json
+{
+  "rubricId": "uuid",
+  "name": "Azure InfraOps Hackathon 2026",
+  "version": 1,
+  "categories": [
+    {
+      "name": "Requirements & Planning",
+      "maxPoints": 20,
+      "criteria": [
+        { "name": "Project context complete", "maxPoints": 4 }
+      ]
+    }
+  ],
+  "bonus": [
+    { "name": "Zone Redundancy", "points": 5, "inputType": "checkbox" }
+  ],
+  "gradingScale": [
+    { "minPercentage": 90, "grade": "OUTSTANDING", "emoji": "🏆" }
+  ],
+  "awards": [
+    { "key": "BestOverall", "label": "Best Overall", "emoji": "🏆" }
+  ],
+  "baseTotal": 105,
+  "bonusTotal": 25,
+  "createdBy": "admin-username",
+  "createdAt": "2026-01-15T10:00:00Z",
+  "isActive": true
+}
+```
+
 ---
 
 ## User Roles & Permissions Matrix
@@ -327,6 +418,8 @@ User → SWA → /.auth/login/github → GitHub OAuth → callback → /.auth/me
 | Enter attendees (bulk)      | ✅    | ❌                 | ❌         |
 | Random team assignment      | ✅    | ❌                 | ❌         |
 | View team roster            | ✅    | ✅                 | ❌         |
+| Upload/manage rubrics       | ✅    | ❌                 | ❌         |
+| View active rubric          | ✅    | ✅                 | ❌         |
 
 ---
 
@@ -335,6 +428,23 @@ User → SWA → /.auth/login/github → GitHub OAuth → callback → /.auth/me
 ### Table Storage Design
 
 All data persists in Azure Table Storage (`stteamleadpromn2ksi`). Shared key access is disabled — the API must use managed identity with the **Storage Table Data Contributor** role.
+
+#### Rubrics Table
+
+| Field          | Type                | Key | Description                                  |
+| -------------- | ------------------- | --- | -------------------------------------------- |
+| `PartitionKey` | string              | PK  | Fixed: `"rubric"`                            |
+| `RowKey`       | string              | RK  | Rubric ID (GUID)                             |
+| `name`         | string              |     | Rubric display name                          |
+| `eventName`    | string              |     | Hackathon / event name                       |
+| `version`      | int32               |     | Rubric version number                        |
+| `configJson`   | string (JSON)       |     | Full parsed rubric JSON (categories, bonus, grading, awards) |
+| `sourceMarkdown` | string            |     | Original uploaded Markdown content           |
+| `baseTotal`    | int32               |     | Computed base total from categories          |
+| `bonusTotal`   | int32               |     | Computed bonus total                         |
+| `isActive`     | boolean             |     | Whether this is the current active rubric    |
+| `createdBy`    | string              |     | GitHub username of uploader                  |
+| `createdAt`    | datetime            |     | Upload timestamp                             |
 
 #### Teams Table
 
@@ -413,6 +523,8 @@ All endpoints are under `/api/` and require authentication. See [api-spec.md](./
 | `/api/submissions/validate` | POST                   | admin                                               | Approve/reject submission            |
 | `/api/teams/assign`         | POST                   | admin                                                | Random team assignment (F10)         |
 | `/api/attendees/bulk`       | POST                   | admin                                                | Bulk attendee import (F9)            |
+| `/api/rubrics`              | GET, POST              | GET: authenticated; POST: admin                      | Rubric upload and listing (F11)      |
+| `/api/rubrics/active`       | GET                    | authenticated                                        | Active rubric config (F11)           |
 
 ---
 
@@ -487,10 +599,10 @@ the requirements in this PRD (`app-prd.md`) and the API contract in `api-spec.md
 Build a production-ready, responsive SPA that:
 
 - Matches the visual structure of the reference leaderboard view
-- Implements functional requirements F1-F8 in this PRD
+- Implements functional requirements F1–F11 in this PRD
 - Supports role-based UI (`admin`, `member`) with GitHub auth context
 - Integrates with `/api/teams`, `/api/scores`, `/api/awards`, `/api/attendees`, `/api/upload`,
-  `/api/submissions`, and `/api/submissions/validate`
+  `/api/submissions`, `/api/submissions/validate`, `/api/rubrics`, and `/api/rubrics/active`
 - Is accessible (WCAG 2.1 AA), reusable, and backend-integration ready
 
 Do not implement pixel-perfect hacks. Use scalable layout primitives.
@@ -523,15 +635,18 @@ Then add the required workflow surfaces from PRD features:
 - F8 Admin validation queue and manual score override
 - F9 Attendee bulk entry (admin)
 - F10 Random team assignment + Team Roster page (admin assign, all view)
+- F11 Rubric Management page: drag-and-drop upload, preview, activate (admin)
 
 ### Data and Behavior Requirements
 
+- Fetch the active rubric from `/api/rubrics/active` on app initialization
+- Drive score entry form, leaderboard grading, and JSON validation from the active rubric config
 - Drive leaderboard ranking from API totals (`baseScore`, `bonusScore`, `totalScore`, `grade`)
-- Compute and render grade badges exactly per PRD grading thresholds
+- Compute and render grade badges using the active rubric's grading scale
 - Refresh leaderboard data every 30 seconds (or equivalent polling strategy)
 - Enforce role-based rendering:
   - `member`: submit own team, upload own JSON, leaderboard, own profile
-  - `admin`: validate submissions, override scores, assign awards, manage teams
+  - `admin`: validate submissions, override scores, assign awards, manage teams, manage rubrics
 - Handle loading, empty, and error states for every data surface
 - Add optimistic UI only where rollback behavior is explicit
 
@@ -566,20 +681,28 @@ Then add the required workflow surfaces from PRD features:
   AwardsPanel.tsx
   JsonUploadPanel.tsx
   AttendeeProfileForm.tsx
+  RubricManager.tsx
+  RubricUpload.tsx
+  RubricPreview.tsx
 
 /context
   ThemeContext.tsx
   AuthContext.tsx
+  RubricContext.tsx
 
 /services
   apiClient.ts
   leaderboardService.ts
+  rubricService.ts
+  rubricParser.ts
 
 /pages
   Dashboard.tsx
+  RubricManagement.tsx
 
 /data
   leaderboard.mock.ts
+  defaultRubric.ts
 ```
 
 ### Performance and Code Quality
@@ -593,14 +716,16 @@ Then add the required workflow surfaces from PRD features:
 
 1. Responsive leaderboard page matching reference visual hierarchy
 2. Theme system (light/dark) with persisted preference
-3. Feature-complete UI for F1, F2, F3, F4, F6, F7, F8, F9, F10
+3. Feature-complete UI for F1, F2, F3, F4, F6, F7, F8, F9, F10, F11
 4. API integration scaffolding aligned to `api-spec.md`
 5. Local mock data mode for offline UI development
 6. Run instructions for local development and test verification
+7. Rubric parser (Markdown → JSON) and default rubric data file
 
 ### Constraints
 
-- Do not change the scoring model or grading scale from this PRD
+- Scoring model is driven by the active rubric — do not hardcode category names or point values
+- A default rubric matching the current 105+25 model ships with the app
 - Do not hardcode production credentials, endpoints, or identities
 - Do not introduce external component frameworks
 

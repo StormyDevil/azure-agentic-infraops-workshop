@@ -43,13 +43,17 @@ team-leaderboard-app/
 │   ├── teams-assign/
 │   │   ├── function.json
 │   │   └── index.js                 # POST /api/teams/assign (random assignment, F10)
+│   ├── rubrics/
+│   │   ├── function.json
+│   │   └── index.js                 # GET/POST /api/rubrics, GET /api/rubrics/active (F11)
 │   ├── upload/
 │   │   ├── function.json
 │   │   └── index.js                 # POST /api/upload (JSON score import)
 │   └── shared/
 │       ├── auth.js                  # getClientPrincipal(), requireRole() helpers
 │       ├── tables.js                # TableClient factory (managed identity)
-│       └── errors.js                # Standardised error response builder
+│       ├── errors.js                # Standardised error response builder
+│       └── rubricParser.js          # Markdown → rubric JSON parser
 ├── src/                             # SPA Frontend
 │   ├── index.html                   # Entry point
 │   ├── styles/
@@ -66,11 +70,17 @@ team-leaderboard-app/
 │   │   ├── AttendeeBulkEntry.js     # F9: Admin bulk attendee import
 │   │   ├── TeamAssignment.js        # F10: Admin random team assignment
 │   │   ├── TeamRoster.js            # F10: Team ↔ attendee display grid
+│   │   ├── RubricManager.js         # F11: Admin rubric list + activate/archive
+│   │   ├── RubricUpload.js          # F11: Drag-and-drop rubric.md upload
+│   │   ├── RubricPreview.js         # F11: Parsed rubric preview before activation
 │   │   ├── UploadScores.js          # F6: Own-team JSON upload
 │   │   └── Navigation.js            # Nav bar with role-aware links
 │   ├── services/
 │   │   ├── api.js                   # fetch() wrappers for /api/* endpoints
-│   │   └── auth.js                  # /.auth/me client helper
+│   │   ├── auth.js                  # /.auth/me client helper
+│   │   └── rubric.js                # Rubric service (fetch active, parse, cache)
+│   ├── data/
+│   │   └── defaultRubric.js         # Default 105+25 rubric for first-use bootstrap
 │   └── app.js                       # SPA router + app shell
 ├── staticwebapp.config.json         # Auth, routes, headers (from this repo)
 ├── package.json                     # Frontend dependencies + scripts

@@ -18,7 +18,7 @@
 ## Design Goals
 
 - Match the leaderboard visual hierarchy shown in the reference screenshot.
-- Preserve PRD functional scope (F1–F8).
+- Preserve PRD functional scope (F1–F11).
 - Keep UI implementation responsive, accessible, and API-driven.
 - Support admin and member experiences without duplicated screens.
 
@@ -53,6 +53,16 @@
 - Random team assignment panel (F10): team count input, shuffle preview,
   confirm/re-shuffle controls.
 
+### Rubric Management Workflow (Admin)
+
+- Rubric Management page (F11): list of uploaded rubrics with active indicator.
+- Drag-and-drop upload zone for `rubric.md` files.
+- Rubric preview panel showing parsed categories, criteria, point values,
+  bonus items, and grading scale before activation.
+- Activate/archive controls with confirmation dialog.
+- Score entry form (F1) and leaderboard (F2) dynamically render based on
+  the active rubric configuration.
+
 ### Shared Workflows
 
 - Team score detail expansion in leaderboard.
@@ -76,6 +86,9 @@
 - `AttendeeBulkEntry`: admin-only multi-line/CSV attendee import (F9).
 - `TeamAssignmentPanel`: admin-only random assignment with preview (F10).
 - `TeamRoster`: team ↔ attendee display grid for all authenticated users.
+- `RubricManager`: admin-only rubric list with active indicator and archive controls (F11).
+- `RubricUpload`: admin-only drag-and-drop zone for rubric Markdown upload (F11).
+- `RubricPreview`: parsed rubric preview with categories, criteria, points, and grading scale (F11).
 
 ## Responsive Strategy
 
