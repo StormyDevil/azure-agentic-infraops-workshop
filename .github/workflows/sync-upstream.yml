@@ -123,28 +123,23 @@ jobs:
           git push origin "$SYNC_BRANCH"
 
       # -----------------------------------------------------------------
-      # 6. Create or reuse PR, then ask Copilot to update it
+      # 6. Create/reuse issue, assign Copilot, and reinforce PR constraints
       # -----------------------------------------------------------------
-      - name: Create or reuse PR and request Copilot updates
+      - name: Create/reuse issue and request Copilot coding agent
         if: steps.sync.outputs.changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.SYNC_PAT }}
         run: |
           DATE=$(date -u +%Y-%m-%d)
-          PR_TITLE="chore(sync): upstream sync $DATE"
+          ISSUE_TITLE="chore(sync): upstream sync $DATE"
 
-          PR_BODY=$(cat <<PR_BODY_EOF
-          ## Upstream Sync: $DATE
-
-          Synced from \'jonathan-vella/azure-agentic-infraops\' @ \'${{ inputs.source_ref }}\'.
-
-          - Branch: \`$SYNC_BRANCH\`
-          - Files changed: ${{ steps.sync.outputs.change_count }}
-          - Manifest: \`SYNC-MANIFEST.md\`
-
-          This PR is intentionally opened as draft for human review.
-          PR_BODY_EOF
-          )
+          EXISTING_ISSUE_NUMBER=$(gh issue list \
+            --repo "${{ github.repository }}" \
+            --state open \
+            --label upstream-sync \
+            --search "\"$ISSUE_TITLE\" in:title" \
+            --json number,title \
+            --jq 'map(select(.title == "'"$ISSUE_TITLE"'"))[0].number // empty')
 
           EXISTING_PR_NUMBER=$(gh pr list \
             --repo "${{ github.repository }}" \
@@ -154,32 +149,108 @@ jobs:
             --json number \
             --jq '.[0].number // empty')
 
+          EXISTING_PR_URL=""
           if [[ -n "$EXISTING_PR_NUMBER" ]]; then
-            PR_NUMBER="$EXISTING_PR_NUMBER"
-            gh pr edit "$PR_NUMBER" \
-              --repo "${{ github.repository }}" \
-              --title "$PR_TITLE" \
-              --body "$PR_BODY" \
-              --add-label upstream-sync
-            PR_URL=$(gh pr view "$PR_NUMBER" --repo "${{ github.repository }}" --json url --jq '.url')
-            PR_ACTION="reused"
-          else
-            PR_URL=$(gh pr create \
-              --repo "${{ github.repository }}" \
-              --draft \
-              --base main \
-              --head "$SYNC_BRANCH" \
-              --title "$PR_TITLE" \
-              --label upstream-sync \
-              --body "$PR_BODY")
-            PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
-            PR_ACTION="created"
+            EXISTING_PR_URL=$(gh pr view "$EXISTING_PR_NUMBER" --repo "${{ github.repository }}" --json url --jq '.url')
           fi
 
           MANIFEST=$(cat SYNC-MANIFEST.md)
 
-          COPILOT_COMMENT=$(cat <<'COMMENT_EOF'
-          @copilot Please update this existing PR. Do not create a new PR.
+          ISSUE_BODY=$(cat <<'ISSUE_BODY_EOF'
+          ## Upstream Sync: DATE_PLACEHOLDER
+
+          Synced from `jonathan-vella/azure-agentic-infraops` @ `${{ inputs.source_ref }}`.
+
+          - Branch: `SYNC_BRANCH_PLACEHOLDER`
+          - Files changed: ${{ steps.sync.outputs.change_count }}
+          - Manifest: `SYNC-MANIFEST.md`
+
+          MANIFEST_PLACEHOLDER
+
+          ## Critical Agent Rule (MCP-Only for Issue/PR Ops)
+
+          - Use GitHub MCP tools for issue/PR create-update-comment-review actions.
+          - Do **NOT** use shell `gh` CLI commands that require `GH_TOKEN` within the coding agent session.
+
+          ## Task
+
+          1. Start from this issue and keep all work linked to this issue.
+          2. If a PR already exists for `SYNC_BRANCH_PLACEHOLDER`, update that PR only.
+          3. If no PR exists, create a **Draft** PR from `SYNC_BRANCH_PLACEHOLDER` to `main`, then keep updating the same PR.
+          4. Run validation and fix failures in synced files only:
+             - `npm install`
+             - `npm run lint:md`
+             - `npm run lint:agent-frontmatter`
+             - `npm run lint:skills-format`
+          5. Validate reviewSync files and preserve workshop-specific content.
+
+          ## Never Modify These Files
+
+          - `hackathon/**` — all hackathon materials
+          - `.github/skills/docs-writer/**` — workshop-customized skill
+          - `docs/**` — all workshop documentation
+          - `README.md`, `VERSION.md`, `CHANGELOG.md`, `CONTRIBUTORS.md` — workshop identity
+          - `package.json` — workshop version differs from source
+
+          ## Acceptance Criteria
+
+          - [ ] `npm run lint:md` passes
+          - [ ] `npm run lint:agent-frontmatter` passes
+          - [ ] `npm run lint:skills-format` passes
+          - [ ] reviewSync files adapted for workshop context
+          - [ ] No workshop-specific content is overwritten
+          ISSUE_BODY_EOF
+          )
+
+          ISSUE_BODY="${ISSUE_BODY//DATE_PLACEHOLDER/$DATE}"
+          ISSUE_BODY="${ISSUE_BODY//SYNC_BRANCH_PLACEHOLDER/$SYNC_BRANCH}"
+          ISSUE_BODY="${ISSUE_BODY//MANIFEST_PLACEHOLDER/$MANIFEST}"
+
+          if [[ -n "$EXISTING_ISSUE_NUMBER" ]]; then
+            ISSUE_NUMBER="$EXISTING_ISSUE_NUMBER"
+            gh issue edit "$ISSUE_NUMBER" \
+              --repo "${{ github.repository }}" \
+              --title "$ISSUE_TITLE" \
+              --body "$ISSUE_BODY" \
+              --add-label upstream-sync
+            ISSUE_URL=$(gh issue view "$ISSUE_NUMBER" --repo "${{ github.repository }}" --json url --jq '.url')
+            ISSUE_ACTION="reused"
+          else
+            ISSUE_URL=$(gh issue create \
+              --repo "${{ github.repository }}" \
+              --title "$ISSUE_TITLE" \
+              --label upstream-sync \
+              --body "$ISSUE_BODY")
+            ISSUE_NUMBER=$(echo "$ISSUE_URL" | grep -oE '[0-9]+$')
+            ISSUE_ACTION="created"
+          fi
+
+          # Attempt to assign Copilot coding agent; do not fail run if assignment isn't available.
+          gh issue edit "$ISSUE_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --add-assignee "copilot-swe-agent" || true
+
+          ISSUE_TRIGGER_COMMENT=$(cat <<'ISSUE_COMMENT_EOF'
+          @copilot Please take this issue.
+
+          IMPORTANT: Use GitHub MCP tools for issue/PR operations.
+          Do not use shell `gh` commands requiring `GH_TOKEN` inside coding agent sessions.
+
+          If a PR already exists for this sync branch, update that PR only.
+          If not, create one draft PR and keep all updates in that same PR.
+          ISSUE_COMMENT_EOF
+          )
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --body "$ISSUE_TRIGGER_COMMENT"
+
+          if [[ -n "$EXISTING_PR_NUMBER" ]]; then
+            COPILOT_COMMENT=$(cat <<'COMMENT_EOF'
+          @copilot Continue updates on this existing PR only. Do not create a new PR.
+
+          IMPORTANT: Use GitHub MCP tools for issue/PR operations.
+          Do not use shell `gh` commands requiring `GH_TOKEN` inside coding agent sessions.
 
           MANIFEST_PLACEHOLDER
 
@@ -249,20 +320,29 @@ jobs:
           COMMENT_EOF
           )
 
-          COPILOT_COMMENT="${COPILOT_COMMENT//MANIFEST_PLACEHOLDER/$MANIFEST}"
+            COPILOT_COMMENT="${COPILOT_COMMENT//MANIFEST_PLACEHOLDER/$MANIFEST}"
 
-          gh pr comment "$PR_NUMBER" \
-            --repo "${{ github.repository }}" \
-            --body "$COPILOT_COMMENT"
+            gh pr comment "$EXISTING_PR_NUMBER" \
+              --repo "${{ github.repository }}" \
+              --body "$COPILOT_COMMENT"
+          fi
 
-          echo "✅ PR $PR_ACTION: $PR_URL"
+          echo "✅ Issue $ISSUE_ACTION: $ISSUE_URL"
+          if [[ -n "$EXISTING_PR_URL" ]]; then
+            echo "✅ Existing PR found: $EXISTING_PR_URL"
+          fi
 
           echo "## ✅ Upstream Sync Complete" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Staging branch**: \`$SYNC_BRANCH\`" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **PR**: $PR_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Issue**: $ISSUE_URL" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -n "$EXISTING_PR_URL" ]]; then
+            echo "- **PR (existing)**: $EXISTING_PR_URL" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- **PR**: _to be created by Copilot coding agent from issue_" >> "$GITHUB_STEP_SUMMARY"
+          fi
           echo "- **Files changed**: ${{ steps.sync.outputs.change_count }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Copilot**: requested on existing PR" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Copilot**: requested via issue assignment/comment" >> "$GITHUB_STEP_SUMMARY"
 
       # -----------------------------------------------------------------
       # 7. No changes summary
