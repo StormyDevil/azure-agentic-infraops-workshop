@@ -11,7 +11,7 @@ name: upstream-sync
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
   workflow_dispatch:
     inputs:
       source_ref:
