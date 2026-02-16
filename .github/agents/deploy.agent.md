@@ -20,9 +20,9 @@ tools:
     execute/killTerminal,
     execute/createAndRunTask,
     execute/runTests,
+    execute/runInTerminal,
     execute/runNotebookCell,
     execute/testFailure,
-    execute/runInTerminal,
     read/terminalSelection,
     read/terminalLastCommand,
     read/getNotebookSummary,
@@ -42,7 +42,6 @@ tools:
     search/searchResults,
     search/textSearch,
     search/usages,
-    search/searchSubagent,
     web/fetch,
     web/githubRepo,
     azure-mcp/acr,
@@ -104,6 +103,12 @@ tools:
     bicep/list_az_resource_types_for_provider,
     todo,
     vscode.mermaid-chat-features/renderMermaidDiagram,
+    ms-azuretools.vscode-azure-github-copilot/azure_recommend_custom_modes,
+    ms-azuretools.vscode-azure-github-copilot/azure_query_azure_resource_graph,
+    ms-azuretools.vscode-azure-github-copilot/azure_get_auth_context,
+    ms-azuretools.vscode-azure-github-copilot/azure_set_auth_context,
+    ms-azuretools.vscode-azure-github-copilot/azure_get_dotnet_template_tags,
+    ms-azuretools.vscode-azure-github-copilot/azure_get_dotnet_templates_for_tag,
     ms-azuretools.vscode-azureresourcegroups/azureActivityLog,
   ]
 handoffs:
@@ -113,16 +118,11 @@ handoffs:
     send: true
   - label: ▶ Deploy Next Phase
     agent: Deploy
-    prompt: >-
-      Deploy the next phase from the implementation plan.
-      Read 04-implementation-plan.md for phase definitions
-      and deploy the next uncompleted phase with approval.
+    prompt: Deploy the next phase from the implementation plan. Read 04-implementation-plan.md for phase definitions and deploy the next uncompleted phase with approval.
     send: true
   - label: ▶ Deploy All Phases
     agent: Deploy
-    prompt: >-
-      Deploy all remaining phases sequentially from the
-      implementation plan with approval gates between each.
+    prompt: Deploy all remaining phases sequentially from the implementation plan with approval gates between each.
     send: true
   - label: ▶ Retry Deployment
     agent: Deploy
@@ -133,15 +133,15 @@ handoffs:
     prompt: Query deployed resources using Azure Resource Graph to verify successful deployment. Check resource health status.
     send: true
   - label: ▶ Generate Workload Documentation
-    agent: Deploy
-    prompt: Use the azure-artifacts skill to generate comprehensive workload documentation for the deployed infrastructure.
+    agent: As-Built
+    prompt: Generate the complete Step 7 documentation suite for the deployed project. Read all prior artifacts (01-06) in agent-output/{project}/ and query deployed resources for actual state.
     send: true
   - label: Return to Architect Review
     agent: Architect
     prompt: Review the deployment results and validate WAF compliance of the deployed infrastructure.
     send: true
   - label: ▶ Generate As-Built Diagram
-    agent: Deploy
+    agent: As-Built
     prompt: Use the azure-diagrams skill contract to generate a non-Mermaid as-built architecture diagram documenting deployed infrastructure. Output 07-ab-diagram.py + 07-ab-diagram.png with deterministic layout and quality score >= 9/10.
     send: true
   - label: Fix Deployment Issues

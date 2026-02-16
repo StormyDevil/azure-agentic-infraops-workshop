@@ -6,53 +6,151 @@ argument-hint: Describe the Azure infrastructure project you want to build end-t
 user-invokable: true
 agents: ["*"]
 tools:
-  [vscode/extensions, vscode/getProjectSetupInfo, vscode/installExtension, vscode/newWorkspace, vscode/openSimpleBrowser, vscode/runCommand, vscode/askQuestions, vscode/vscodeAPI, execute/getTerminalOutput, execute/awaitTerminal, execute/killTerminal, execute/createAndRunTask, execute/runTests, execute/runNotebookCell, execute/testFailure, execute/runInTerminal, read/terminalSelection, read/terminalLastCommand, read/getNotebookSummary, read/problems, read/readFile, read/readNotebookCellOutput, agent/runSubagent, edit/createDirectory, edit/createFile, edit/createJupyterNotebook, edit/editFiles, edit/editNotebook, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/usages, search/searchSubagent, web/fetch, web/githubRepo, azure-mcp/acr, azure-mcp/aks, azure-mcp/appconfig, azure-mcp/applens, azure-mcp/applicationinsights, azure-mcp/appservice, azure-mcp/azd, azure-mcp/azureterraformbestpractices, azure-mcp/bicepschema, azure-mcp/cloudarchitect, azure-mcp/communication, azure-mcp/confidentialledger, azure-mcp/cosmos, azure-mcp/datadog, azure-mcp/deploy, azure-mcp/documentation, azure-mcp/eventgrid, azure-mcp/eventhubs, azure-mcp/extension_azqr, azure-mcp/extension_cli_generate, azure-mcp/extension_cli_install, azure-mcp/foundry, azure-mcp/functionapp, azure-mcp/get_bestpractices, azure-mcp/grafana, azure-mcp/group_list, azure-mcp/keyvault, azure-mcp/kusto, azure-mcp/loadtesting, azure-mcp/managedlustre, azure-mcp/marketplace, azure-mcp/monitor, azure-mcp/mysql, azure-mcp/postgres, azure-mcp/quota, azure-mcp/redis, azure-mcp/resourcehealth, azure-mcp/role, azure-mcp/search, azure-mcp/servicebus, azure-mcp/signalr, azure-mcp/speech, azure-mcp/sql, azure-mcp/storage, azure-mcp/subscription_list, azure-mcp/virtualdesktop, azure-mcp/workbooks, todo, vscode.mermaid-chat-features/renderMermaidDiagram, ms-azuretools.vscode-azureresourcegroups/azureActivityLog]
+  [
+    vscode/extensions,
+    vscode/getProjectSetupInfo,
+    vscode/installExtension,
+    vscode/newWorkspace,
+    vscode/openSimpleBrowser,
+    vscode/runCommand,
+    vscode/askQuestions,
+    vscode/vscodeAPI,
+    execute/getTerminalOutput,
+    execute/awaitTerminal,
+    execute/killTerminal,
+    execute/createAndRunTask,
+    execute/runTests,
+    execute/runInTerminal,
+    execute/runNotebookCell,
+    execute/testFailure,
+    read/terminalSelection,
+    read/terminalLastCommand,
+    read/getNotebookSummary,
+    read/problems,
+    read/readFile,
+    read/readNotebookCellOutput,
+    agent/runSubagent,
+    edit/createDirectory,
+    edit/createFile,
+    edit/createJupyterNotebook,
+    edit/editFiles,
+    edit/editNotebook,
+    search/changes,
+    search/codebase,
+    search/fileSearch,
+    search/listDirectory,
+    search/searchResults,
+    search/textSearch,
+    search/usages,
+    web/fetch,
+    web/githubRepo,
+    azure-mcp/acr,
+    azure-mcp/aks,
+    azure-mcp/appconfig,
+    azure-mcp/applens,
+    azure-mcp/applicationinsights,
+    azure-mcp/appservice,
+    azure-mcp/azd,
+    azure-mcp/azureterraformbestpractices,
+    azure-mcp/bicepschema,
+    azure-mcp/cloudarchitect,
+    azure-mcp/communication,
+    azure-mcp/confidentialledger,
+    azure-mcp/cosmos,
+    azure-mcp/datadog,
+    azure-mcp/deploy,
+    azure-mcp/documentation,
+    azure-mcp/eventgrid,
+    azure-mcp/eventhubs,
+    azure-mcp/extension_azqr,
+    azure-mcp/extension_cli_generate,
+    azure-mcp/extension_cli_install,
+    azure-mcp/foundry,
+    azure-mcp/functionapp,
+    azure-mcp/get_bestpractices,
+    azure-mcp/grafana,
+    azure-mcp/group_list,
+    azure-mcp/keyvault,
+    azure-mcp/kusto,
+    azure-mcp/loadtesting,
+    azure-mcp/managedlustre,
+    azure-mcp/marketplace,
+    azure-mcp/monitor,
+    azure-mcp/mysql,
+    azure-mcp/postgres,
+    azure-mcp/quota,
+    azure-mcp/redis,
+    azure-mcp/resourcehealth,
+    azure-mcp/role,
+    azure-mcp/search,
+    azure-mcp/servicebus,
+    azure-mcp/signalr,
+    azure-mcp/speech,
+    azure-mcp/sql,
+    azure-mcp/storage,
+    azure-mcp/subscription_list,
+    azure-mcp/virtualdesktop,
+    azure-mcp/workbooks,
+    todo,
+    vscode.mermaid-chat-features/renderMermaidDiagram,
+    ms-azuretools.vscode-azure-github-copilot/azure_recommend_custom_modes,
+    ms-azuretools.vscode-azure-github-copilot/azure_query_azure_resource_graph,
+    ms-azuretools.vscode-azure-github-copilot/azure_get_auth_context,
+    ms-azuretools.vscode-azure-github-copilot/azure_set_auth_context,
+    ms-azuretools.vscode-azure-github-copilot/azure_get_dotnet_template_tags,
+    ms-azuretools.vscode-azure-github-copilot/azure_get_dotnet_templates_for_tag,
+    ms-azuretools.vscode-azureresourcegroups/azureActivityLog,
+  ]
 handoffs:
   - label: ▶ Start New Project
     agent: InfraOps Conductor
-    prompt: Begin the 7-step workflow for a new Azure infrastructure project. Start by gathering requirements.
+    prompt: "Begin the 7-step workflow for a new Azure infrastructure project. Start by gathering requirements."
     send: false
   - label: ▶ Resume Workflow
     agent: InfraOps Conductor
-    prompt: Resume the workflow from where we left off. Check the agent-output folder for existing artifacts.
+    prompt: "Resume the workflow from where we left off. Check the agent-output folder for existing artifacts."
     send: false
   - label: ▶ Review Artifacts
     agent: InfraOps Conductor
-    prompt: Review all generated artifacts in the agent-output folder and provide a summary of current project state.
+    prompt: "Review all generated artifacts in the agent-output folder and provide a summary of current project state."
     send: true
   - label: "Step 1: Gather Requirements"
     agent: Requirements
-    prompt: Start business-first requirements discovery. Begin by understanding the user's industry, company size, and business objectives — do NOT ask for technical architecture details upfront. Infer the workload pattern from business context, present recommendations for confirmation, and use business-friendly language throughout. Guide through all 5 phases using askQuestions UI before generating 01-requirements.md.
+    prompt: "Start business-first requirements discovery. Begin by understanding the user's industry, company size, and business objectives — do NOT ask for technical architecture details upfront. Infer the workload pattern from business context, present recommendations for confirmation, and use business-friendly language throughout. Guide through all 5 phases using askQuestions UI before generating 01-requirements.md."
     send: false
     model: "Claude Opus 4.6 (copilot)"
   - label: "Step 2: Architecture Assessment"
     agent: Architect
-    prompt: Create a WAF assessment with cost estimates based on the requirements. Save to 02-architecture-assessment.md.
+    prompt: "Create a WAF assessment with cost estimates based on the requirements. Save to 02-architecture-assessment.md."
     send: true
     model: "Claude Opus 4.6 (copilot)"
   - label: "Step 3: Design Artifacts"
     agent: Design
-    prompt: Generate non-Mermaid architecture diagrams and ADRs based on the architecture assessment. Diagrams must be Python diagrams outputs (`03-des-diagram.py` + `.png`) with deterministic layout and quality score >= 9/10. This step is optional - you can skip to Step 4.
+    prompt: "Generate non-Mermaid architecture diagrams and ADRs based on the architecture assessment. Diagrams must be Python diagrams outputs (`03-des-diagram.py` + `.png`) with deterministic layout and quality score >= 9/10. This step is optional - you can skip to Step 4."
     send: false
     model: "GPT-5.3-Codex (copilot)"
   - label: "Step 4: Implementation Plan"
     agent: Bicep Plan
-    prompt: Create a detailed Bicep implementation plan based on the architecture. Save 04-implementation-plan.md plus mandatory Step 4 diagrams: 04-dependency-diagram.py/.png and 04-runtime-diagram.py/.png.
+    prompt: "Create a detailed Bicep implementation plan based on the architecture. Save 04-implementation-plan.md plus mandatory Step 4 diagrams: 04-dependency-diagram.py/.png and 04-runtime-diagram.py/.png."
     send: true
     model: "Claude Opus 4.6 (copilot)"
   - label: "Step 5: Generate Bicep"
     agent: Bicep Code
-    prompt: Implement the Bicep templates according to the plan. Proceed directly to completion - Deploy agent will validate.
+    prompt: "Implement the Bicep templates according to the plan. Proceed directly to completion - Deploy agent will validate."
     send: true
-    model: "Claude Opus 4.6 (copilot)"
   - label: "Step 6: Deploy"
     agent: Deploy
-    prompt: Deploy the Bicep templates to Azure after preflight validation. Check 04-implementation-plan.md for deployment strategy (phased or single) and follow accordingly.
+    prompt: "Deploy the Bicep templates to Azure after preflight validation. Check 04-implementation-plan.md for deployment strategy (phased or single) and follow accordingly."
     send: false
+    model: "GPT-5.3-Codex (copilot)"
+  - label: "Step 7: As-Built Documentation"
+    agent: As-Built
+    prompt: "Generate the complete Step 7 documentation suite for the deployed project. Read all prior artifacts (01-06) and query deployed resources for actual state."
+    send: true
     model: "GPT-5.3-Codex (copilot)"
   - label: "🔧 Diagnose Issues"
     agent: Diagnose
-    prompt: Troubleshoot issues with the current workflow or Azure resources.
+    prompt: "Troubleshoot issues with the current workflow or Azure resources."
     send: false
 ---
 
@@ -95,7 +193,7 @@ Master orchestrator for the 7-step Azure infrastructure development workflow.
 
 ## The 7-Step Workflow
 
-```
+```text
 Step 1: Requirements    →  [APPROVAL GATE]  →  01-requirements.md
 Step 2: Architecture    →  [APPROVAL GATE]  →  02-architecture-assessment.md
 Step 3: Design (opt)    →                   →  03-des-*.md/py
@@ -109,7 +207,7 @@ Step 7: Documentation   →                   →  07-*.md
 
 ### Gate 1: After Requirements
 
-```
+```text
 📋 REQUIREMENTS COMPLETE
 Artifact: agent-output/{project}/01-requirements.md
 ✅ Next: Architecture Assessment (Step 2)
@@ -118,7 +216,7 @@ Artifact: agent-output/{project}/01-requirements.md
 
 ### Gate 2: After Architecture
 
-```
+```text
 🏗️ ARCHITECTURE ASSESSMENT COMPLETE
 Artifact: agent-output/{project}/02-architecture-assessment.md
 Cost Estimate: agent-output/{project}/03-des-cost-estimate.md
@@ -128,7 +226,7 @@ Cost Estimate: agent-output/{project}/03-des-cost-estimate.md
 
 ### Gate 3: After Planning
 
-```
+```text
 📝 IMPLEMENTATION PLAN COMPLETE
 Artifact: agent-output/{project}/04-implementation-plan.md
 Governance: agent-output/{project}/04-governance-constraints.md
@@ -141,7 +239,7 @@ Deployment: {Phased (N phases) | Single}
 
 ### Gate 4: After Implementation
 
-```
+```text
 🔍 BICEP IMPLEMENTATION COMPLETE
 Templates: infra/bicep/{project}/
 Reference: agent-output/{project}/05-implementation-reference.md
@@ -151,7 +249,7 @@ Reference: agent-output/{project}/05-implementation-reference.md
 
 ### Gate 5: After Deployment
 
-```
+```text
 🚀 DEPLOYMENT COMPLETE
 Summary: agent-output/{project}/06-deployment-summary.md
 ✅ Next: Documentation Generation (Step 7)
@@ -170,16 +268,31 @@ Use `#runSubagent` for each workflow step:
 | 4    | Bicep Plan   | Create implementation plan for architecture in 02-architecture-assessment.md |
 | 5    | Bicep Code   | Implement Bicep templates per 04-implementation-plan.md                      |
 | 6    | Deploy       | Deploy templates in infra/bicep/{project}/ to Azure                          |
+| 7    | As-Built     | Generate workload documentation for deployed infrastructure                  |
 
-### Optional Validation Cycle (Step 5 — Power Users)
+### Subagent Integration
 
-Most users skip this — Deploy agent runs preflight automatically.
+Subagents are wired into their parent agents automatically:
 
-If user explicitly requests validation:
+| Subagent                        | Parent Agent | When Used                                        |
+| ------------------------------- | ------------ | ------------------------------------------------ |
+| `cost-estimate-subagent`        | Architect    | Step 2 — pricing isolation + accuracy validation |
+| `cost-estimate-subagent`        | As-Built     | Step 7 — as-built pricing for deployed SKUs      |
+| `governance-discovery-subagent` | Bicep Plan   | Step 4 — policy discovery gate                   |
+| `bicep-lint-subagent`           | Bicep Code   | Step 5 Phase 4 — syntax check                    |
+| `bicep-review-subagent`         | Bicep Code   | Step 5 Phase 4 — code review                     |
+| `bicep-whatif-subagent`         | Deploy       | Step 6 — deployment preview                      |
 
-1. `bicep-lint-subagent` → Syntax validation
-2. `bicep-whatif-subagent` → Deployment preview
-3. `bicep-review-subagent` → Code review
+> [!NOTE]
+> **Pricing Accuracy Gate (Steps 2 & 7)**: No agent writes dollar figures from
+> parametric knowledge. All prices must originate from `cost-estimate-subagent`
+> (Codex + Azure Pricing MCP). This policy applies to both the Architect
+> (Step 2, `03-des-cost-estimate.md`) and As-Built (Step 7, `07-ab-cost-estimate.md`)
+> agents. Established after model evaluation found pricing hallucinations
+> (see `agent-output/model-eval-scoring.md`).
+
+Optional manual validation (power users only):
+If user explicitly requests extra validation at Step 5, delegate to lint/review/whatif subagents directly.
 
 ## Starting a New Project
 
@@ -213,11 +326,12 @@ If user explicitly requests validation:
 
 ## Model Selection
 
-| Agent        | Model      | Rationale            |
-| ------------ | ---------- | -------------------- |
-| Requirements | Opus 4.6   | Deep understanding   |
-| Architect    | Opus 4.6   | WAF analysis + cost  |
-| Bicep Plan   | Sonnet 4.5 | Efficient planning   |
-| Bicep Code   | Sonnet 4.5 | Code generation      |
-| Deploy       | Sonnet 4.5 | Deployment execution |
-| Subagents    | Haiku 4.5  | Fast validation      |
+| Agent        | Model                    | Rationale            |
+| ------------ | ------------------------ | -------------------- |
+| Requirements | Opus 4.6                 | Deep understanding   |
+| Architect    | Opus 4.6                 | WAF analysis + cost  |
+| Bicep Plan   | Opus 4.6                 | Efficient planning   |
+| Bicep Code   | Opus 4.6 / GPT-5.3-Codex | Code generation      |
+| Deploy       | GPT-5.3-Codex            | Deployment execution |
+| As-Built     | GPT-5.3-Codex            | Documentation gen    |
+| Subagents    | GPT-5.3-Codex            | Fast validation      |

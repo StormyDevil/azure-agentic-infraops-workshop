@@ -72,13 +72,15 @@ The following tools are available to agents:
 | `azure_price_search`     | Search prices with filters                               | `@architect`, `@bicep-plan` |
 | `azure_price_compare`    | Compare across regions/SKUs                              | `@architect`                |
 | `azure_cost_estimate`    | Monthly/yearly cost calculations                         | `@architect`, `@bicep-plan` |
+| `azure_bulk_estimate`    | Multi-resource cost estimates in one call (**NEW v4.0**) | `@architect`, `@as-built`   |
 | `azure_region_recommend` | Find cheapest regions                                    | `@architect`                |
 | `azure_discover_skus`    | List available SKUs                                      | `@bicep-plan`               |
 | `azure_sku_discovery`    | Fuzzy name matching for services                         | `@bicep-plan`               |
-| `azure_ri_pricing`       | Reserved Instance pricing (**NEW v3.1.0**)               | `@architect`, `@bicep-plan` |
-| `spot_eviction_rates`    | Spot VM eviction rate queries (**NEW v3.1.0**)           | `@architect`                |
-| `spot_price_history`     | Up to 90 days Spot pricing history (**NEW v3.1.0**)      | `@architect`                |
-| `simulate_eviction`      | Trigger eviction simulation on Spot VMs (**NEW v3.1.0**) | `@diagnose`                 |
+| `azure_ri_pricing`       | Reserved Instance pricing                                | `@architect`, `@bicep-plan` |
+| `spot_eviction_rates`    | Spot VM eviction rate queries                            | `@architect`                |
+| `spot_price_history`     | Up to 90 days Spot pricing history                       | `@architect`                |
+| `simulate_eviction`      | Trigger eviction simulation on Spot VMs                  | `@diagnose`                 |
+| `azure_cache_stats`      | Cache hit/miss statistics (**NEW v4.1**)                 | All agents                  |
 
 ---
 
@@ -89,12 +91,16 @@ The following tools are available to agents:
 | 🔍 **Price Search**           | Search Azure prices with filters (service, region, SKU, price type) |
 | ⚖️ **Price Comparison**       | Compare costs across regions or between different SKUs              |
 | 💡 **Cost Estimation**        | Calculate monthly/yearly costs based on usage hours                 |
+| � **Bulk Estimation**         | Estimate multiple resources in a single call with aggregated totals |
 | 💰 **Savings Plans**          | View 1-year and 3-year savings plan pricing                         |
 | 🎯 **Smart SKU Discovery**    | Fuzzy matching for service names ("vm" → "Virtual Machines")        |
 | 🌍 **Region Recommendations** | Find the cheapest Azure regions for any SKU with savings analysis   |
 | 💱 **Multi-Currency**         | Support for USD, EUR, GBP, and more                                 |
 | 📊 **Real-time Data**         | Live data from Azure Retail Prices API                              |
-| 🐳 **Docker Support**         | Run in containers for easy deployment and isolation                 |
+| ⚡ **Response Caching**       | TTL-based cache to reduce API calls and improve response times      |
+| 📑 **Pagination**             | Automatic multi-page fetching for large result sets                 |
+| 📐 **Multi-unit Pricing**     | Handles per-hour, per-GB, per-month, per-day, per-10K transactions  |
+| 🔄 **Compact Output**         | Optional compact JSON format to reduce LLM context usage            |
 
 ### Pricing Data Accuracy
 
@@ -118,33 +124,42 @@ The following tools are available to agents:
 
 ## 🛠️ Available Tools
 
-| Tool                     | Description                                              |
-| ------------------------ | -------------------------------------------------------- |
-| `azure_price_search`     | Search Azure retail prices with flexible filtering       |
-| `azure_price_compare`    | Compare prices across regions or SKUs                    |
-| `azure_cost_estimate`    | Estimate costs based on usage patterns                   |
-| `azure_region_recommend` | Find cheapest regions for a SKU with savings percentages |
-| `azure_discover_skus`    | List available SKUs for a specific service               |
-| `azure_sku_discovery`    | Intelligent SKU discovery with fuzzy name matching       |
-| `azure_ri_pricing`       | Reserved Instance pricing (1-year, 3-year) (**NEW**)     |
-| `spot_eviction_rates`    | Query Spot VM eviction rates by region (**NEW**)         |
-| `spot_price_history`     | Up to 90 days of Spot VM pricing history (**NEW**)       |
-| `simulate_eviction`      | Trigger eviction simulation on Spot VMs (**NEW**)        |
+| Tool                     | Description                                                      |
+| ------------------------ | ---------------------------------------------------------------- |
+| `azure_price_search`     | Search Azure retail prices with flexible filtering               |
+| `azure_price_compare`    | Compare prices across regions or SKUs                            |
+| `azure_cost_estimate`    | Estimate costs based on usage patterns                           |
+| `azure_bulk_estimate`    | Estimate costs for multiple resources in one call (**NEW v4.0**) |
+| `azure_region_recommend` | Find cheapest regions for a SKU with savings percentages         |
+| `azure_discover_skus`    | List available SKUs for a specific service                       |
+| `azure_sku_discovery`    | Intelligent SKU discovery with fuzzy name matching               |
+| `azure_ri_pricing`       | Reserved Instance pricing (1-year, 3-year)                       |
+| `get_customer_discount`  | Configure customer discount percentage                           |
+| `spot_eviction_rates`    | Query Spot VM eviction rates by region                           |
+| `spot_price_history`     | Up to 90 days of Spot VM pricing history                         |
+| `simulate_eviction`      | Trigger eviction simulation on Spot VMs                          |
+| `azure_cache_stats`      | Show cache hit/miss statistics (**NEW v4.1**)                    |
 
 ### ⚠️ Important: Service and SKU Names
 
 The Azure Retail Prices API requires **exact service names**. Use these mappings:
 
-| Common Name      | Correct `service_name` | Notes                                      |
-| ---------------- | ---------------------- | ------------------------------------------ |
-| SQL Database     | `SQL Database`         | Not "Azure SQL"                            |
-| App Service      | `Azure App Service`    | Include "Azure" prefix                     |
-| Container Apps   | `Azure Container Apps` | Include "Azure" prefix                     |
-| Service Bus      | `Service Bus`          | No prefix                                  |
-| Key Vault        | `Key Vault`            | No prefix                                  |
-| Storage          | `Storage`              | General; use specific product for accuracy |
-| Virtual Machines | `Virtual Machines`     | No "Azure" prefix                          |
-| Log Analytics    | `Log Analytics`        | Or search `Azure Monitor`                  |
+| Common Name      | Correct `service_name`          | Notes                                      |
+| ---------------- | ------------------------------- | ------------------------------------------ |
+| SQL Database     | `SQL Database`                  | Not "Azure SQL"                            |
+| App Service      | `Azure App Service`             | Include "Azure" prefix                     |
+| Container Apps   | `Azure Container Apps`          | Include "Azure" prefix                     |
+| Service Bus      | `Service Bus`                   | No prefix                                  |
+| Key Vault        | `Key Vault`                     | No prefix                                  |
+| Storage          | `Storage`                       | General; use specific product for accuracy |
+| Virtual Machines | `Virtual Machines`              | No "Azure" prefix                          |
+| Log Analytics    | `Log Analytics`                 | Or search `Azure Monitor`                  |
+| AKS              | `Azure Kubernetes Service`      | Include "Azure" prefix                     |
+| Azure Firewall   | `Azure Firewall`                | Include "Azure" prefix                     |
+| API Management   | `API Management`                | No prefix                                  |
+| Functions        | `Functions`                     | No prefix                                  |
+| Redis Cache      | `Azure Cache for Redis`         | Full name required                         |
+| PostgreSQL       | `Azure Database for PostgreSQL` | Full name required                         |
 
 **Tier Keywords**: When searching for tiers like `Basic`, `Standard`, `Premium`:
 
@@ -172,16 +187,6 @@ docker build -t azure-pricing-mcp .
 docker run -i azure-pricing-mcp
 ```
 
-### Option 2: Automated Setup
-
-```bash
-# Windows PowerShell
-.\scripts\setup.ps1
-
-# Linux/Mac/Cross-platform
-python scripts/install.py
-```
-
 ### Option 2: Manual Setup
 
 ```bash
@@ -202,7 +207,7 @@ pip install -r requirements.txt
 
 ### Dependencies
 
-```
+```text
 mcp>=1.0.0
 aiohttp>=3.9.0
 pydantic>=2.0.0
@@ -280,7 +285,7 @@ Create `.vscode/mcp.json` in your workspace:
 
 Open Copilot Chat and ask:
 
-```
+```text
 What's the price of Standard_D32s_v6 in East US 2?
 ```
 
@@ -340,7 +345,7 @@ Once configured, ask your AI assistant:
 
 ### Sample Response
 
-```
+```text
 Standard_D32s_v6 in East US 2:
 - Linux On-Demand: $1.613/hour → $23,550/month for 20 nodes
 - 1-Year Savings:  $1.113/hour → $16,250/month (31% savings)
@@ -364,7 +369,7 @@ pytest tests/
 ### Test MCP Connection in VS Code
 
 1. Open Command Palette → **MCP: List Servers**
-2. Verify `azure-pricing` shows 6 tools
+2. Verify `azure-pricing` shows 13 tools
 3. Open Copilot Chat and ask a pricing question
 
 ---
@@ -411,37 +416,60 @@ pytest tests/
 
 ### Ideas for Contributions
 
-- [ ] Add support for Azure Reserved Instances pricing
-- [ ] Implement caching for frequently requested prices
-- [ ] Add more currency support
-- [ ] Create unit tests for all tools
 - [ ] Add support for Azure Government/China regions
 - [ ] Implement price alerts/notifications
+- [ ] Add Terraform cost estimation integration
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 mcp/azure-pricing-mcp/           # Location within azure-agentic-infraops repo
 ├── .venv/                       # Virtual environment (auto-created)
 ├── src/
 │   └── azure_pricing_mcp/
-│       ├── __init__.py          # Package initialization
+│       ├── __init__.py          # Package initialization (v4.1.0)
 │       ├── __main__.py          # Module entry point
 │       ├── server.py            # Main MCP server implementation
-│       └── handlers.py          # Tool handlers
+│       ├── handlers.py          # Tool call handlers with error boundaries
+│       ├── tools.py             # Tool definitions (13 tools)
+│       ├── error_codes.py       # Standardized error codes and response factory
+│       ├── validation.py        # Input validation for tool arguments
+│       ├── client.py            # Azure Pricing API client with caching
+│       ├── cache.py             # TTL-based response cache
+│       ├── config.py            # Configuration constants and service mappings
+│       ├── formatters.py        # Response formatters (verbose + compact)
+│       ├── models.py            # Data models
+│       ├── auth.py              # Azure AD authentication
+│       └── services/
+│           ├── __init__.py
+│           ├── pricing.py       # Core pricing operations
+│           ├── bulk.py          # Bulk estimate with concurrency and retry
+│           ├── retirement.py    # VM retirement tracking
+│           └── spot.py          # Spot VM pricing
+├── tests/                       # Test suite (94 tests)
+│   ├── conftest.py              # Shared fixtures
+│   ├── test_cache.py            # Cache layer tests
+│   ├── test_cache_stats.py      # Cache stats tool tests
+│   ├── test_pricing.py          # Multi-unit pricing tests
+│   ├── test_bulk.py             # Bulk estimate tests (alias, dedup, retry)
+│   ├── test_error_codes.py      # Error code enum and factory tests
+│   ├── test_formatters.py       # Formatter tests
+│   ├── test_handlers.py         # Handler validation and dispatch tests
+│   ├── test_tools.py            # Tool definition tests
+│   ├── test_config.py           # Config validation tests
+│   ├── test_tier_keywords.py    # SKU tier keyword tests
+│   └── test_validation.py       # Input validation tests
 ├── scripts/
-│   ├── install.py               # Installation script
-│   ├── setup.ps1                # PowerShell setup script
-│   ├── healthcheck.py           # Server health check
-│   └── run_server.py            # Server runner
-├── tests/                       # Test suite (51 tests)
-├── docs/                        # Additional documentation
-├── .archive/                    # Archived/obsolete files
+│   └── healthcheck.py           # Server health check
+├── docs/
+│   └── DEVELOPMENT.md           # Development guidelines
 ├── requirements.txt             # Python dependencies
 ├── pyproject.toml               # Package configuration
 ├── INSTALL.md                   # Installation instructions
+├── DOCKER.md                    # Docker guide
+├── CHANGELOG.md                 # Version history
 └── README.md                    # This file
 ```
 
@@ -451,7 +479,7 @@ mcp/azure-pricing-mcp/           # Location within azure-agentic-infraops repo
 
 This server uses the [Azure Retail Prices API](https://learn.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices):
 
-```
+```text
 https://prices.azure.com/api/retail/prices
 ```
 
@@ -462,9 +490,9 @@ https://prices.azure.com/api/retail/prices
 ## 📚 Additional Documentation
 
 - **[INSTALL.md](INSTALL.md)** - Detailed installation instructions
-- **[DOCKER.md](DOCKER.md)** - Docker containerization guide 🐳
+- **[DOCKER.md](DOCKER.md)** - Docker containerization guide
 - **[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)** - Development setup and guidelines
-- **[docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)** - Detailed code structure
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history
 
 ---
 
