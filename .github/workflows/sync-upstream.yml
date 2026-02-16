@@ -179,6 +179,73 @@ jobs:
             echo "- **Auto-merge**: could not enable (check repository settings/permissions)" >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      - name: Close stale upstream-sync PRs
+        if: steps.sync.outputs.changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_PAT }}
+        run: |
+          CURRENT_PR="${{ steps.create_pr.outputs.pr_number }}"
+
+          gh pr list \
+            --repo "${{ github.repository }}" \
+            --state open \
+            --label upstream-sync \
+            --json number \
+            -q '.[].number' | while read -r PR; do
+            if [[ -z "$PR" || "$PR" == "$CURRENT_PR" ]]; then
+              continue
+            fi
+
+            echo "Closing stale upstream-sync PR #$PR"
+            gh pr close "$PR" \
+              --repo "${{ github.repository }}" \
+              --comment "Superseded by upstream-sync PR #${CURRENT_PR}. Closing stale sync PR."
+          done
+
+      - name: Fallback merge when checks are green
+        if: steps.sync.outputs.changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_PAT }}
+        run: |
+          PR_NUMBER="${{ steps.create_pr.outputs.pr_number }}"
+          MAX_ATTEMPTS=30
+          SLEEP_SECONDS=20
+
+          for ((i=1; i<=MAX_ATTEMPTS; i++)); do
+            PR_STATE=$(gh pr view "$PR_NUMBER" \
+              --repo "${{ github.repository }}" \
+              --json state \
+              -q '.state')
+
+            if [[ "$PR_STATE" != "OPEN" ]]; then
+              echo "PR #$PR_NUMBER is $PR_STATE; stopping fallback merge loop."
+              exit 0
+            fi
+
+            MERGE_STATE=$(gh pr view "$PR_NUMBER" \
+              --repo "${{ github.repository }}" \
+              --json mergeStateStatus \
+              -q '.mergeStateStatus')
+
+            echo "Attempt $i/$MAX_ATTEMPTS: mergeStateStatus=$MERGE_STATE"
+
+            if [[ "$MERGE_STATE" == "CLEAN" ]]; then
+              if gh pr merge "$PR_NUMBER" \
+                --repo "${{ github.repository }}" \
+                --squash \
+                --delete-branch; then
+                echo "✅ Fallback merged PR #$PR_NUMBER after checks turned green."
+                echo "- **Fallback merge**: merged PR #$PR_NUMBER" >> "$GITHUB_STEP_SUMMARY"
+                exit 0
+              fi
+            fi
+
+            sleep "$SLEEP_SECONDS"
+          done
+
+          echo "ℹ️ Fallback merge window ended for PR #$PR_NUMBER; leaving PR open."
+          echo "- **Fallback merge**: not merged within wait window" >> "$GITHUB_STEP_SUMMARY"
+
       - name: No changes summary
         if: steps.sync.outputs.changes == 'false' && inputs.dry_run == 'false'
         run: |

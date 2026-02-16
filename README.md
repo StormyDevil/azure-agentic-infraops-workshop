@@ -11,6 +11,11 @@
 [![MIT License][license-shield]][license-url]
 [![Azure][azure-shield]][azure-url]
 
+> [!IMPORTANT]
+> **Upstream-authoritative sync is enabled.** Content from
+> `jonathan-vella/azure-agentic-infraops` is treated as source of truth for
+> sync-scoped paths; upstream updates overwrite workshop copies during sync.
+
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
