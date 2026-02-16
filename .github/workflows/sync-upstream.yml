@@ -1,11 +1,11 @@
 # Upstream Sync Workflow
 #
 # Syncs files from azure-agentic-infraops (source) to this workshop repo.
-# Creates a staging branch and draft PR for human review.
+# Creates a staging branch, draft PR, and assigns Copilot to fix lint issues.
 #
 # Trigger: manual only (workflow_dispatch)
 # Auth:    requires SYNC_PAT secret (fine-grained PAT with contents:write,
-#          pull-requests:write, metadata:read)
+#          issues:write, pull-requests:write, metadata:read)
 
 name: upstream-sync
 
@@ -32,6 +32,7 @@ concurrency:
 
 permissions:
   contents: write
+  issues: write
   pull-requests: write
 
 jobs:
@@ -104,6 +105,7 @@ jobs:
           git push origin "$SYNC_BRANCH"
 
       - name: Create draft PR
+        id: create_pr
         if: steps.sync.outputs.changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.SYNC_PAT }}
@@ -140,6 +142,20 @@ jobs:
           echo "- **Branch**: \`$SYNC_BRANCH\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- **PR**: $PR_URL" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Files changed**: ${{ steps.sync.outputs.change_count }}" >> "$GITHUB_STEP_SUMMARY"
+
+          PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Assign Copilot to fix lint issues
+        if: steps.sync.outputs.changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_PAT }}
+        run: |
+          PR_NUMBER="${{ steps.create_pr.outputs.pr_number }}"
+
+          gh pr comment "$PR_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --body "@copilot Fix lint failures on this PR. Run \`npm install\`, then fix issues found by \`npm run lint:md\`, \`npm run lint:agent-frontmatter\`, and \`npm run lint:skills-format\`. Push fixes to this branch. Do not create new PRs or branches."
 
       - name: No changes summary
         if: steps.sync.outputs.changes == 'false' && inputs.dry_run == 'false'

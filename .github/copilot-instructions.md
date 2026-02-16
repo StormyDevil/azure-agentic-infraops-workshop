@@ -48,6 +48,19 @@ Agents read skills via: **"Read `.github/skills/{name}/SKILL.md`"** in their bod
 - Only use `gh` for operations that have no equivalent MCP write tool in the current environment.
 - In devcontainers, do not run `gh auth` commands unless the user explicitly asks for CLI authentication troubleshooting.
 
+## Upstream Sync Rules (Copilot Coding Agent)
+
+When assigned to an issue or PR with the `upstream-sync` label:
+
+1. **Never create a new PR.** Push commits to the branch already specified in the issue/PR.
+2. **Never create a new branch.** Work only on the `sync/upstream-*` branch referenced in the issue or PR body.
+3. **Never create issues.** The tracking issue already exists.
+4. Run `npm install`, then fix lint failures:
+   `npm run lint:md`, `npm run lint:agent-frontmatter`, `npm run lint:skills-format`.
+5. Only modify files that appear in `SYNC-MANIFEST.md` — never touch
+   `microhack/**`, `docs/**`, `README.md`, `VERSION.md`, `CHANGELOG.md`,
+   `CONTRIBUTORS.md`, or `package.json`.
+
 ## Key Conventions
 
 - **Default region**: `swedencentral` (exception: Static Web Apps → `westeurope`)
