@@ -1,20 +1,22 @@
 # Merge Copilot Sub-PR
 #
-# When Copilot SWE agent opens a sub-PR from a copilot/sub-pr-* branch,
+# When Copilot SWE agent pushes to a copilot/sub-pr-* branch,
 # this workflow merges those changes into the parent sync branch and
 # auto-closes the sub-PR so only 1 PR remains for review.
 #
-# Flow: Copilot sub-PR opened → merge into parent sync branch → close sub-PR
+# Flow: Copilot branch push → merge into parent sync branch → close sub-PR
 # Auth: requires SYNC_PAT secret
 
 name: merge-copilot-sub-pr
 
 on:
-  pull_request:
-    types: [opened]
+  push:
     branches:
-      - main
-      - 'sync/upstream-*'
+      - 'copilot/sub-pr-*'
+
+concurrency:
+  group: merge-copilot-sub-pr-${{ github.ref_name }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -22,91 +24,107 @@ permissions:
 
 jobs:
   merge-and-close:
-    if: startsWith(github.head_ref, 'copilot/sub-pr-')
     runs-on: ubuntu-latest
 
     steps:
-      - name: Extract parent PR number
-        id: parent
-        run: |
-          BRANCH="${{ github.head_ref }}"
-          PARENT_PR="${BRANCH##copilot/sub-pr-}"
-          echo "pr_number=$PARENT_PR" >> "$GITHUB_OUTPUT"
-          echo "📌 Parent PR: #$PARENT_PR"
-
-      - name: Get parent PR branch
-        id: parent_branch
+      - name: Resolve sub-PR and parent branch
+        id: context
         env:
           GH_TOKEN: ${{ secrets.SYNC_PAT }}
         run: |
-          PARENT_BRANCH=$(gh pr view "${{ steps.parent.outputs.pr_number }}" \
-            --repo "${{ github.repository }}" \
-            --json headRefName,state -q '.headRefName')
+          BRANCH="${{ github.ref_name }}"
+          PARENT_PR="${BRANCH##copilot/sub-pr-}"
+          echo "copilot_branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "parent_pr_number=$PARENT_PR" >> "$GITHUB_OUTPUT"
 
-          STATE=$(gh pr view "${{ steps.parent.outputs.pr_number }}" \
+          SUB_PR=$(gh pr list \
             --repo "${{ github.repository }}" \
-            --json state -q '.state')
+            --head "$BRANCH" \
+            --state open \
+            --json number \
+            -q '.[0].number')
 
-          if [[ "$STATE" != "OPEN" ]]; then
-            echo "⚠️ Parent PR #${{ steps.parent.outputs.pr_number }} is $STATE, skipping merge"
+          if [[ -z "$SUB_PR" || "$SUB_PR" == "null" ]]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "reason=no_open_sub_pr" >> "$GITHUB_OUTPUT"
+            echo "ℹ️ No open sub-PR found for branch $BRANCH"
+            exit 0
           fi
 
-          echo "branch=$PARENT_BRANCH" >> "$GITHUB_OUTPUT"
-          echo "📌 Parent branch: $PARENT_BRANCH (state: $STATE)"
+          PARENT_STATE=$(gh pr view "$PARENT_PR" \
+            --repo "${{ github.repository }}" \
+            --json state \
+            -q '.state' 2>/dev/null || echo "MISSING")
+
+          if [[ "$PARENT_STATE" == "OPEN" ]]; then
+            PARENT_BRANCH=$(gh pr view "$PARENT_PR" \
+              --repo "${{ github.repository }}" \
+              --json headRefName \
+              -q '.headRefName')
+          else
+            PARENT_BRANCH=$(gh pr view "$SUB_PR" \
+              --repo "${{ github.repository }}" \
+              --json baseRefName \
+              -q '.baseRefName')
+          fi
+
+          echo "sub_pr_number=$SUB_PR" >> "$GITHUB_OUTPUT"
+          echo "parent_state=$PARENT_STATE" >> "$GITHUB_OUTPUT"
+          echo "parent_branch=$PARENT_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          echo "📌 Sub-PR: #$SUB_PR"
+          echo "📌 Parent PR: #$PARENT_PR ($PARENT_STATE)"
+          echo "📌 Merge target branch: $PARENT_BRANCH"
 
       - name: Checkout repository
-        if: steps.parent_branch.outputs.skip != 'true'
+        if: steps.context.outputs.skip != 'true'
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.SYNC_PAT }}
           fetch-depth: 0
 
       - name: Merge Copilot changes into parent branch
-        if: steps.parent_branch.outputs.skip != 'true'
+        if: steps.context.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          PARENT="${{ steps.parent_branch.outputs.branch }}"
-          COPILOT="${{ github.head_ref }}"
+          PARENT="${{ steps.context.outputs.parent_branch }}"
+          COPILOT="${{ steps.context.outputs.copilot_branch }}"
 
-          git checkout "$PARENT"
-          git merge "origin/$COPILOT" --no-edit \
-            -m "chore(sync): merge Copilot lint fixes from $COPILOT"
-          git push origin "$PARENT"
-          echo "✅ Merged $COPILOT → $PARENT"
+          git fetch origin "$PARENT" "$COPILOT"
+          git checkout -B "$PARENT" "origin/$PARENT"
+
+          if git merge "origin/$COPILOT" --no-edit -m "chore(sync): merge Copilot lint fixes from $COPILOT"; then
+            git push origin "$PARENT"
+            echo "✅ Merged $COPILOT → $PARENT"
+          else
+            echo "❌ Merge conflict while merging $COPILOT into $PARENT"
+            exit 1
+          fi
 
       - name: Close sub-PR and clean up
-        if: steps.parent_branch.outputs.skip != 'true'
+        if: steps.context.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.SYNC_PAT }}
         run: |
-          PARENT_PR="${{ steps.parent.outputs.pr_number }}"
-          SUB_PR="${{ github.event.pull_request.number }}"
-          PARENT_BRANCH="${{ steps.parent_branch.outputs.branch }}"
+          PARENT_PR="${{ steps.context.outputs.parent_pr_number }}"
+          SUB_PR="${{ steps.context.outputs.sub_pr_number }}"
+          PARENT_BRANCH="${{ steps.context.outputs.parent_branch }}"
+          PARENT_STATE="${{ steps.context.outputs.parent_state }}"
+
+          if [[ "$PARENT_STATE" == "OPEN" ]]; then
+            COMMENT="✅ Changes merged into parent PR #${PARENT_PR} (branch \`${PARENT_BRANCH}\`). Auto-closing this sub-PR."
+          else
+            COMMENT="✅ Changes merged into base branch \`${PARENT_BRANCH}\`. Parent PR #${PARENT_PR} is ${PARENT_STATE}, so this sub-PR is being closed."
+          fi
 
           gh pr close "$SUB_PR" \
             --repo "${{ github.repository }}" \
-            --comment "✅ Changes merged into parent PR #${PARENT_PR} (branch \`${PARENT_BRANCH}\`). Auto-closing this sub-PR." \
+            --comment "$COMMENT" \
             --delete-branch
 
           echo "## ✅ Copilot Sub-PR Merged" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Sub-PR**: #$SUB_PR (closed)" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Merged into**: PR #$PARENT_PR (\`$PARENT_BRANCH\`)" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Close orphaned sub-PR
-        if: steps.parent_branch.outputs.skip == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.SYNC_PAT }}
-        run: |
-          SUB_PR="${{ github.event.pull_request.number }}"
-          PARENT_PR="${{ steps.parent.outputs.pr_number }}"
-
-          gh pr close "$SUB_PR" \
-            --repo "${{ github.repository }}" \
-            --comment "⚠️ Parent PR #${PARENT_PR} is no longer open. Closing this orphaned sub-PR." \
-            --delete-branch
+          echo "- **Merged into**: \`$PARENT_BRANCH\`" >> "$GITHUB_STEP_SUMMARY"
