@@ -1,5 +1,11 @@
 # Challenge 3: Bicep Implementation, Deployment & Workflow Understanding
 
+## Prerequisite: Azure Policy Deployment
+
+Before starting this challenge, you must deploy Azure Policy by following the instructions provided in
+the [setup-governancepolicies.ps1](https://github.com/jonathan-vella/azure-agentic-infraops-workshop/tree/main/scripts/microhack#setup-governancepoliciesps1)
+section of the repository.
+
 > **Duration**: 70 minutes | **Agents**: `bicep-plan`, `bicep-code`, `deploy`
 > **Output**: Deployed infrastructure + Workflow diagram
 
