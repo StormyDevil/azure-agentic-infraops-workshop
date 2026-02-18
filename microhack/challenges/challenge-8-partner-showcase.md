@@ -1,6 +1,6 @@
 # Challenge 8: Partner Showcase 🎤
 
-> **Duration**: 30 minutes | **Format**: Role-Play Presentations | **Points**: 10
+> **Duration**: 60 minutes | **Format**: Role-Play Presentations | **Points**: 10
 
 ## Overview
 
@@ -52,7 +52,7 @@ The coach will pair teams:
 
 ## Presentation Format
 
-**Time per team**: ~6.5 minutes
+**Time per team**: ~14 minutes
 
 | Segment       | Duration | Content                      |
 | ------------- | -------- | ---------------------------- |
@@ -64,14 +64,15 @@ The coach will pair teams:
 
 ## Presentation Schedule
 
-| Time  | Activity                   |
-| ----- | -------------------------- |
-| 15:25 | Intro & pairings           |
-| 15:27 | Team 1 presents (~6.5 min) |
-| 15:34 | Team 2 presents (~6.5 min) |
-| 15:41 | Team 3 presents (~6.5 min) |
-| 15:48 | Team 4 presents (~6.5 min) |
-| 15:55 | Wrap-up begins             |
+| Time  | Activity                  |
+| ----- | ------------------------- |
+| 14:50 | Intro & pairings          |
+| 14:52 | Team 1 presents (~14 min) |
+| 15:06 | Team 2 presents (~14 min) |
+| 15:20 | Team 3 presents (~14 min) |
+| 15:34 | Team 4 presents (~14 min) |
+| 15:48 | Closing remarks           |
+| 15:50 | Wrap-up begins            |
 
 ---
 

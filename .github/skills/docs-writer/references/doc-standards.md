@@ -106,7 +106,14 @@ These agents were removed and converted to skills. Never reference them:
 Also avoid references to removed paths:
 
 - `docs/reference/` — removed
-- `docs/getting-started.md` — superseded by `docs/quickstart.md`
+- `docs/quickstart.md` — merged into `docs/getting-started.md`
+- `docs/know-before-you-go.md` — merged into `docs/getting-started.md`
+- `docs/dev-containers.md` — merged into `docs/getting-started.md`
+- `docs/quota-requirements.md` — merged into `docs/getting-started.md`
+- `docs/scenario-brief.md` — merged into `docs/workshop-prep.md`
+- `docs/team-role-cards.md` — merged into `docs/workshop-prep.md`
+- `docs/guides/development-workflow.md` — merged into `docs/guides/contributing.md`
+- `docs/guides/automated-versioning.md` — merged into `docs/guides/contributing.md`
 
 ## Content Principles
 

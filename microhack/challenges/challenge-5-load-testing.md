@@ -1,6 +1,6 @@
 # Challenge 5: Load Testing & Performance Validation
 
-> **Duration**: 20 minutes | **Agent**: `design` | **Output**: `05-load-test-results.md`
+> **Duration**: 30 minutes | **Agent**: `design` | **Output**: `05-load-test-results.md`
 
 ## The Business Context
 
@@ -156,7 +156,7 @@ Context:
 | Criterion                                  | Points |
 | ------------------------------------------ | ------ |
 | Load test executed with realistic scenario | 2      |
-| Results documented (using `design` agent)    | 2      |
+| Results documented (using `design` agent)  | 2      |
 | Performance interpreted correctly          | 1      |
 | **Total**                                  | **5**  |
 

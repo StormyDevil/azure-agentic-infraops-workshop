@@ -539,22 +539,6 @@ Why check database DTU before App Service CPU? What's the reasoning?
 
 </details>
 
-export default function () {
-const res = http.get("https://example.com/"); // replace with your app URL
-check(res, { "status is 200": (r) => r.status === 200 });
-sleep(1);
-}
-
-````
-
-**Run:**
-
-```bash
-k6 run load-test.js
-````
-
-</details>
-
 ## Common Mistakes to Avoid
 
 | Mistake                      | Solution                                            |
@@ -568,7 +552,7 @@ k6 run load-test.js
 
 ## Agent-Specific Tips
 
-### `requirements` Agent (Challenge 1)
+### Requirements Agent (Challenge 1)
 
 **Instead of asking "what should I do?"**, ask:
 
@@ -578,7 +562,7 @@ k6 run load-test.js
 
 💡 Be specific about business context, not just technical features.
 
-### `architect` Agent (Challenge 2)
+### Architect Agent (Challenge 2)
 
 **Instead of "design my architecture"**, try:
 
@@ -588,7 +572,7 @@ k6 run load-test.js
 
 💡 Question recommendations — ask "why this service?" not just "what service?"
 
-### `bicep-plan` Agent (Challenge 3)
+### Bicep Plan Agent (Challenge 3)
 
 **Instead of "write Bicep"**, ask:
 
@@ -598,7 +582,7 @@ k6 run load-test.js
 
 💡 Review the module structure before generating code.
 
-### `bicep-code` Agent (Challenge 3)
+### Bicep Code Agent (Challenge 3)
 
 **Instead of "generate all the code"**, try:
 
@@ -608,7 +592,7 @@ k6 run load-test.js
 
 💡 Iterate incrementally — don't generate everything at once.
 
-### `design` Agent (Challenges 5-7)
+### Design Agent (Challenges 5-7)
 
 **Instead of "document everything"**, ask:
 

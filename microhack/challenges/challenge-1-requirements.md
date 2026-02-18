@@ -1,6 +1,6 @@
 # Challenge 1: Requirements Gathering
 
-> **Duration**: 50 minutes | **Agent**: `requirements` | **Output**: `01-requirements.md`
+> **Duration**: 30 minutes | **Agent**: `requirements` | **Output**: `01-requirements.md`
 
 ## Objective
 

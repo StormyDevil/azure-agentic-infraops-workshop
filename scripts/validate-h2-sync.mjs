@@ -55,9 +55,9 @@ function readText(filePath) {
 function parseMarkdownH2Blocks(text) {
   const result = new Map();
   // Match ### headings (with optional suffix like "(Agent Name)")
-  // followed by a fenced code block (``` or ```markdown)
+  // followed by a fenced code block (```, ```markdown, or ```text)
   const sectionRegex =
-    /###\s+([\w.-]+\.md)(?:\s+[^\n]*)?\n+```(?:markdown)?\n([\s\S]*?)```/g;
+    /###\s+([\w.-]+\.md)(?:\s+[^\n]*)?\n+```(?:markdown|text)?\n([\s\S]*?)```/g;
   let match;
 
   while ((match = sectionRegex.exec(text)) !== null) {

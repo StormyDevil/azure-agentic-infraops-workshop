@@ -46,12 +46,6 @@ disaster recovery requirements.
 **Dev Container** — A Docker-based development environment defined in
 `.devcontainer/devcontainer.json`. Provides consistent tooling for all contributors.
 
-## G
-
-**Governance Constraints** — Azure Policy assignments that restrict resource
-configurations. Discovered during Step 4 (Planning) and saved to
-`04-governance-constraints.md`.
-
 ## F
 
 **Facilitator** — The event organiser who runs the microhack: manages the schedule,
@@ -60,6 +54,12 @@ announces the curveball, coaches teams, and runs the scoring scripts.
 **FreshConnect** — The project codename for the Nordic Fresh Foods delivery
 platform used as the microhack scenario. All agent output goes to
 `agent-output/freshconnect/`.
+
+## G
+
+**Governance Constraints** — Azure Policy assignments that restrict resource
+configurations. Discovered during Step 4 (Planning) and saved to
+`04-governance-constraints.md`.
 
 ## H
 

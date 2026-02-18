@@ -38,7 +38,7 @@ None — all tools and references are workspace-local.
 
 All markdown documentation **except** `agent-output/**/*.md`:
 
-- `docs/` — user-facing docs (quickstart, workflow, troubleshooting, etc.)
+- `docs/` — user-facing docs (getting-started, workshop-prep, copilot-guide, troubleshooting, etc.)
 - `microhack/` — microhack materials (challenges, participant guides, facilitator docs)
 - `README.md` — repo root README
 - `CONTRIBUTING.md` — contribution guidelines

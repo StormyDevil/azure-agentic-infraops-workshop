@@ -6,14 +6,14 @@
 
 Visual Studio Code is your development environment. Here are the key features:
 
-| Feature | Shortcut | What It Does |
-|---------|----------|--------------|
-| **Command Palette** | `Ctrl+Shift+P` | Run any VS Code command by name |
-| **Integrated Terminal** | `` Ctrl+` `` | Run Azure CLI, Bicep, k6, and Git commands |
-| **Explorer** | `Ctrl+Shift+E` | Browse files and folders |
-| **Search** | `Ctrl+Shift+F` | Search across all files in the workspace |
-| **Copilot Chat** | `Ctrl+Alt+I` | Open the AI assistant panel |
-| **Inline Chat** | `Ctrl+I` | Quick AI help inside a file |
+| Feature                 | Shortcut       | What It Does                               |
+| ----------------------- | -------------- | ------------------------------------------ |
+| **Command Palette**     | `Ctrl+Shift+P` | Run any VS Code command by name            |
+| **Integrated Terminal** | `` Ctrl+` ``   | Run Azure CLI, Bicep, k6, and Git commands |
+| **Explorer**            | `Ctrl+Shift+E` | Browse files and folders                   |
+| **Search**              | `Ctrl+Shift+F` | Search across all files in the workspace   |
+| **Copilot Chat**        | `Ctrl+Alt+I`   | Open the AI assistant panel                |
+| **Inline Chat**         | `Ctrl+I`       | Quick AI help inside a file                |
 
 ### Dev Container
 
@@ -22,7 +22,7 @@ pre-installed (Azure CLI, Bicep, k6, Node.js, Python). You don't need to install
 on your local machine beyond Docker and VS Code.
 
 When you open the repository, VS Code prompts you to "Reopen in Container." Accept this to
-get the fully configured environment. See [Dev Containers](dev-containers.md) for details.
+get the fully configured environment. See [Getting Started](getting-started.md#dev-container-setup) for details.
 
 ---
 
@@ -30,7 +30,7 @@ get the fully configured environment. See [Dev Containers](dev-containers.md) fo
 
 GitHub Copilot is an AI coding assistant built into VS Code. This project requires a
 **Copilot Pro+** or **Copilot Enterprise** license (verified during
-[pre-event setup](know-before-you-go.md#required-accounts)).
+[pre-event setup](getting-started.md#accounts)).
 
 Copilot works in three main modes, each suited to different tasks:
 
@@ -98,27 +98,27 @@ what output format to use, and what quality checks to perform.
 
 ### Available Agents
 
-| Agent | Persona | Step | Purpose |
-|-------|---------|------|---------|
-| **InfraOps Conductor** | 🎼 Maestro | All | Master orchestrator for the full 7-step workflow |
-| **requirements** | 📜 Scribe | 1 | Capture functional and non-functional requirements |
-| **architect** | 🏛️ Oracle | 2 | Design WAF-aligned architecture with cost estimates |
-| **design** | 🎨 Artisan | 3 | Generate architecture diagrams and documentation |
-| **bicep-plan** | 📐 Strategist | 4 | Create implementation plans |
-| **bicep-code** | ⚒️ Forge | 5 | Generate Bicep templates |
-| **deploy** | 🚀 Envoy | 6 | Deploy infrastructure to Azure |
-| **diagnose** | 🔍 Sentinel | — | Troubleshooting and diagnostic runbooks |
+| Agent                  | Persona       | Step | Purpose                                             |
+| ---------------------- | ------------- | ---- | --------------------------------------------------- |
+| **InfraOps Conductor** | 🎼 Maestro    | All  | Master orchestrator for the full 7-step workflow    |
+| **Requirements**       | 📜 Scribe     | 1    | Capture functional and non-functional requirements  |
+| **Architect**          | 🏛️ Oracle     | 2    | Design WAF-aligned architecture with cost estimates |
+| **Design**             | 🎨 Artisan    | 3    | Generate architecture diagrams and documentation    |
+| **Bicep Plan**         | 📐 Strategist | 4    | Create implementation plans                         |
+| **Bicep Code**         | ⚒️ Forge      | 5    | Generate Bicep templates                            |
+| **Deploy**             | 🚀 Envoy      | 6    | Deploy infrastructure to Azure                      |
+| **Diagnose**           | 🔍 Sentinel   | —    | Troubleshooting and diagnostic runbooks             |
 
 ### Subagents
 
 Some agents delegate specialist tasks to **subagents** — smaller, focused agents that run
 inside the parent agent's workflow:
 
-| Subagent | Parent | Purpose |
-|----------|--------|---------|
-| **bicep-lint-subagent** | bicep-code | Runs `bicep build` and `bicep lint` validation |
-| **bicep-review-subagent** | bicep-code | Reviews Bicep code for best practices |
-| **bicep-whatif-subagent** | deploy | Runs `az deployment group what-if` analysis |
+| Subagent                  | Parent     | Purpose                                        |
+| ------------------------- | ---------- | ---------------------------------------------- |
+| **bicep-lint-subagent**   | bicep-code | Runs `bicep build` and `bicep lint` validation |
+| **bicep-review-subagent** | bicep-code | Reviews Bicep code for best practices          |
+| **bicep-whatif-subagent** | deploy     | Runs `az deployment group what-if` analysis    |
 
 You don't select subagents directly — they're invoked automatically by their parent agent.
 
@@ -147,20 +147,20 @@ Use the **InfraOps Conductor** for multi-step workflows.
 For targeted work, invoke agents directly:
 
 ```text
-@requirements — Capture requirements for a static web app
-@architect — Assess the requirements in 01-requirements.md
-@bicep-plan — Create an implementation plan from 02-architecture-assessment.md
+@Requirements — Capture requirements for a static web app
+@Architect — Assess the requirements in 01-requirements.md
+@Bicep Plan — Create an implementation plan from 02-architecture-assessment.md
 ```
 
 ### Agent-Specific Tips
 
-| Agent | Best Approach |
-|-------|---------------|
-| **Requirements** (📜 Scribe) | Describe the **business problem** not the technical solution. Mention compliance needs and budget constraints early. |
-| **Architect** (🏛️ Oracle) | Always let it read `01-requirements.md` first. Ask for specific WAF pillar focus if needed. Request cost estimates explicitly. |
-| **Design** (🎨 Artisan) | Request diagrams after architecture assessment exists. For ADRs, describe the decision context clearly. |
-| **Bicep Code** (⚒️ Forge) | It prefers Azure Verified Modules (AVM). Let it read `04-implementation-plan.md` first. Ask it to validate with `bicep build` and `bicep lint`. |
-| **Deploy** (🚀 Envoy) | Ensure `az login` is active. It runs `what-if` before deployment — review the preview. |
+| Agent                        | Best Approach                                                                           |
+| ---------------------------- | --------------------------------------------------------------------------------------- |
+| **Requirements** (📜 Scribe) | Describe the **business problem** not the technical solution.                           |
+| **Architect** (🏛️ Oracle)    | Always let it read `01-requirements.md` first. Request cost estimates explicitly.       |
+| **Design** (🎨 Artisan)      | Request diagrams after architecture assessment exists.                                  |
+| **Bicep Code** (⚒️ Forge)    | It prefers Azure Verified Modules (AVM). Let it read `04-implementation-plan.md` first. |
+| **Deploy** (🚀 Envoy)        | Ensure `az login` is active. It runs `what-if` before deployment — review the preview.  |
 
 ### Use `#file` References
 
@@ -185,29 +185,29 @@ When an agent starts working, it reads specific skill files to understand:
 
 ### Available Skills
 
-| Skill | Purpose | Used By |
-|-------|---------|---------|
-| **azure-defaults** | Regions, tags, naming, security baselines | All agents |
-| **azure-artifacts** | Output templates (H2 structures for each artifact) | All agents |
-| **azure-diagrams** | Python architecture diagram generation | design |
-| **azure-adr** | Architecture Decision Records format | design, bicep-plan |
-| **docs-writer** | Documentation generation standards | design |
-| **git-commit** | Commit message conventions | All agents |
-| **github-operations** | Issues, PRs, GitHub CLI patterns | All agents |
-| **make-skill-template** | Template for creating new skills | Meta |
+| Skill                   | Purpose                                            | Used By            |
+| ----------------------- | -------------------------------------------------- | ------------------ |
+| **azure-defaults**      | Regions, tags, naming, security baselines          | All agents         |
+| **azure-artifacts**     | Output templates (H2 structures for each artifact) | All agents         |
+| **azure-diagrams**      | Python architecture diagram generation             | design             |
+| **azure-adr**           | Architecture Decision Records format               | design, bicep-plan |
+| **docs-writer**         | Documentation generation standards                 | design             |
+| **git-commit**          | Commit message conventions                         | All agents         |
+| **github-operations**   | Issues, PRs, GitHub CLI patterns                   | All agents         |
+| **make-skill-template** | Template for creating new skills                   | Meta               |
 
 ### Skill Triggers
 
 Skills auto-load based on keyword matching in your prompt:
 
-| Keyword | Skill Triggered |
-|---------|-----------------|
-| "create diagram" | `azure-diagrams` |
-| "create ADR", "document decision" | `azure-adr` |
-| "commit", "git commit" | `git-commit` |
-| "create issue", "create PR" | `github-operations` |
-| "update docs", "check freshness" | `docs-writer` |
-| "azure defaults", "naming convention" | `azure-defaults` |
+| Keyword                               | Skill Triggered     |
+| ------------------------------------- | ------------------- |
+| "create diagram"                      | `azure-diagrams`    |
+| "create ADR", "document decision"     | `azure-adr`         |
+| "commit", "git commit"                | `git-commit`        |
+| "create issue", "create PR"           | `github-operations` |
+| "update docs", "check freshness"      | `docs-writer`       |
+| "azure defaults", "naming convention" | `azure-defaults`    |
 
 You can also explicitly invoke a skill:
 
@@ -237,12 +237,12 @@ description: "Infrastructure as Code best practices for Azure Bicep templates"
 
 ### Key Instructions in This Workshop
 
-| Instruction | Applies To | What It Does |
-|-------------|-----------|--------------|
-| `bicep-code-best-practices` | `**/*.bicep` | Bicep naming, modules, security patterns |
-| `markdown.instructions` | `**/*.md` | Markdown formatting standards |
-| `cost-estimate.instructions` | Cost estimate files | Cost documentation structure |
-| `artifact-h2-reference` | Agent output files | Template compliance rules |
+| Instruction                  | Applies To          | What It Does                             |
+| ---------------------------- | ------------------- | ---------------------------------------- |
+| `bicep-code-best-practices`  | `**/*.bicep`        | Bicep naming, modules, security patterns |
+| `markdown.instructions`      | `**/*.md`           | Markdown formatting standards            |
+| `cost-estimate.instructions` | Cost estimate files | Cost documentation structure             |
+| `artifact-h2-reference`      | Agent output files  | Template compliance rules                |
 
 ### The Global Instruction File
 
@@ -297,16 +297,16 @@ You (prompt)
 ### Workflow Through the Microhack
 
 ```text
-Challenge 1 → requirements agent → 01-requirements.md
-Challenge 2 → architect agent    → 02-architecture-assessment.md + cost estimate
-              design agent       → architecture diagram (Python)
-Challenge 3 → bicep-plan agent   → 04-implementation-plan.md
-              bicep-code agent   → infra/bicep/{project}/*.bicep
-              deploy agent       → 06-deployment-summary.md
+Challenge 1 → Requirements  → 01-requirements.md
+Challenge 2 → Architect     → 02-architecture-assessment.md + cost estimate
+              Design        → architecture diagram (Python)
+Challenge 3 → Bicep Plan    → 04-implementation-plan.md
+              Bicep Code    → infra/bicep/{project}/*.bicep
+              Deploy        → 06-deployment-summary.md
 Challenge 4 → (same as 3, adapted for DR)
-Challenge 5 → design agent       → 05-load-test-results.md
-Challenge 6 → design agent       → 07-ab-*.md documentation
-Challenge 7 → diagnose agent     → troubleshooting card
+Challenge 5 → Design        → 05-load-test-results.md
+Challenge 6 → Design        → 07-ab-*.md documentation suite
+Challenge 7 → Diagnose      → troubleshooting card
 Challenge 8 → (team presentation — no agent needed)
 ```
 
@@ -325,14 +325,14 @@ Redis Cache, and Application Gateway. Budget: €500/month. Region: swedencentra
 ### Diagnose an Existing Resource
 
 ```text
-@diagnose
+@Diagnose
 Check the health of my App Service named "myapp-prod" in resource group "rg-prod"
 ```
 
 ### Generate Documentation Only
 
 ```text
-@design
+@Design
 Generate an architecture diagram for the infrastructure defined in
 02-architecture-assessment.md
 ```
@@ -341,21 +341,21 @@ Generate an architecture diagram for the infrastructure defined in
 
 ## Quick Reference
 
-| Concept | Location | Purpose |
-|---------|----------|---------|
-| Agents | `.github/agents/*.agent.md` | Specialized AI assistants |
-| Skills | `.github/skills/*/SKILL.md` | Reusable knowledge modules |
-| Instructions | `.github/instructions/*.instructions.md` | Auto-loading file-type rules |
-| Global config | `.github/copilot-instructions.md` | Project-wide defaults |
-| Templates | `.github/skills/azure-artifacts/templates/` | Output structure definitions |
-| MCP servers | `.vscode/mcp.json` | External data sources |
-| Agent output | `agent-output/{project}/` | Generated artifacts |
+| Concept       | Location                                    | Purpose                      |
+| ------------- | ------------------------------------------- | ---------------------------- |
+| Agents        | `.github/agents/*.agent.md`                 | Specialized AI assistants    |
+| Skills        | `.github/skills/*/SKILL.md`                 | Reusable knowledge modules   |
+| Instructions  | `.github/instructions/*.instructions.md`    | Auto-loading file-type rules |
+| Global config | `.github/copilot-instructions.md`           | Project-wide defaults        |
+| Templates     | `.github/skills/azure-artifacts/templates/` | Output structure definitions |
+| MCP servers   | `.vscode/mcp.json`                          | External data sources        |
+| Agent output  | `agent-output/{project}/`                   | Generated artifacts          |
 
 ---
 
 ## See Also
 
-- [Know Before You Go](know-before-you-go.md) — Pre-event setup and what to expect
+- [Getting Started](getting-started.md) — Setup, dev container, quotas, and first run
 - [Quick Reference Card](quick-reference-card.md) — Printable one-page reference
 - [Hints & Tips](hints-and-tips.md) — Challenge-specific guidance
 - [Troubleshooting](troubleshooting.md) — Common issues and agent fixes

@@ -27,7 +27,7 @@ Get-ChildItem .\agent-output -Directory | ForEach-Object {
 
 ### Curveball Timing
 
-⚡ **13:50** — Announce the multi-region DR requirement (see [facilitator-guide.md](facilitator-guide.md) for script)
+⚡ **12:45** — Announce the multi-region DR requirement (see [facilitator-guide.md](facilitator-guide.md) for script)
 
 ### Emergency Contacts
 

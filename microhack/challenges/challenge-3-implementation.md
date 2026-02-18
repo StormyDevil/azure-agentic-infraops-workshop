@@ -6,7 +6,7 @@ Before starting this challenge, you must deploy Azure Policy by following the in
 the [setup-governancepolicies.ps1](https://github.com/jonathan-vella/azure-agentic-infraops-workshop/tree/main/scripts/microhack#setup-governancepoliciesps1)
 section of the repository.
 
-> **Duration**: 70 minutes | **Agents**: `bicep-plan`, `bicep-code`, `deploy`
+> **Duration**: 45 minutes | **Agents**: `bicep-plan`, `bicep-code`, `deploy`
 > **Output**: Deployed infrastructure + Workflow diagram
 
 ## The Business Challenge
@@ -237,7 +237,7 @@ When you encounter issues, ask yourself:
 
 After your infrastructure is deployed and you've created your workflow diagram:
 
-⏸️ **Wait for Challenge 4** - The coach will announce a business change at 13:50 that will test your agility!
+⏸️ **Wait for Challenge 4** - The coach will announce a business change at 12:45 that will test your agility!
 
 Use any extra time to:
 

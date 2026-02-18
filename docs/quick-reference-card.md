@@ -9,26 +9,27 @@
 | Time        | Challenge       | Duration | Points |
 | ----------- | --------------- | -------- | ------ |
 | 10:00-10:30 | Intro           | 30 min   | —      |
-| 10:30-11:20 | **Challenge 1** | 50 min   | 20     |
-| 11:20-12:10 | **Challenge 2** | 50 min   | 25     |
-| 12:10-12:40 | 🍽️ Lunch        | 30 min   | —      |
-| 12:40-13:50 | **Challenge 3** | 70 min   | 25     |
-| 13:50-14:30 | **Challenge 4** | 40 min   | 10     |
-| 14:30-14:50 | **Challenge 5** | 20 min   | 5      |
-| 14:50-15:10 | **Challenge 6** | 20 min   | 5      |
-| 15:10-15:15 | **Challenge 7** | 5 min    | 5      |
-| 15:15-15:25 | Prep            | 10 min   | —      |
-| 15:25-15:55 | **Challenge 8** | 30 min   | 10     |
-| 15:55-16:00 | Wrap-up         | 5 min    | —      |
+| 10:30-11:00 | **Challenge 1** | 30 min   | 20     |
+| 11:00-11:30 | **Challenge 2** | 30 min   | 25     |
+| 11:30-12:00 | 🍽️ Lunch        | 30 min   | —      |
+| 12:00-12:45 | **Challenge 3** | 45 min   | 25     |
+| 12:45-13:30 | **Challenge 4** | 45 min   | 10     |
+| 13:30-13:45 | ☕ Break        | 15 min   | —      |
+| 13:45-14:15 | **Challenge 5** | 30 min   | 5      |
+| 14:15-14:30 | **Challenge 6** | 15 min   | 5      |
+| 14:30-14:35 | **Challenge 7** | 5 min    | 5      |
+| 14:35-14:50 | Prep            | 15 min   | —      |
+| 14:50-15:50 | **Challenge 8** | 60 min   | 10     |
+| 15:50-16:00 | Wrap-up         | 10 min   | —      |
 
 **Total Points**: 105 base + 25 bonus
 
 ## Scoring & Leaderboard
 
-| Method              | How                                                                                             |
-| ------------------- | ----------------------------------------------------------------------------------------------- |
-| **Script scoring**  | `pwsh scripts/microhack/Score-Team.ps1 -TeamName "<team>" -SkipAzureCheck -ShowcaseScore 0`     |
-| **Leaderboard CLI** | `pwsh scripts/microhack/Get-Leaderboard.ps1`                                                    |
+| Method              | How                                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| **Script scoring**  | `pwsh scripts/microhack/Score-Team.ps1 -TeamName "<team>" -SkipAzureCheck -ShowcaseScore 0`      |
+| **Leaderboard CLI** | `pwsh scripts/microhack/Get-Leaderboard.ps1`                                                     |
 | **Web app**         | Open the HackerBoard app URL — submit scores via browser and view live standings                 |
 | **Rubric**          | [Scoring Rubric](../microhack/facilitator/scoring-rubric.md) — single source of truth for points |
 
@@ -52,15 +53,15 @@
 
 Select from the **agent dropdown** in Chat view:
 
-| Agent            | Purpose                    | Challenges |
-| ---------------- | -------------------------- | ---------- |
-| **requirements** | Capture requirements       | 1          |
-| **architect**    | Design architecture (WAF)  | 2          |
-| **bicep-plan**   | Create implementation plan | 3, 4       |
-| **bicep-code**   | Generate Bicep templates   | 3, 4       |
-| **deploy**       | Deploy to Azure            | 3, 4       |
-| **design**       | Generate documentation & diagrams | 5, 6 |
-| **diagnose**     | Troubleshooting runbooks   | 7          |
+| Agent            | Purpose                           | Challenges |
+| ---------------- | --------------------------------- | ---------- |
+| **Requirements** | Capture requirements              | 1          |
+| **Architect**    | Design architecture (WAF)         | 2          |
+| **Bicep Plan**   | Create implementation plan        | 3, 4       |
+| **Bicep Code**   | Generate Bicep templates          | 3, 4       |
+| **Deploy**       | Deploy to Azure                   | 3, 4       |
+| **Design**       | Generate documentation & diagrams | 5, 6       |
+| **Diagnose**     | Troubleshooting runbooks          | 7          |
 
 **How to use**: `Ctrl+Alt+I` → Click agent dropdown → Select agent → Type prompt
 
@@ -114,8 +115,8 @@ az group delete -n rg-freshconnect-dev-swc --yes --no-wait
 | 3         | `infra/bicep/{team}/main.bicep` + modules           |
 | 4         | Updated Bicep with DR + ADR document                |
 | 5         | `agent-output/{team}/05-load-test-results.md`       |
-| 6         | `agent-output/{team}/06-*.md` (documentation)       |
-| 7         | `agent-output/{team}/07-*.md` (troubleshooting)     |
+| 6         | `agent-output/{team}/07-ab-*.md` (documentation)    |
+| 7         | `agent-output/{team}/07-ab-*.md` (troubleshooting)  |
 | 8         | Presentation (slides or markdown)                   |
 
 ---

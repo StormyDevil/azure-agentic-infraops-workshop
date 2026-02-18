@@ -243,14 +243,14 @@ Prerequisites:
 ### Good Example - Descriptive links
 
 ```markdown
-See the [getting started guide](../../docs/quickstart.md) for setup instructions.
+See the [getting started guide](../../docs/getting-started.md) for setup instructions.
 Refer to [Azure Bicep documentation](https://learn.microsoft.com/azure/azure-resource-manager/bicep/) for syntax details.
 ```
 
 ### Bad Example - Non-descriptive links
 
 ```markdown
-Click [here](../../docs/quickstart.md) for more info.
+Click [here](../../docs/getting-started.md) for more info.
 ```
 
 ## Front Matter (Optional)

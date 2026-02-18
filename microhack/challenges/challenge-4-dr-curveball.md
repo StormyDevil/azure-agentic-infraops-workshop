@@ -1,10 +1,10 @@
 # Challenge 4: The Curveball — High Availability & Disaster Recovery
 
-> **Duration**: 40 minutes | **Announced at**: 13:50 | **Output**: Updated architecture + Deployed DR infrastructure + ADR
+> **Duration**: 45 minutes | **Announced at**: 12:45 | **Output**: Updated architecture + Deployed DR infrastructure + ADR
 
 ## ⚡ The Announcement
 
-> **COACH READS AT 13:50:**
+> **COACH READS AT 12:45:**
 >
 > _"ATTENTION ALL TEAMS! 📣_
 >

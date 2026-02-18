@@ -4,9 +4,9 @@ Current Version: 1.0.0
 
 ## Release History
 
-| Version | Date | Type | Summary |
-| --- | --- | --- | --- |
-| 1.0.0 | 2026-02-11 | Major | Workshop baseline — fresh start from upstream fork |
+| Version | Date       | Type  | Summary                                            |
+| ------- | ---------- | ----- | -------------------------------------------------- |
+| 1.0.0   | 2026-02-11 | Major | Workshop baseline — fresh start from upstream fork |
 
 ## Version Policy
 
@@ -22,4 +22,4 @@ Version bumps are managed by the
 [auto-version workflow](.github/workflows/auto-version.yml)
 based on [Conventional Commits](https://www.conventionalcommits.org/).
 
-See [Automated Versioning Guide](docs/guides/automated-versioning.md) for details.
+See [Contributing Guide](docs/guides/contributing.md) for details.

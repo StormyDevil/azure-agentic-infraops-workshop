@@ -1,6 +1,6 @@
 # Challenge 6: Workload Documentation
 
-> **Duration**: 20 minutes | **Agent**: `design` | **Output**: At least 2 documentation artifacts
+> **Duration**: 15 minutes | **Agent**: `design` | **Output**: At least 2 documentation artifacts
 
 ## The Business Context
 

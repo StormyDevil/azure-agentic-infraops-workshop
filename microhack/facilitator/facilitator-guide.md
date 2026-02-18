@@ -88,7 +88,7 @@ Deploy Azure Policies to create realistic governance constraints. Teams will enc
 
 📅 **See [AGENDA.md](../AGENDA.md) for the full schedule overview.**
 
-> **Event runs 10:00 - 16:00** (6 hours with 30-min lunch)
+> **Event runs 10:00 - 16:00** (6 hours with 30-min lunch and 15-min afternoon break)
 
 ---
 
@@ -110,9 +110,9 @@ bicep --version
 echo "✅ Ready!"
 ```
 
-### Block 2: Challenge 1 - Requirements (10:30 - 11:20)
+### Block 2: Challenge 1 - Requirements (10:30 - 11:00)
 
-**Duration**: 50 minutes
+**Duration**: 30 minutes
 
 **Coaching Tips:**
 
@@ -127,9 +127,9 @@ echo "✅ Ready!"
 | Agent not responding | Reload VS Code window       |
 | Vague requirements   | Ask "What SLA? What's RTO?" |
 
-### Block 3: Challenge 2 - Architecture (11:20 - 12:10)
+### Block 3: Challenge 2 - Architecture (11:00 - 11:30)
 
-**Duration**: 50 minutes
+**Duration**: 30 minutes
 
 **Coaching Tips:**
 
@@ -141,13 +141,13 @@ echo "✅ Ready!"
 
 No common issues — monitor Pricing MCP functionality.
 
-### 🍽️ Lunch Break (12:10 - 12:40)
+### 🍽️ Lunch Break (11:30 - 12:00)
 
 **Duration**: 30 minutes
 
-### Block 4: Challenge 3 - Implementation & Deployment (12:40 - 13:50)
+### Block 4: Challenge 3 - Implementation & Deployment (12:00 - 12:45)
 
-**Duration**: 70 minutes (includes Bicep plan + code + deployment + Mermaid diagram)
+**Duration**: 45 minutes (includes Bicep plan + code + deployment + Mermaid diagram)
 
 **Coaching Tips:**
 
@@ -162,11 +162,11 @@ No common issues — monitor Pricing MCP functionality.
 | Key Vault name too long | ≤24 chars              |
 | Storage account invalid | Lowercase+numbers only |
 
-### Block 5: ⚡ Challenge 4 - DR Curveball & Deployment (13:50 - 14:30)
+### Block 5: ⚡ Challenge 4 - DR Curveball & Deployment (12:45 - 13:30)
 
-**Duration**: 40 minutes
+**Duration**: 45 minutes
 
-#### 📢 Announcement Script (13:50)
+#### 📢 Announcement Script (12:45)
 
 Stand up, get everyone's attention:
 
@@ -186,7 +186,7 @@ Stand up, get everyone's attention:
 >
 > _Budget has increased by €200/month to accommodate this._
 >
-> _You have 40 minutes to propose, plan, and DEPLOY the solution!_
+> _You have 45 minutes to propose, plan, and DEPLOY the solution!_
 >
 > _Document your DR strategy in an ADR! GO GO GO!_ 🚀"
 
@@ -196,11 +196,15 @@ Stand up, get everyone's attention:
 - Prompt: "How would you test failover?"
 - Encourage ADR creation to document DR decision rationale
 
-### Block 6: Challenges 5-7 - Load Test, Docs, Diagnose (14:30 - 15:15)
+### ☕ Break (13:30 - 13:45)
 
-**Duration**: 45 minutes (3 challenges: 20 min + 20 min + 5 min)
+**Duration**: 15 minutes
 
-#### Challenge 5: Load Testing (14:30 - 14:50)
+### Block 6: Challenges 5-7 - Load Test, Docs, Diagnose (13:45 - 14:35)
+
+**Duration**: 50 minutes (3 challenges: 30 min + 15 min + 5 min)
+
+#### Challenge 5: Load Testing (13:45 - 14:15)
 
 **Coaching Tips:**
 
@@ -208,7 +212,7 @@ Stand up, get everyone's attention:
 - Prompt: "How would you simulate 500 concurrent users?"
 - Encourage design agent for structured report generation
 
-#### Challenge 6: Documentation (14:50 - 15:10)
+#### Challenge 6: Documentation (14:15 - 14:30)
 
 **Coaching Tips:**
 
@@ -216,7 +220,7 @@ Stand up, get everyone's attention:
 - Prompt: "How does design agent ensure completeness?"
 - Encourage runbook creation for operational procedures
 
-#### Challenge 7: Diagnostics (15:10 - 15:15)
+#### Challenge 7: Diagnostics (14:30 - 14:35)
 
 **Coaching Tips:**
 
@@ -233,7 +237,7 @@ Stand up, get everyone's attention:
 
 ---
 
-### 🎯 Presentation Prep (15:15 - 15:25)
+### 🎯 Presentation Prep (14:35 - 14:50)
 
 **Facilitator Actions:**
 
@@ -242,9 +246,9 @@ Stand up, get everyone's attention:
 - Assign team pairings (see below)
 - Set up presentation area (projector, timer)
 
-### Block 7: Challenge 8 - Partner Showcase 🎤 (15:25 - 15:55)
+### Block 7: Challenge 8 - Partner Showcase 🎤 (14:50 - 15:50)
 
-**Duration**: 30 minutes (up to 6 teams × 4 min + transitions)
+**Duration**: 60 minutes (up to 6 teams × ~9 min + transitions)
 
 #### Presentation Setup
 
@@ -259,7 +263,7 @@ Pair teams for the role-play:
 | Team 5               | Team 6                 |
 | Team 6               | Team 1                 |
 
-#### 📢 Announcement Script (15:25)
+#### 📢 Announcement Script (14:50)
 
 > _"Time for Challenge 8 — the Partner Showcase! 🎤_
 >
@@ -285,7 +289,7 @@ After each presentation, briefly comment on:
 | **WAF Alignment**   | Reliability, security, cost, operations covered? |
 | **Professionalism** | How would this land with a real customer?        |
 
-### Wrap-up (15:55 - 16:00)
+### Wrap-up (15:50 - 16:00)
 
 ```powershell
 # Score all teams

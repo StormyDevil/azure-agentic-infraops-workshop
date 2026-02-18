@@ -251,17 +251,15 @@ To prevent a workshop-specific file from being overwritten:
 
 ## The sync-reviewer Agent
 
-The [sync-reviewer](../.github/agents/sync-reviewer.agent.md) is a custom agent
-designed specifically for the Copilot coding agent runtime. Unlike the
-interactive VS Code agents (Conductor, Architect, etc.), it runs fully
+The `sync-reviewer` is a custom Copilot coding agent assigned by the sync workflow.
+Unlike the interactive VS Code agents (Conductor, Architect, etc.), it runs fully
 autonomously without approval gates.
 
 It reads:
 
 1. The issue body (diff manifest + requirements + acceptance criteria)
 2. `.github/copilot-instructions.md` (repo-wide conventions)
-3. `.github/agents/sync-reviewer.agent.md` (its own rules)
-4. `SYNC-MANIFEST.md` on the staging branch
+3. `SYNC-MANIFEST.md` on the staging branch
 
 Its rules ensure it:
 

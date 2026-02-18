@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Auto-detects version bump type from conventional commits
   - Updates VERSION.md and CHANGELOG.md automatically
   - Creates Git tags and GitHub releases
-  - See [docs/guides/automated-versioning.md](docs/guides/automated-versioning.md) for usage guide
+  - See [docs/guides/contributing.md](docs/guides/contributing.md) for usage guide
 - **Commitlint integration** — Enforces conventional commit format
   - Configured via commitlint.config.js
   - Runs automatically on commit via lefthook
