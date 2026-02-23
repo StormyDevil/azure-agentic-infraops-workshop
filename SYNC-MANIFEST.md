@@ -4,88 +4,68 @@
 
 **Source**: `jonathan-vella/azure-agentic-infraops` @ `12ada3b`
 **Date**: 2026-02-23
-**Files changed**: 75
+**Files changed**: 58
 
-## Added (26)
+## Deleted (58)
 
-- `.github/agents/01-conductor.agent.md`
-- `.github/agents/02-requirements.agent.md`
-- `.github/agents/03-architect.agent.md`
-- `.github/agents/04-design.agent.md`
-- `.github/agents/05-bicep-planner.agent.md`
-- `.github/agents/06-bicep-code-generator.agent.md`
-- `.github/agents/07-deploy.agent.md`
-- `.github/agents/08-as-built.agent.md`
-- `.github/agents/09-diagnose.agent.md`
-- `.github/agents/10-challenger.agent.md`
-- `.github/instructions/agent-definitions.instructions.md`
-- `.github/instructions/azure-artifacts.instructions.md`
-- `.github/instructions/bicep-policy-compliance.instructions.md`
-- `.github/instructions/code-commenting.instructions.md`
-- `.github/instructions/docs-trigger.instructions.md`
-- `.github/instructions/javascript.instructions.md`
-- `.github/instructions/json.instructions.md`
-- `.github/instructions/python.instructions.md`
-- `.github/skills/azure-bicep-patterns/SKILL.md`
-- `.github/skills/azure-diagrams/references/waf-cost-charts.md`
-- `.github/skills/azure-troubleshooting/SKILL.md`
-- `.github/skills/microsoft-code-reference/SKILL.md`
-- `.github/skills/microsoft-docs/SKILL.md`
-- `.github/skills/microsoft-skill-creator/SKILL.md`
-- `scripts/validate-governance-refs.mjs`
-- `scripts/validate-instruction-references.mjs`
-
-## Modified (49)
-
-- `.devcontainer/devcontainer.json`
-- `.devcontainer/post-create.sh`
-- `.github/agents/_subagents/bicep-review-subagent.agent.md`
-- `.github/copilot-instructions.md`
-- `.github/data/azure-deprecations.json`
-- `.github/instructions/agent-skills.instructions.md`
-- `.github/instructions/bicep-code-best-practices.instructions.md`
-- `.github/instructions/code-review.instructions.md`
-- `.github/instructions/cost-estimate.instructions.md`
-- `.github/instructions/docs.instructions.md`
-- `.github/instructions/github-actions.instructions.md`
-- `.github/instructions/governance-discovery.instructions.md`
-- `.github/instructions/instructions.instructions.md`
-- `.github/instructions/markdown.instructions.md`
-- `.github/instructions/no-heredoc.instructions.md`
-- `.github/instructions/powershell.instructions.md`
-- `.github/instructions/shell.instructions.md`
-- `.github/instructions/workload-documentation.instructions.md`
-- `.github/prompts/generate-bicep.prompt.md`
-- `.github/prompts/plan-bicep.prompt.md`
-- `.github/skills/README.md`
-- `.github/skills/azure-adr/SKILL.md`
-- `.github/skills/azure-artifacts/SKILL.md`
-- `.github/skills/azure-artifacts/templates/01-requirements.template.md`
-- `.github/skills/azure-artifacts/templates/02-architecture-assessment.template.md`
-- `.github/skills/azure-artifacts/templates/03-des-cost-estimate.template.md`
-- `.github/skills/azure-artifacts/templates/04-governance-constraints.template.md`
-- `.github/skills/azure-artifacts/templates/04-implementation-plan.template.md`
-- `.github/skills/azure-artifacts/templates/04-preflight-check.template.md`
-- `.github/skills/azure-artifacts/templates/05-implementation-reference.template.md`
-- `.github/skills/azure-artifacts/templates/06-deployment-summary.template.md`
-- `.github/skills/azure-artifacts/templates/07-ab-cost-estimate.template.md`
-- `.github/skills/azure-artifacts/templates/07-backup-dr-plan.template.md`
-- `.github/skills/azure-artifacts/templates/07-compliance-matrix.template.md`
-- `.github/skills/azure-artifacts/templates/07-design-document.template.md`
-- `.github/skills/azure-artifacts/templates/07-documentation-index.template.md`
-- `.github/skills/azure-artifacts/templates/07-operations-runbook.template.md`
-- `.github/skills/azure-artifacts/templates/07-resource-inventory.template.md`
-- `.github/skills/azure-defaults/SKILL.md`
-- `.github/skills/azure-diagrams/SKILL.md`
-- `.github/skills/make-skill-template/SKILL.md`
-- `.vscode/mcp.json`
-- `CONTRIBUTING.md`
-- `lefthook.yml`
-- `scripts/fix-artifact-h2.mjs`
-- `scripts/validate-artifact-templates.mjs`
-- `scripts/validate-h2-sync.mjs`
-- `scripts/validate-skills-format.mjs`
-- `scripts/validate-vscode-config.mjs`
+- `.github/agents/architect.agent.md`
+- `.github/agents/as-built.agent.md`
+- `.github/agents/bicep-code.agent.md`
+- `.github/agents/bicep-plan.agent.md`
+- `.github/agents/deploy.agent.md`
+- `.github/agents/design.agent.md`
+- `.github/agents/diagnose.agent.md`
+- `.github/agents/infraops-conductor.agent.md`
+- `.github/agents/requirements.agent.md`
+- `.github/instructions/agents-definitions.instructions.md`
+- `.github/instructions/artifact-h2-reference.instructions.md`
+- `.github/instructions/copilot-thought-logging.instructions.md`
+- `.github/instructions/self-explanatory-code-commenting.instructions.md`
+- `.github/instructions/update-docs-on-code-change.instructions.md`
+- `agent-output/_sample/01-requirements.md`
+- `agent-output/_sample/02-architecture-assessment.md`
+- `agent-output/_sample/03-des-cost-estimate.md`
+- `agent-output/_sample/03-des-diagram.png`
+- `agent-output/_sample/03-des-diagram.py`
+- `agent-output/_sample/04-dependency-diagram.png`
+- `agent-output/_sample/04-dependency-diagram.py`
+- `agent-output/_sample/04-governance-constraints.md`
+- `agent-output/_sample/04-implementation-plan.md`
+- `agent-output/_sample/04-runtime-diagram.png`
+- `agent-output/_sample/04-runtime-diagram.py`
+- `agent-output/_sample/05-implementation-reference.md`
+- `agent-output/_sample/06-deployment-summary.md`
+- `agent-output/_sample/07-ab-diagram.png`
+- `agent-output/_sample/07-ab-diagram.py`
+- `agent-output/_sample/07-backup-dr-plan.md`
+- `agent-output/_sample/07-compliance-matrix.md`
+- `agent-output/_sample/07-design-document.md`
+- `agent-output/_sample/07-documentation-index.md`
+- `agent-output/_sample/07-operations-runbook.md`
+- `agent-output/_sample/07-resource-inventory.md`
+- `agent-output/_sample/README.md`
+- `mcp/azure-pricing-mcp/INSTALL.md`
+- `mcp/azure-pricing-mcp/docs/DEVELOPMENT.md`
+- `mcp/azure-pricing-mcp/docs/PROJECT_STRUCTURE.md`
+- `mcp/azure-pricing-mcp/docs/config_examples.json`
+- `mcp/azure-pricing-mcp/scripts/docker-build.ps1`
+- `mcp/azure-pricing-mcp/scripts/docker-build.sh`
+- `mcp/azure-pricing-mcp/scripts/install.py`
+- `mcp/azure-pricing-mcp/scripts/run_server.py`
+- `mcp/azure-pricing-mcp/scripts/setup.ps1`
+- `mcp/azure-pricing-mcp/scripts/setup.py`
+- `mcp/azure-pricing-mcp/tests/test_azure_pricing.py`
+- `mcp/azure-pricing-mcp/tests/test_http_transport.py`
+- `mcp/azure-pricing-mcp/tests/test_integration.py`
+- `mcp/azure-pricing-mcp/tests/test_mcp_server.py`
+- `scripts/check-prerequisites.ps1`
+- `scripts/microhack/Cleanup-MicrohackResources.ps1`
+- `scripts/microhack/Get-GovernanceStatus.ps1`
+- `scripts/microhack/Get-Leaderboard.ps1`
+- `scripts/microhack/Remove-GovernancePolicies.ps1`
+- `scripts/microhack/Score-Team.ps1`
+- `scripts/microhack/Setup-GovernancePolicies.ps1`
+- `scripts/validate-cost-estimate-templates.mjs`
 
 ---
 *To preview changes locally: `./scripts/sync-upstream.sh --dry-run`*
