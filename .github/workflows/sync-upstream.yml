@@ -123,6 +123,17 @@ jobs:
             exit 1
           fi
 
+          AUTH_STATUS=$(curl -sS -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $SYNC_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/user)
+
+          if [[ "$AUTH_STATUS" != "200" ]]; then
+            echo "❌ SYNC_PAT failed authentication (HTTP $AUTH_STATUS)." >&2
+            echo "Regenerate/replace SYNC_PAT and ensure it is authorized for this repository (and SSO-enabled if your org requires SSO)." >&2
+            exit 1
+          fi
+
       - name: Commit and push staging branch
         if: steps.sync.outputs.changes == 'true'
         env:
