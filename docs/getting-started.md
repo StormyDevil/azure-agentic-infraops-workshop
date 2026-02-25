@@ -1,8 +1,23 @@
-# Getting Started
+# Requirements Guide
 
-> [Current Version](../VERSION.md) | Everything you need to set up and run Agentic InfraOps
+> [Current Version](../VERSION.md) | Mandatory requirements and setup steps for Agentic InfraOps
 
-## Who This Is For
+## 📑 Table of Contents
+
+- [🎯 Who This Is For](#-who-this-is-for)
+- [🗺️ What to Expect](#️-what-to-expect)
+- [📋 Prerequisites](#-prerequisites)
+- [🐳 Dev Container](#-dev-container)
+- [🚀 Setup Steps](#-setup-steps)
+- [⚖️ Azure Quota Requirements](#️-azure-quota-requirements)
+- [✅ Pre-Event Checklist](#-pre-event-checklist)
+- [⏱️ First 10 Minutes on Event Day](#️-first-10-minutes-on-event-day)
+- [🚑 Troubleshooting Quick Fixes](#-troubleshooting-quick-fixes)
+- [⏭️ Next Steps](#️-next-steps)
+
+---
+
+## 🎯 Who This Is For
 
 - **Microhack participants**: Complete the setup checklist and read "What to Expect"
   before event day.
@@ -11,7 +26,7 @@
 
 ---
 
-## What to Expect
+## 🗺️ What to Expect
 
 ### The Microhack in 60 Seconds
 
@@ -50,13 +65,21 @@ Bicep Infrastructure as Code.
 
 ---
 
-## Prerequisites
+## 📋 Prerequisites
+
+> [!WARNING]
+> All items in this section are **mandatory**. The microhack cannot proceed without every
+> prerequisite in place. Complete the [Event-Day Checklist](#event-day-checklist) to confirm
+> readiness before the event.
 
 ### Software
 
 #### Docker Desktop
 
 GitHub Copilot custom agents run inside a Dev Container. You need Docker.
+
+<details>
+<summary><strong>Installation Instructions</strong></summary>
 
 **Install:**
 
@@ -76,31 +99,91 @@ docker --version
 - [Podman Desktop](https://podman-desktop.io/)
 - [Colima](https://github.com/abiosoft/colima) (macOS/Linux)
 
+</details>
+
 #### Visual Studio Code
 
 **Install:** [VS Code](https://code.visualstudio.com/) (version 1.100+)
 
-**Required Extensions:**
+The Dev Container auto-installs most extensions when it starts. You only need to install
+the following on your **host machine** before opening the container:
 
-| Extension           | ID                                   | Purpose                |
-| ------------------- | ------------------------------------ | ---------------------- |
-| Dev Containers      | `ms-vscode-remote.remote-containers` | Run Dev Container      |
-| GitHub Copilot      | `github.copilot`                     | AI assistance          |
-| GitHub Copilot Chat | `github.copilot-chat`                | Agent interactions     |
-| Bicep               | `ms-azuretools.vscode-bicep`         | Bicep language support |
-| Azure Account       | `ms-vscode.azure-account`            | Azure authentication   |
+| Extension           | ID                                   | Why host-only?                                                                    |
+| ------------------- | ------------------------------------ | --------------------------------------------------------------------------------- |
+| Dev Containers      | `ms-vscode-remote.remote-containers` | Required to open any Dev Container at all                                         |
+| GitHub Copilot Chat | `github.copilot-chat`                | Licensing and sign-in happen on the host; automatically installs `github.copilot` |
 
 **Install all at once:**
 
 ```bash
 code --install-extension ms-vscode-remote.remote-containers
-code --install-extension github.copilot
 code --install-extension github.copilot-chat
-code --install-extension ms-azuretools.vscode-bicep
-code --install-extension ms-vscode.azure-account
 ```
 
+> [!NOTE]
+> Extensions such as Bicep, Azure CLI Tools, PowerShell, and Azure Resource Groups are
+> declared in `.devcontainer/devcontainer.json` and are installed automatically when the
+> Dev Container image is built. No manual action needed for those.
+
+#### Azure CLI
+
+Required for authenticating to Azure, managing resources, running quota checks, and
+executing deployment scripts throughout the microhack.
+
+<details>
+<summary><strong>Installation Instructions</strong></summary>
+
+**Install:**
+
+- **Windows**: [Azure CLI installer](https://learn.microsoft.com/cli/azure/install-azure-cli-windows)
+- **Mac**: `brew install azure-cli`
+- **Linux**: `curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash`
+
+**Verify:**
+
+```bash
+az version
+# Expected: azure-cli 2.50.0 or newer
+```
+
+> [!NOTE]
+> The Dev Container ships with the latest Azure CLI pre-installed.
+> Install it locally only if you plan to use the CLI outside the container.
+
+</details>
+
+#### PowerShell 7
+
+Required for deployment scripts, the prerequisite check script, and microhack cleanup.
+PowerShell 7 (pwsh) is distinct from Windows PowerShell 5.1 and must be installed separately.
+
+<details>
+<summary><strong>Installation Instructions</strong></summary>
+
+**Install:**
+
+- **Windows**: [PowerShell 7 installer](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-windows)
+- **Mac**: `brew install --cask powershell`
+- **Linux**: `sudo apt-get install -y powershell`
+  (see [Linux install docs](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-linux))
+
+**Verify:**
+
+```bash
+pwsh --version
+# Expected: PowerShell 7.4 or newer
+```
+
+> [!NOTE]
+> The Dev Container ships with PowerShell 7 pre-installed. Install it locally only if
+> you plan to run scripts outside the container.
+
+</details>
+
 #### Git
+
+<details>
+<summary><strong>Installation Instructions</strong></summary>
 
 **Install:**
 
@@ -114,6 +197,8 @@ code --install-extension ms-vscode.azure-account
 git --version
 # Expected: git version 2.40 or newer
 ```
+
+</details>
 
 ### Accounts
 
@@ -132,6 +217,10 @@ git --version
 | **Copilot Enterprise** | **Yes**       | **Yes**    |
 
 Compare plans: [GitHub Copilot Plans](https://github.com/features/copilot/plans)
+
+> [!TIP]
+> GitHub Copilot can be billed directly through your Azure subscription.
+> See [Copilot Azure billing][copilot-azure-billing] for setup instructions.
 
 **Verify:**
 
@@ -176,12 +265,18 @@ az account list --output table
 
 ---
 
-## Dev Container
+## 🐳 Dev Container
+
+> [!IMPORTANT]
+> **Pull and build the Dev Container image before the event day.** The first build
+> downloads ~1–2 GB of layers and takes 3–5 minutes. Doing this on-site wastes time
+> and strains shared Wi-Fi. Complete [Setup Steps](#-setup-steps) in advance.
 
 The repo includes a Dev Container with all tools pre-installed. It works with
 **VS Code Dev Containers** (local Docker) and **GitHub Codespaces** (cloud).
 
-### Tools Included
+<details>
+<summary><strong>Tools Included</strong></summary>
 
 | Tool              | Version | Purpose                        |
 | ----------------- | ------- | ------------------------------ |
@@ -193,7 +288,10 @@ The repo includes a Dev Container with all tools pre-installed. It works with
 | PowerShell        | 7.x     | Microhack scripts, deployment  |
 | Git               | Latest  | Version control                |
 
-### Configuration Files
+</details>
+
+<details>
+<summary><strong>Configuration Files</strong></summary>
 
 | File                              | Purpose                                   |
 | --------------------------------- | ----------------------------------------- |
@@ -201,7 +299,10 @@ The repo includes a Dev Container with all tools pre-installed. It works with
 | `.vscode/extensions.json`         | Recommended VS Code extensions            |
 | `.vscode/mcp.json`                | MCP server configuration                  |
 
-### Customization
+</details>
+
+<details>
+<summary><strong>Customization</strong></summary>
 
 **Add a VS Code extension** — append to `.vscode/extensions.json`:
 
@@ -229,17 +330,24 @@ The repo includes a Dev Container with all tools pre-installed. It works with
 }
 ```
 
-### GitHub Codespaces
+</details>
+
+<details>
+<summary><strong>GitHub Codespaces</strong></summary>
 
 1. Go to the repository on GitHub
 2. Click **Code** → **Codespaces** → **Create codespace on main**
 3. Wait for the container to build (first time takes 2-3 minutes)
 
+</details>
+
 ---
 
-## Setup Steps
+## 🚀 Setup Steps
 
-Complete these **before** the microhack to avoid network congestion on the day.
+> [!IMPORTANT]
+> Complete **all steps below before the event day**. Steps 1 and 2 pull and build the
+> Dev Container image (~1–2 GB download). Do not leave this for the morning of the event.
 
 ### 1. Clone and Open
 
@@ -251,9 +359,11 @@ code .
 
 When VS Code opens, accept the **"Reopen in Container"** prompt.
 
-### 2. Build the Dev Container
+### 2. Pull and Build the Dev Container
 
-Building takes 3-5 minutes. Do this ahead of time:
+> [!WARNING]
+> **Do this before the event.** The initial image pull and build takes 3–5 minutes and
+> requires a reliable internet connection. On the event day, skip straight to step 3.
 
 1. Press `F1` → type "Dev Containers: Reopen in Container"
 2. Wait for the container to build (watch progress in the terminal)
@@ -315,7 +425,8 @@ The Conductor guides you through all 7 steps with approval gates:
 
 Explore complete sample artifacts in [`agent-output/_sample/`](../agent-output/_sample/).
 
-### Network Requirements
+<details>
+<summary><strong>Network Requirements</strong></summary>
 
 Ensure your network allows outbound HTTPS to:
 
@@ -326,13 +437,17 @@ Ensure your network allows outbound HTTPS to:
 | Azure          | `*.azure.com`, `*.microsoft.com`, `login.microsoftonline.com` |
 | Docker         | `docker.io`, `registry-1.docker.io`                           |
 
+</details>
+
 ---
 
-## Azure Quota Requirements
+## ⚖️ Azure Quota Requirements
 
-> ⚠️ **Verify your subscription has sufficient quota BEFORE the microhack.**
+> [!WARNING]
+> **Verify your subscription has sufficient quota BEFORE the microhack.**
 
-### Per-Team Resource Requirements
+<details>
+<summary><strong>Per-Team Resource Requirements</strong></summary>
 
 | Resource Type           | Quantity | SKU/Tier     | Region         |
 | ----------------------- | -------- | ------------ | -------------- |
@@ -346,7 +461,10 @@ Ensure your network allows outbound HTTPS to:
 | Application Insights    | 1        | N/A          | Sweden Central |
 | Log Analytics Workspace | 1        | Per-GB       | Sweden Central |
 
-### Optional Advanced Resources
+</details>
+
+<details>
+<summary><strong>Optional Advanced Resources</strong></summary>
 
 | Resource Type                  | Quantity | SKU/Tier              | Region         |
 | ------------------------------ | -------- | --------------------- | -------------- |
@@ -356,7 +474,10 @@ Ensure your network allows outbound HTTPS to:
 | Traffic Manager                | 1        | N/A                   | Global         |
 | Azure Container Registry       | 1        | Basic or Standard     | Sweden Central |
 
-### Challenge 4 — DR Additional Resources
+</details>
+
+<details>
+<summary><strong>Challenge 4 — DR Additional Resources</strong></summary>
 
 | Resource Type                | Quantity | SKU/Tier     | Region               |
 | ---------------------------- | -------- | ------------ | -------------------- |
@@ -366,7 +487,10 @@ Ensure your network allows outbound HTTPS to:
 | Azure SQL Database (replica) | 1        | S0 or Basic  | Germany West Central |
 | Storage Accounts (GRS)       | 1        | Standard_GRS | Sweden Central       |
 
-### Multi-Team Shared Subscription (4 teams)
+</details>
+
+<details>
+<summary><strong>Multi-Team Shared Subscription (4 teams)</strong></summary>
 
 | Resource Type            | Total |
 | ------------------------ | ----- |
@@ -380,7 +504,10 @@ Ensure your network allows outbound HTTPS to:
 | Application Insights     | 4     |
 | Log Analytics Workspaces | 4     |
 
-### Checking and Increasing Quotas
+</details>
+
+<details>
+<summary><strong>Checking and Increasing Quotas</strong></summary>
 
 **Azure Portal**: Search "Quotas" → filter by region → review per resource type.
 
@@ -400,9 +527,13 @@ az storage account list --query "length(@)"
 | "Region not available"        | Use alternative region or request access         |
 | "SKU not available in region" | Try a different SKU tier                         |
 
-> ⚠️ **Request quota increases at least 1 week before the microhack** to ensure approval.
+> [!WARNING]
+> **Request quota increases at least 1 week before the microhack** to ensure approval.
 
-### Estimated Event Costs
+</details>
+
+<details>
+<summary><strong>Estimated Event Costs</strong></summary>
 
 | Configuration         | Estimated Cost (~8 hours) |
 | --------------------- | ------------------------- |
@@ -410,10 +541,14 @@ az storage account list --query "length(@)"
 | Single team (with DR) | €10-20                    |
 | 4 teams (shared sub)  | €30-50                    |
 
+> [!IMPORTANT]
 > Delete all resources immediately after the microhack.
 > Use: `scripts/microhack/Cleanup-MicrohackResources.ps1`
 
-### Pre-Microhack Verification
+</details>
+
+<details>
+<summary><strong>Pre-Microhack Verification</strong></summary>
 
 ```powershell
 az login
@@ -422,23 +557,31 @@ az group create --name rg-quota-test --location swedencentral
 az group delete --name rg-quota-test --yes --no-wait
 ```
 
+</details>
+
 ---
 
-## Event-Day Checklist
+## ✅ Pre-Event Checklist
+
+> [!IMPORTANT]
+> Complete every item below **before the event day**. Arrive ready — there is no setup
+> time built into the agenda.
 
 - [ ] **Docker Desktop** installed and running
-- [ ] **VS Code** 1.100+ with required extensions
+- [ ] **VS Code** 1.100+ with Dev Containers and GitHub Copilot Chat extensions
+- [ ] **Azure CLI** 2.50+ installed (`az version`)
+- [ ] **PowerShell 7** installed (`pwsh --version`)
 - [ ] **Git** installed (2.40+)
 - [ ] **GitHub account** with Copilot Pro+ or Enterprise
 - [ ] **Azure subscription** with Owner access
 - [ ] **Repository cloned** locally
-- [ ] **Dev Container built** (F1 → Reopen in Container)
+- [ ] **Dev Container image pulled and built** (F1 → Reopen in Container)
 - [ ] **Azure CLI authenticated** (`az login` successful)
 - [ ] **Custom agents enabled** (VS Code setting)
 - [ ] **Network access** verified (no proxy issues)
 - [ ] **Quota verified** for Sweden Central
 
-## First 10 Minutes on Event Day
+## ⏱️ First 10 Minutes on Event Day
 
 1. Open VS Code → Reopen in Container (if not already running)
 2. Verify Azure auth: `az account show`
@@ -448,7 +591,7 @@ az group delete --name rg-quota-test --yes --no-wait
 
 ---
 
-## Troubleshooting Quick Fixes
+## 🚑 Troubleshooting Quick Fixes
 
 | Problem                   | Fix                                                                                   |
 | ------------------------- | ------------------------------------------------------------------------------------- |
@@ -462,7 +605,7 @@ See [Troubleshooting](troubleshooting.md) for a complete reference.
 
 ---
 
-## Next Steps
+## ⏭️ Next Steps
 
 - [Copilot Guide](copilot-guide.md) — agents, skills, and prompting best practices
 - [Workshop Prep](workshop-prep.md) — scenario brief and team role cards
@@ -470,3 +613,4 @@ See [Troubleshooting](troubleshooting.md) for a complete reference.
 - [Troubleshooting](troubleshooting.md) — common issues and fixes
 
 [azure-limits]: https://learn.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits
+[copilot-azure-billing]: https://docs.github.com/en/copilot/reference/copilot-billing/azure-billing
