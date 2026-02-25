@@ -179,9 +179,11 @@ Context:
 
 ## Time Management
 
-💡 **5 minutes**: Design and run your load test
+💡 **5 minutes**: Design your load test script
+💡 **5 minutes**: Run load test and observe metrics in real time
 💡 **5 minutes**: Analyze results and identify patterns
 💡 **10 minutes**: Use `design` agent to generate professional documentation
+💡 **5 minutes**: Iterate on failures or explore Azure Load Testing (if time permits)
 
 > [!NOTE]
 > Final scoring uses the criteria in the

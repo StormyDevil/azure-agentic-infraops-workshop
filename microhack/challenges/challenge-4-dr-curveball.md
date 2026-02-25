@@ -11,11 +11,11 @@
 > _We've just received urgent news from Nordic Fresh Foods headquarters!_
 >
 > _They've signed a major contract with a Danish restaurant chain — Smørrebrød Express — worth
-> €500K annually. The board has convened an emergency meeting and approved increased infrastructure investment._
+> €500K annually. The board has convened an emergency session and approved increased infrastructure investment._
 >
 > _Your infrastructure must now support high availability with disaster recovery capabilities!_
 >
-> _You have 40 minutes to propose, plan, and **deploy** the solution!_ 🚀"
+> _You have 45 minutes to propose, plan, and **deploy** the solution!_ 🚀"
 
 ## New Business Requirements
 
@@ -25,7 +25,7 @@
 | **RPO**              | ≤15 minutes          | Maximum acceptable data loss                  |
 | **Secondary Region** | `germanywestcentral` | Coverage for broader European market          |
 | **Budget Increase**  | +€200/month          | Total infrastructure budget now ~€700/month   |
-| **Timeline**         | 40 minutes           | Board needs decision on architecture approach |
+| **Timeline**         | 45 minutes           | Board needs decision on architecture approach |
 
 ## Your Challenge
 
@@ -169,6 +169,7 @@ to show HA/DR configuration based on agent-output/freshconnect/04-adr-ha-dr-stra
 💡 **10 minutes**: Architecture Decision Record
 💡 **15 minutes**: Prompt the `bicep-code` agent and update templates
 💡 **10 minutes**: Deploy DR infrastructure
+💡 **5 minutes**: Update architecture diagram
 💡 **5 minutes**: Verify deployment and update cost estimate
 
 ## Coaching Approach

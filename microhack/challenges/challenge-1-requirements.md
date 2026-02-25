@@ -100,7 +100,7 @@ The `requirements` agent will likely ask questions like:
 
 **Your job**: Answer based on business needs, not just technical preferences.
 
-**Ask yourself:**
+**Before prompting the agent, ask yourself:**
 
 - What would the business stakeholder say?
 - What does the MVP actually require vs nice-to-have?

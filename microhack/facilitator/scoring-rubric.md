@@ -125,7 +125,8 @@ Results saved to `agent-output/{team}/score-results.json`.
 
 ### 7. Diagnostics (5 pts)
 
-**File**: `agent-output/{team}/07-ab-diagnostics-runbook.md`
+**File**: `agent-output/{team}/07-diagnostics-quick-card.md` (primary)
+or `agent-output/{team}/07-ab-diagnostics-runbook.md` (bonus depth)
 
 | Criterion                    | Points |
 | ---------------------------- | ------ |

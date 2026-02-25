@@ -20,19 +20,19 @@ Use the `design` agent to generate operational documentation that answers real b
 
 ### Consider These Scenarios
 
-**Scenario 1: The On-Call Engineer**  
+**Scenario 1: The On-Call Engineer**
 It's 2 AM. Azure Monitor shows alerts. Database connections are timing out. The on-call engineer has never seen this
 codebase before. What document would help them the most?
 
-**Scenario 2: The Compliance Audit**  
+**Scenario 2: The Compliance Audit**
 ISO 27001 auditor asks: "Show me your disaster recovery procedures." You have Bicep templates, but do you have
 documented runbooks?
 
-**Scenario 3: The Cost Review**  
+**Scenario 3: The Cost Review**
 CFO asks: "Why did our Azure bill increase 30% last month?" Do you have architecture diagrams showing what services
 cost what?
 
-**Scenario 4: The New Team Member**  
+**Scenario 4: The New Team Member**
 Junior developer joins the team. They need to understand the system before they can contribute. What's the "README for
 operations"?
 
@@ -145,10 +145,10 @@ After generating documentation:
 
 ## Time Management Tips
 
-- **0-5 min**: Decide what documentation provides most business value for FreshConnect
-- **5-10 min**: Craft a detailed prompt for the `design` agent with necessary context
-- **10-18 min**: Review generated documentation, request refinements or additional sections
-- **18-20 min**: Save artifacts and identify gaps for future documentation
+- **0-3 min**: Decide what documentation provides most business value for FreshConnect
+- **3-7 min**: Craft a detailed prompt for the `design` agent with necessary context
+- **7-13 min**: Review generated documentation, request refinements or additional sections
+- **13-15 min**: Save artifacts and identify gaps for future documentation
 
 ## What You're Learning
 
