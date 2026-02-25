@@ -37,16 +37,18 @@ graph TB
 
 ## Role Assignments
 
-The coach will pair teams:
+The coach will pair teams in a round-robin:
 
 | Presenting Team (Partner) | Challenging Team (Customer) |
 | ------------------------- | --------------------------- |
 | Team 1                    | Team 2                      |
-| Team 2                    | Team 1                      |
+| Team 2                    | Team 3                      |
 | Team 3                    | Team 4                      |
-| Team 4                    | Team 3                      |
+| Team 4                    | Team 1                      |
 
-> **Note**: When you're the "customer," your job is to ask tough but fair questions!
+> **Note**: For larger cohorts, extend the rotation
+> (e.g., Team 5 → Team 6 → Team 1).
+> When you're the "customer," your job is to ask tough but fair questions!
 
 ---
 
@@ -54,11 +56,13 @@ The coach will pair teams:
 
 **Time per team**: ~14 minutes
 
-| Segment       | Duration | Content                      |
-| ------------- | -------- | ---------------------------- |
-| Partner Pitch | 4 min    | Present your solution        |
-| Customer Q&A  | 2 min    | Customer team asks questions |
-| Transition    | 30 sec   | Switch presenters            |
+| Segment        | Duration | Content                           |
+| -------------- | -------- | --------------------------------- |
+| Partner Pitch  | 4 min    | Present your solution             |
+| Customer Q&A   | 2 min    | Customer team asks questions      |
+| Coach Feedback | 2 min    | Brief facilitator comments        |
+| Transition     | 30 sec   | Switch presenters                 |
+| Buffer         | ~5 min   | Overrun margin and audience notes |
 
 ---
 

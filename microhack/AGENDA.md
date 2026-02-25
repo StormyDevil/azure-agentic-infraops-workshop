@@ -48,7 +48,8 @@
 
 **Total Points**: 105 base + 25 bonus
 
-> 🔒 **Coaches**: See [facilitator-guide.md](facilitator/facilitator-guide.md) for Challenge 4 details.
+> [!NOTE]
+> **Coaches**: See [facilitator-guide.md](facilitator/facilitator-guide.md) for Challenge 4 details.
 > Challenge 8 focuses on professional communication and presentation skills.
 
 ---
@@ -124,7 +125,7 @@
 
 ### 🎯 Presentation Prep (14:35 - 14:50)
 
-Teams prepare their Partner Showcase presentations (5-min pitch + 2-min Q&A format).
+Teams prepare their Partner Showcase presentations (4-min pitch + 2-min Q&A format).
 
 ### Block 7: Challenge 8 (14:50 - 15:50)
 

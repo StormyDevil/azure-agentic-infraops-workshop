@@ -96,7 +96,7 @@ By the end, you'll have:
 
 ## Questions?
 
-Reach out to the workshop team at [microhack@contoso.com](mailto:microhack@contoso.com)
+Reach out to your event organizer or facilitator for questions.
 
 ---
 

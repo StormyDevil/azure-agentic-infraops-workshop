@@ -6,14 +6,14 @@ This folder contains the eight microhack challenges.
 
 | File                                                               | Challenge                     | Duration | Points |
 | ------------------------------------------------------------------ | ----------------------------- | -------- | ------ |
-| [challenge-1-requirements.md](challenge-1-requirements.md)         | Requirements Capture          | 50 min   | 20     |
-| [challenge-2-architecture.md](challenge-2-architecture.md)         | Architecture Design           | 50 min   | 25     |
-| [challenge-3-implementation.md](challenge-3-implementation.md)     | Bicep Implementation & Deploy | 70 min   | 25     |
-| [challenge-4-dr-curveball.md](challenge-4-dr-curveball.md)         | DR Curveball & Deploy ⚡      | 40 min   | 10     |
-| [challenge-5-load-testing.md](challenge-5-load-testing.md)         | Load Testing                  | 20 min   | 5      |
-| [challenge-6-documentation.md](challenge-6-documentation.md)       | Workload Documentation        | 20 min   | 5      |
+| [challenge-1-requirements.md](challenge-1-requirements.md)         | Requirements Capture          | 30 min   | 20     |
+| [challenge-2-architecture.md](challenge-2-architecture.md)         | Architecture Design           | 30 min   | 25     |
+| [challenge-3-implementation.md](challenge-3-implementation.md)     | Bicep Implementation & Deploy | 45 min   | 25     |
+| [challenge-4-dr-curveball.md](challenge-4-dr-curveball.md)         | DR Curveball & Deploy ⚡      | 45 min   | 10     |
+| [challenge-5-load-testing.md](challenge-5-load-testing.md)         | Load Testing                  | 30 min   | 5      |
+| [challenge-6-documentation.md](challenge-6-documentation.md)       | Workload Documentation        | 15 min   | 5      |
 | [challenge-7-diagnostics.md](challenge-7-diagnostics.md)           | Troubleshooting & Diagnostics | 5 min    | 5      |
-| [challenge-8-partner-showcase.md](challenge-8-partner-showcase.md) | Partner Showcase 🎤           | 30 min   | 10     |
+| [challenge-8-partner-showcase.md](challenge-8-partner-showcase.md) | Partner Showcase 🎤           | 60 min   | 10     |
 
 **Total**: 105 base points + bonus points available
 

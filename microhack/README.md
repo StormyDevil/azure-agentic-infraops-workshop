@@ -86,10 +86,12 @@ By the end of this microhack, you will:
 | 14:50-15:50 | 60 min   | **[Challenge 8](challenges/challenge-8-partner-showcase.md)** | Partner Showcase 🎤                                   |
 | 15:50-16:00 | 10 min   | **Wrap-up**                                                   | Leaderboard, cleanup, next steps                      |
 
-> ⚠️ **Curveball Challenge**: At 12:45, facilitators announce new business requirements
+> [!WARNING]
+> **Curveball Challenge**: At 12:45, facilitators announce new business requirements
 > (multi-region DR). This simulates real-world requirement changes!
 
-> 📊 **Scoring**: Teams can be scored via PowerShell scripts
+> [!TIP]
+> **Scoring**: Teams can be scored via PowerShell scripts
 > (`Score-Team.ps1`, `Get-Leaderboard.ps1`) or the **HackerBoard web app**
 > for a live browser-based experience.
 > See the [Scoring Rubric](facilitator/scoring-rubric.md) for point values.
@@ -188,6 +190,32 @@ graph LR
     style DOC fill:#e0f2f1
     style DIAG fill:#fce4ec
     style SHOW fill:#c8e6c9
+```
+
+### At-a-Glance Timeline
+
+```mermaid
+%%{init: {'theme':'neutral'}}%%
+gantt
+    title Microhack Day (10:00 - 16:00)
+    dateFormat HH:mm
+    axisFormat %H:%M
+    section Morning
+        Intro & Setup           :active, 10:00, 30m
+        C1 Requirements         :10:30, 30m
+        C2 Architecture         :11:00, 30m
+        Lunch                   :crit, 11:30, 30m
+    section Afternoon
+        C3 Bicep & Deploy       :12:00, 45m
+        C4 DR Curveball         :12:45, 45m
+        Break                   :crit, 13:30, 15m
+        C5 Load Testing         :13:45, 30m
+        C6 Documentation        :14:15, 15m
+        C7 Diagnostics          :14:30, 5m
+        Presentation Prep       :14:35, 15m
+    section Showcase
+        C8 Partner Showcase     :14:50, 60m
+        Wrap-up                 :15:50, 10m
 ```
 
 ---
