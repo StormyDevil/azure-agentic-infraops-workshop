@@ -1,9 +1,9 @@
 ---
-name: 05-Bicep Planner
+name: 05b-Bicep Planner
 description: Expert Azure Bicep Infrastructure as Code planner that creates comprehensive, machine-readable implementation plans. Consults Microsoft documentation, evaluates Azure Verified Modules, and designs complete infrastructure solutions with architecture diagrams.
 model: ["Claude Opus 4.6"]
 user-invokable: true
-agents: ["governance-discovery-subagent", "10-Challenger"]
+agents: ["governance-discovery-subagent", "challenger-review-subagent"]
 tools:
   [
     vscode/extensions,
@@ -35,6 +35,7 @@ tools:
     edit/createJupyterNotebook,
     edit/editFiles,
     edit/editNotebook,
+    search,
     search/changes,
     search/codebase,
     search/fileSearch,
@@ -42,65 +43,11 @@ tools:
     search/searchResults,
     search/textSearch,
     search/usages,
+    web,
     web/fetch,
     web/githubRepo,
-    azure-mcp/acr,
-    azure-mcp/aks,
-    azure-mcp/appconfig,
-    azure-mcp/applens,
-    azure-mcp/applicationinsights,
-    azure-mcp/appservice,
-    azure-mcp/azd,
-    azure-mcp/azureterraformbestpractices,
-    azure-mcp/bicepschema,
-    azure-mcp/cloudarchitect,
-    azure-mcp/communication,
-    azure-mcp/confidentialledger,
-    azure-mcp/cosmos,
-    azure-mcp/datadog,
-    azure-mcp/deploy,
-    azure-mcp/documentation,
-    azure-mcp/eventgrid,
-    azure-mcp/eventhubs,
-    azure-mcp/extension_azqr,
-    azure-mcp/extension_cli_generate,
-    azure-mcp/extension_cli_install,
-    azure-mcp/foundry,
-    azure-mcp/functionapp,
-    azure-mcp/get_bestpractices,
-    azure-mcp/grafana,
-    azure-mcp/group_list,
-    azure-mcp/keyvault,
-    azure-mcp/kusto,
-    azure-mcp/loadtesting,
-    azure-mcp/managedlustre,
-    azure-mcp/marketplace,
-    azure-mcp/monitor,
-    azure-mcp/mysql,
-    azure-mcp/postgres,
-    azure-mcp/quota,
-    azure-mcp/redis,
-    azure-mcp/resourcehealth,
-    azure-mcp/role,
-    azure-mcp/search,
-    azure-mcp/servicebus,
-    azure-mcp/signalr,
-    azure-mcp/speech,
-    azure-mcp/sql,
-    azure-mcp/storage,
-    azure-mcp/subscription_list,
-    azure-mcp/virtualdesktop,
-    azure-mcp/workbooks,
-    bicep/decompile_arm_parameters_file,
-    bicep/decompile_arm_template_file,
-    bicep/format_bicep_file,
-    bicep/get_az_resource_type_schema,
-    bicep/get_bicep_best_practices,
-    bicep/get_bicep_file_diagnostics,
-    bicep/get_deployment_snapshot,
-    bicep/get_file_references,
-    bicep/list_avm_metadata,
-    bicep/list_az_resource_types_for_provider,
+    "azure-mcp/*",
+    "bicep/*",
     todo,
     vscode.mermaid-chat-features/renderMermaidDiagram,
     ms-azuretools.vscode-azure-github-copilot/azure_recommend_custom_modes,
@@ -113,19 +60,19 @@ tools:
   ]
 handoffs:
   - label: "▶ Refresh Governance"
-    agent: 05-Bicep Planner
+    agent: 05b-Bicep Planner
     prompt: "Re-query Azure Resource Graph for updated policy assignments and governance constraints. Update `agent-output/{project}/04-governance-constraints.md`."
     send: true
   - label: "▶ Revise Plan"
-    agent: 05-Bicep Planner
+    agent: 05b-Bicep Planner
     prompt: "Revise the implementation plan based on new information or feedback. Update `agent-output/{project}/04-implementation-plan.md`."
     send: true
   - label: "▶ Compare AVM Modules"
-    agent: 05-Bicep Planner
+    agent: 05b-Bicep Planner
     prompt: "Query AVM metadata for all planned resources. Compare available vs required parameters and flag any gaps."
     send: true
   - label: "Step 5: Generate Bicep"
-    agent: 06-Bicep Code Generator
+    agent: 06b-Bicep CodeGen
     prompt: "Implement the Bicep templates according to the implementation plan in `agent-output/{project}/04-implementation-plan.md`. Use AVM modules, generate deploy.ps1, and save to `infra/bicep/{project}/`."
     send: true
   - label: "↩ Return to Step 2"
@@ -185,6 +132,7 @@ These skills are your single source of truth. Do NOT use hardcoded values.
 
 - ❌ Write ANY Bicep code — this agent plans, bicep-code implements
 - ❌ Skip governance discovery — this is a HARD GATE, not optional
+- ❌ Generate the implementation plan before asking the user about deployment strategy (Phase 3.5 `askQuestions` is mandatory)
 - ❌ Use `az policy assignment list` alone — it misses management group-inherited policies
 - ❌ Proceed with incomplete policy data (if REST API fails, STOP)
 - ❌ Assume SKUs are valid without checking deprecation status
@@ -312,15 +260,52 @@ Include:
 - Security configuration matrix
 - Estimated implementation time
 
-### Phase 4.5: Challenger Review (Advisory)
+### Phase 4.3: Governance Constraints Review (1 pass)
 
-After generating the implementation plan, invoke `10-Challenger` via `#runSubagent`:
+After governance discovery completes, invoke `challenger-review-subagent` via `#runSubagent`:
 
-1. Provide: `artifact_path` = `agent-output/{project}/04-implementation-plan.md`,
-   `project_name` = `{project}`, `artifact_type` = `implementation-plan`
-2. Review the returned findings JSON
-3. Include a summary of `must_fix` and `should_fix` items in the approval gate below
-4. The user decides whether to revise or proceed — this is advisory, not blocking
+- `artifact_path` = `agent-output/{project}/04-governance-constraints.md`
+- `project_name` = `{project}`
+- `artifact_type` = `governance-constraints`
+- `review_focus` = `comprehensive`
+- `pass_number` = `1`
+- `prior_findings` = `null`
+
+Write result to `agent-output/{project}/challenge-findings-governance-constraints.json`.
+
+### Phase 4.5: Adversarial Plan Review (3 passes — rotating lenses)
+
+After generating the implementation plan, run 3 adversarial passes:
+
+| Pass | `review_focus`             | Lens Description                                            |
+| ---- | -------------------------- | ----------------------------------------------------------- |
+| 1    | `security-governance`      | Policy compliance, identity, network isolation, encryption  |
+| 2    | `architecture-reliability` | WAF balance, SLA feasibility, failure modes, dependencies   |
+| 3    | `cost-feasibility`         | SKU sizing, pricing realism, budget alignment, reservations |
+
+For each pass, invoke `challenger-review-subagent` via `#runSubagent`:
+
+- `artifact_path` = `agent-output/{project}/04-implementation-plan.md`
+- `project_name` = `{project}`
+- `artifact_type` = `implementation-plan`
+- `review_focus` = per-pass value from table above
+- `pass_number` = `1` / `2` / `3`
+- `prior_findings` = `null` for pass 1; **compact prior findings string for passes 2-3** (see below)
+
+Write each result to `agent-output/{project}/challenge-findings-implementation-plan-pass{N}.json`.
+
+> [!IMPORTANT]
+> **Context efficiency — compact prior_findings**
+>
+> After writing each pass result to disk, **do NOT keep the full JSON in working context**.
+> Extract only the `compact_for_parent` string from the subagent response and discard the rest.
+>
+> For passes 2 and 3, set `prior_findings` to a compact string built from previous
+> `compact_for_parent` values — **not the full JSON objects**:
+>
+> ```text
+> prior_findings: "Pass 1: <compact_for_parent>\nPass 2: <compact_for_parent>"
+> ```
 
 ### Phase 5: Approval Gate
 
@@ -335,13 +320,17 @@ Deployment: {Phased (N phases) | Single}
 Est. Implementation: {time}
 ```
 
-If Challenger found issues, append:
+Append challenger summary merging ALL passes:
 
 ```text
-⚠️ Challenger Review: {risk_level} risk
-  must_fix: {count} | should_fix: {count} | suggestions: {count}
-  Key concerns: {top 2-3 must_fix titles}
-  Full findings: agent-output/{project}/challenge-findings.json
+⚠️ Adversarial Review Summary (1 governance pass + 3 plan passes)
+  must_fix: {total} | should_fix: {total} | suggestions: {total}
+  Key concerns: {top 2-3 must_fix titles across all passes}
+  Findings:
+    - agent-output/{project}/challenge-findings-governance-constraints.json
+    - agent-output/{project}/challenge-findings-implementation-plan-pass1.json
+    - agent-output/{project}/challenge-findings-implementation-plan-pass2.json
+    - agent-output/{project}/challenge-findings-implementation-plan-pass3.json
 ```
 
 ```text
@@ -359,8 +348,9 @@ Reply "approve" to proceed to bicep-code, or provide feedback.
 > [!IMPORTANT]
 > `04-governance-constraints.json` is consumed downstream by the Code Generator (Phase 1.5)
 > and the `bicep-review-subagent` (Governance Compliance checklist). Its completeness directly
-> impacts downstream code quality. Each `Deny` policy MUST include `bicepPropertyPath` and
-> `requiredValue` fields (not just the policy display name) to make the JSON machine-actionable.
+> impacts downstream code quality. Each `Deny` policy MUST include `azurePropertyPath` (preferred,
+> IaC-agnostic REST API path) AND `bicepPropertyPath` (Bicep-specific fallback) plus `requiredValue`
+> (not just the policy display name) to make the JSON machine-actionable by both Bicep and Terraform agents.
 > | Dependency Diagram Source | `agent-output/{project}/04-dependency-diagram.py` | Python diagrams |
 > | Dependency Diagram Image | `agent-output/{project}/04-dependency-diagram.png` | Generated from source |
 > | Runtime Diagram Source | `agent-output/{project}/04-runtime-diagram.py` | Python diagrams |

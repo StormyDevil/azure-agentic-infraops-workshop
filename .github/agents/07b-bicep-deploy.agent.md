@@ -1,10 +1,10 @@
 ---
-name: 07-Deploy
+name: 07b-Bicep Deploy
 model: ["Claude Sonnet 4.6"]
 description: Executes Azure deployments using generated Bicep templates. Runs deploy.ps1 scripts, performs what-if analysis, and manages deployment lifecycle. Step 6 of the 7-step agentic workflow.
 argument-hint: Deploy the Bicep templates for a specific project
 user-invokable: true
-agents: []
+agents: ["challenger-review-subagent"]
 tools:
   [
     vscode/extensions,
@@ -36,6 +36,7 @@ tools:
     edit/createJupyterNotebook,
     edit/editFiles,
     edit/editNotebook,
+    search,
     search/changes,
     search/codebase,
     search/fileSearch,
@@ -43,65 +44,11 @@ tools:
     search/searchResults,
     search/textSearch,
     search/usages,
+    web,
     web/fetch,
     web/githubRepo,
-    azure-mcp/acr,
-    azure-mcp/aks,
-    azure-mcp/appconfig,
-    azure-mcp/applens,
-    azure-mcp/applicationinsights,
-    azure-mcp/appservice,
-    azure-mcp/azd,
-    azure-mcp/azureterraformbestpractices,
-    azure-mcp/bicepschema,
-    azure-mcp/cloudarchitect,
-    azure-mcp/communication,
-    azure-mcp/confidentialledger,
-    azure-mcp/cosmos,
-    azure-mcp/datadog,
-    azure-mcp/deploy,
-    azure-mcp/documentation,
-    azure-mcp/eventgrid,
-    azure-mcp/eventhubs,
-    azure-mcp/extension_azqr,
-    azure-mcp/extension_cli_generate,
-    azure-mcp/extension_cli_install,
-    azure-mcp/foundry,
-    azure-mcp/functionapp,
-    azure-mcp/get_bestpractices,
-    azure-mcp/grafana,
-    azure-mcp/group_list,
-    azure-mcp/keyvault,
-    azure-mcp/kusto,
-    azure-mcp/loadtesting,
-    azure-mcp/managedlustre,
-    azure-mcp/marketplace,
-    azure-mcp/monitor,
-    azure-mcp/mysql,
-    azure-mcp/postgres,
-    azure-mcp/quota,
-    azure-mcp/redis,
-    azure-mcp/resourcehealth,
-    azure-mcp/role,
-    azure-mcp/search,
-    azure-mcp/servicebus,
-    azure-mcp/signalr,
-    azure-mcp/speech,
-    azure-mcp/sql,
-    azure-mcp/storage,
-    azure-mcp/subscription_list,
-    azure-mcp/virtualdesktop,
-    azure-mcp/workbooks,
-    bicep/decompile_arm_parameters_file,
-    bicep/decompile_arm_template_file,
-    bicep/format_bicep_file,
-    bicep/get_az_resource_type_schema,
-    bicep/get_bicep_best_practices,
-    bicep/get_bicep_file_diagnostics,
-    bicep/get_deployment_snapshot,
-    bicep/get_file_references,
-    bicep/list_avm_metadata,
-    bicep/list_az_resource_types_for_provider,
+    "azure-mcp/*",
+    "bicep/*",
     todo,
     vscode.mermaid-chat-features/renderMermaidDiagram,
     ms-azuretools.vscode-azure-github-copilot/azure_recommend_custom_modes,
@@ -114,23 +61,23 @@ tools:
   ]
 handoffs:
   - label: "▶ Run What-If Only"
-    agent: 07-Deploy
+    agent: 07b-Bicep Deploy
     prompt: "Execute az deployment what-if analysis without actually deploying. Show the expected changes to the target resource group."
     send: true
   - label: "▶ Deploy Next Phase"
-    agent: 07-Deploy
+    agent: 07b-Bicep Deploy
     prompt: "Deploy the next phase from `agent-output/{project}/04-implementation-plan.md`. Deploy the next uncompleted phase with approval."
     send: true
   - label: "▶ Deploy All Phases"
-    agent: 07-Deploy
+    agent: 07b-Bicep Deploy
     prompt: "Deploy all remaining phases sequentially from `agent-output/{project}/04-implementation-plan.md` with approval gates between each."
     send: true
   - label: "▶ Retry Deployment"
-    agent: 07-Deploy
+    agent: 07b-Bicep Deploy
     prompt: "Retry the last deployment operation. Re-run preflight validation and deployment with the same parameters."
     send: true
   - label: "▶ Verify Resources"
-    agent: 07-Deploy
+    agent: 07b-Bicep Deploy
     prompt: "Query deployed resources using Azure Resource Graph to verify successful deployment. Check resource health status."
     send: true
   - label: "Step 7: As-Built Documentation"
@@ -142,7 +89,7 @@ handoffs:
     prompt: "Use the azure-diagrams skill contract to generate a non-Mermaid as-built architecture diagram documenting deployed infrastructure. Output `agent-output/{project}/07-ab-diagram.py` + `07-ab-diagram.png` with deterministic layout and quality score >= 9/10."
     send: true
   - label: "↩ Fix Deployment Issues"
-    agent: 06-Bicep Code Generator
+    agent: 06b-Bicep CodeGen
     prompt: "The deployment encountered errors. Review the error messages and fix the Bicep templates in `infra/bicep/{project}/` to resolve the issues."
     send: true
   - label: "↩ Return to Step 2"
@@ -315,6 +262,22 @@ az deployment group what-if \
 If detected, STOP and report.
 
 Present summary table and wait for user approval.
+
+### Step 5.5: Pre-Deploy Adversarial Review (1 pass)
+
+After what-if analysis completes and before deployment execution, invoke `challenger-review-subagent` via `#runSubagent`:
+
+- `artifact_path` = `agent-output/{project}/06-deployment-summary.md` (or the what-if output captured above)
+- `project_name` = `{project}`
+- `artifact_type` = `deployment-preview`
+- `review_focus` = `comprehensive`
+- `pass_number` = `1`
+- `prior_findings` = `null`
+
+Write result to `agent-output/{project}/challenge-findings-deployment.json`.
+
+Include findings in the deployment approval gate.
+If `must_fix` count > 0, flag prominently and require explicit user acknowledgement before proceeding.
 
 ## Deployment Execution
 

@@ -1,9 +1,10 @@
 ---
-name: 06-Bicep Code Generator
+name: 06b-Bicep CodeGen
 description: Expert Azure Bicep Infrastructure as Code specialist that creates near-production-ready Bicep templates following best practices and Azure Verified Modules standards. Validates, tests, and ensures code quality.
 model: ["Claude Opus 4.6", "Claude Sonnet 4.6"]
 user-invokable: true
-agents: ["bicep-lint-subagent", "bicep-review-subagent"]
+agents:
+  ["bicep-lint-subagent", "bicep-review-subagent", "challenger-review-subagent"]
 tools:
   [
     vscode/extensions,
@@ -35,6 +36,7 @@ tools:
     edit/createJupyterNotebook,
     edit/editFiles,
     edit/editNotebook,
+    search,
     search/changes,
     search/codebase,
     search/fileSearch,
@@ -42,65 +44,11 @@ tools:
     search/searchResults,
     search/textSearch,
     search/usages,
+    web,
     web/fetch,
     web/githubRepo,
-    azure-mcp/acr,
-    azure-mcp/aks,
-    azure-mcp/appconfig,
-    azure-mcp/applens,
-    azure-mcp/applicationinsights,
-    azure-mcp/appservice,
-    azure-mcp/azd,
-    azure-mcp/azureterraformbestpractices,
-    azure-mcp/bicepschema,
-    azure-mcp/cloudarchitect,
-    azure-mcp/communication,
-    azure-mcp/confidentialledger,
-    azure-mcp/cosmos,
-    azure-mcp/datadog,
-    azure-mcp/deploy,
-    azure-mcp/documentation,
-    azure-mcp/eventgrid,
-    azure-mcp/eventhubs,
-    azure-mcp/extension_azqr,
-    azure-mcp/extension_cli_generate,
-    azure-mcp/extension_cli_install,
-    azure-mcp/foundry,
-    azure-mcp/functionapp,
-    azure-mcp/get_bestpractices,
-    azure-mcp/grafana,
-    azure-mcp/group_list,
-    azure-mcp/keyvault,
-    azure-mcp/kusto,
-    azure-mcp/loadtesting,
-    azure-mcp/managedlustre,
-    azure-mcp/marketplace,
-    azure-mcp/monitor,
-    azure-mcp/mysql,
-    azure-mcp/postgres,
-    azure-mcp/quota,
-    azure-mcp/redis,
-    azure-mcp/resourcehealth,
-    azure-mcp/role,
-    azure-mcp/search,
-    azure-mcp/servicebus,
-    azure-mcp/signalr,
-    azure-mcp/speech,
-    azure-mcp/sql,
-    azure-mcp/storage,
-    azure-mcp/subscription_list,
-    azure-mcp/virtualdesktop,
-    azure-mcp/workbooks,
-    bicep/decompile_arm_parameters_file,
-    bicep/decompile_arm_template_file,
-    bicep/format_bicep_file,
-    bicep/get_az_resource_type_schema,
-    bicep/get_bicep_best_practices,
-    bicep/get_bicep_file_diagnostics,
-    bicep/get_deployment_snapshot,
-    bicep/get_file_references,
-    bicep/list_avm_metadata,
-    bicep/list_az_resource_types_for_provider,
+    "azure-mcp/*",
+    "bicep/*",
     todo,
     vscode.mermaid-chat-features/renderMermaidDiagram,
     ms-azuretools.vscode-azure-github-copilot/azure_recommend_custom_modes,
@@ -113,23 +61,23 @@ tools:
   ]
 handoffs:
   - label: "▶ Run Preflight Check"
-    agent: 06-Bicep Code Generator
+    agent: 06b-Bicep CodeGen
     prompt: "Run AVM schema validation and pitfall checking before generating Bicep code. Save results to `agent-output/{project}/04-preflight-check.md`."
     send: true
   - label: "▶ Fix Validation Errors"
-    agent: 06-Bicep Code Generator
+    agent: 06b-Bicep CodeGen
     prompt: "Review bicep build/lint errors and fix the templates in `infra/bicep/{project}/`. Re-run validation after fixes."
     send: true
   - label: "▶ Generate Implementation Reference"
-    agent: 06-Bicep Code Generator
+    agent: 06b-Bicep CodeGen
     prompt: "Generate or update `agent-output/{project}/05-implementation-reference.md` with current template structure and validation status."
     send: true
   - label: "Step 6: Deploy"
-    agent: 07-Deploy
+    agent: 07b-Bicep Deploy
     prompt: "Deploy the validated Bicep templates in `infra/bicep/{project}/` to Azure. Read `agent-output/{project}/04-implementation-plan.md` for deployment strategy and run what-if analysis first."
     send: true
   - label: "↩ Return to Step 4"
-    agent: 05-Bicep Planner
+    agent: 05b-Bicep Planner
     prompt: "Returning to implementation planning for revision. The plan in `agent-output/{project}/04-implementation-plan.md` needs adjustment based on implementation findings."
     send: false
     model: "Claude Opus 4.6 (copilot)"
@@ -234,10 +182,13 @@ Before writing ANY Bicep code, validate AVM compatibility:
 > See `.github/instructions/bicep-policy-compliance.instructions.md` for the full mandate.
 
 1. **Read** `agent-output/{project}/04-governance-constraints.json`
-2. **Extract** all `Deny` policies and their `bicepPropertyPath` + `requiredValue` fields
+2. **Extract** all `Deny` policies and their property path + `requiredValue` fields:
+   - Prefer `azurePropertyPath` (IaC-agnostic REST API path, e.g. `storageAccount.properties.minimumTlsVersion`)
+   - Fall back to `bicepPropertyPath` if `azurePropertyPath` is absent
 3. **Build a compliance map** — for each Deny policy, identify:
    - Target resource type(s)
-   - Bicep property that must be set
+   - Bicep property to set — if using `azurePropertyPath`, drop the leading resource-type segment
+     and map the remainder to the Bicep ARM property path (e.g. `.properties.minimumTlsVersion`)
    - Required value to avoid policy denial
 4. **Extract tag requirements** — merge governance-discovered tags with the 4 baseline defaults.
    Governance constraints always win (the 4 defaults are a MINIMUM)
@@ -339,8 +290,49 @@ Delegate to `bicep-review-subagent`:
 
 **Step 3 — Finalize**:
 
-Both subagents must return passing results before proceeding.
-Save validation status (including subagent verdicts) in `05-implementation-reference.md`.
+Both subagents must return passing results before proceeding to adversarial review.
+
+### Phase 4.5: Adversarial Code Review (3 passes — rotating lenses)
+
+After lint and review subagents pass, run 3 adversarial passes on the generated code:
+
+| Pass | `review_focus`             | Lens Description                                            |
+| ---- | -------------------------- | ----------------------------------------------------------- |
+| 1    | `security-governance`      | Policy compliance, identity, network isolation, encryption  |
+| 2    | `architecture-reliability` | WAF balance, SLA feasibility, failure modes, dependencies   |
+| 3    | `cost-feasibility`         | SKU sizing, pricing realism, budget alignment, reservations |
+
+For each pass, invoke `challenger-review-subagent` via `#runSubagent`:
+
+- `artifact_path` = `infra/bicep/{project}/`
+- `project_name` = `{project}`
+- `artifact_type` = `iac-code`
+- `review_focus` = per-pass value from table above
+- `pass_number` = `1` / `2` / `3`
+- `prior_findings` = `null` for pass 1; **compact prior findings string for passes 2-3** (see below)
+
+Write each result to `agent-output/{project}/challenge-findings-iac-code-pass{N}.json`.
+
+> [!IMPORTANT]
+> **Context efficiency — compact prior_findings**
+>
+> After writing each pass result to disk, **do NOT keep the full JSON in working context**.
+> Extract only the `compact_for_parent` string from the subagent response and discard the rest.
+>
+> For passes 2 and 3, set `prior_findings` to a compact string built from previous
+> `compact_for_parent` values — **not the full JSON objects**:
+>
+> ```text
+> prior_findings: "Pass 1: <compact_for_parent>\nPass 2: <compact_for_parent>"
+> ```
+
+If any pass returns `must_fix` items:
+
+1. Fix the code
+2. Re-run `bicep-lint-subagent` and `bicep-review-subagent`
+3. Re-run only the failing adversarial pass
+
+Save validation status (including all subagent verdicts) in `05-implementation-reference.md`.
 Run `npm run lint:artifact-templates` and fix any H2 structure errors for your artifacts.
 
 ## File Structure
@@ -388,7 +380,7 @@ module networking 'modules/networking.bicep' = { ... }
 | ------------------ | ------------------------------------------------------- |
 | Preflight Check    | `agent-output/{project}/04-preflight-check.md`          |
 | Implementation Ref | `agent-output/{project}/05-implementation-reference.md` |
-| Bicep Templates    | `infra/bicep/{project}/`                                |
+| IaC Templates      | `infra/bicep/{project}/`                                |
 | Deploy Script      | `infra/bicep/{project}/deploy.ps1`                      |
 
 Include attribution header from the template file (do not hardcode).
@@ -407,5 +399,6 @@ Include attribution header from the template file (do not hardcode).
 - [ ] No deprecated parameters used (checked against AVM pitfalls)
 - [ ] `bicep-lint-subagent` returns PASS
 - [ ] `bicep-review-subagent` returns APPROVED
+- [ ] `challenger-review-subagent` 3-pass adversarial code review completed
 - [ ] `deploy.ps1` generated with proper error handling
 - [ ] `05-implementation-reference.md` saved with validation status
