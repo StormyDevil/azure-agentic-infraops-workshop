@@ -7,6 +7,7 @@
 # Auth:
 # - checkout/fetch uses built-in github.token
 # - push/PR operations use SYNC_PAT so downstream PR checks (e.g., lint) run
+# - write syncs are skipped with a warning when SYNC_PAT is not configured
 
 name: upstream-sync
 
@@ -50,6 +51,7 @@ jobs:
         with:
           token: ${{ github.token }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Verify prerequisites
         run: |
@@ -58,13 +60,32 @@ jobs:
           done
           echo "✅ All prerequisites available"
 
+      - name: Check sync configuration
+        id: auth
+        env:
+          SYNC_PAT: ${{ secrets.SYNC_PAT }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
+        run: |
+          if [[ "$DRY_RUN" != "true" && -z "$SYNC_PAT" ]]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Upstream sync skipped: configure the SYNC_PAT repository secret to enable push/PR automation."
+            echo "## ⚠️ Upstream Sync Skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "Configure SYNC_PAT with contents:write, pull-requests:write, and metadata:read to enable sync." \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
       - name: Run sync-upstream.sh
         id: sync
+        if: steps.auth.outputs.ready == 'true'
+        shell: bash
+        env:
+          SOURCE_REF: ${{ inputs.source_ref || 'main' }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
         run: |
           chmod +x scripts/sync-upstream.sh
-
-          SOURCE_REF="${{ inputs.source_ref || 'main' }}"
-          DRY_RUN="${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}"
 
           if [[ "$DRY_RUN" == "true" ]]; then
             scripts/sync-upstream.sh --dry-run --ref "$SOURCE_REF" | tee sync-output.txt
@@ -93,7 +114,7 @@ jobs:
           echo "No files were modified. Run again with dry_run=false to apply." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Preflight changed paths summary
-        if: hashFiles('SYNC-MANIFEST.md') != ''
+        if: steps.sync.outputs.changes == 'true'
         run: |
           echo "## 📂 Changed Paths (Preflight)" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"

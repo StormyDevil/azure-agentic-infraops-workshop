@@ -273,7 +273,10 @@ Its rules ensure it:
 ### SYNC_PAT Secret
 
 The workflow requires a [fine-grained Personal Access Token][fine-grained-pat] stored as a
-repository secret named `SYNC_PAT`.
+repository secret named `SYNC_PAT` for push/PR automation.
+If the secret is absent (for example, in a new fork), non-dry-run syncs are skipped
+with a warning and setup instructions in the Actions summary, without modifying files or creating PRs.
+Manual dry runs do not require this secret.
 
 **Required permissions** (scoped to this repository):
 
@@ -293,8 +296,10 @@ To create the secret:
 5. Click **Add secret**
 
 > [!WARNING]
-> The default `GITHUB_TOKEN` cannot assign issues to `copilot-swe-agent[bot]`.
-> A user-scoped PAT is required for the coding agent assignment API.
+> Pushes and PRs created using the default `GITHUB_TOKEN` do not trigger downstream
+> Actions checks. `SYNC_PAT` is required so checks such as lint run on sync PRs.
+> An invalid or expired configured token still fails authentication; replace it rather than
+> relying on a fallback token.
 
 ### Copilot Coding Agent
 
